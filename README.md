@@ -3,6 +3,8 @@ Alphons van der Heijden, author of LSLEditor, the great off-line editor and debu
 
 German Edition
 
+Download and unzip, Download and install Visual Studio Community 2017, open src/lsleditor.sln, start debug or release.
+
 # Missing
 Insert as comment OSSL_Functions.cs
 
