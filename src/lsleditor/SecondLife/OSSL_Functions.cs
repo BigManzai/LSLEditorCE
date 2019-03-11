@@ -105,10 +105,10 @@ namespace LSLEditor
             Verbose("osCauseHealing(\"{0}\", {1})", avatar, healing);
         }
 
-//		public void osDetectedCountry(LSL_Integer number)
-//		{
-//			Verbose("osDetectedCountry(number);
-//		}
+/*         public LSL_String osDetectedCountry(LSL_Integer number)
+		{
+			return m_OSSL_Functions.osDetectedCountry(number);
+		} */
 
 		public void osDropAttachment()
         {
