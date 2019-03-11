@@ -1,4 +1,4 @@
-﻿// <copyright file="gpl-2.0.txt">
+// <copyright file="gpl-2.0.txt">
 // ORIGINAL CODE BASE IS Copyright (C) 2006-2010 by Alphons van der Heijden.
 // The code was donated on 2010-04-28 by Alphons van der Heijden to Brandon 'Dimentox Travanti' Husbands &
 // Malcolm J. Kudra, who in turn License under the GPLv2 in agreement with Alphons van der Heijden's wishes.
@@ -105,7 +105,12 @@ namespace LSLEditor
             Verbose("osCauseHealing(\"{0}\", {1})", avatar, healing);
         }
 
-        public void osDropAttachment()
+//		public void osDetectedCountry(LSL_Integer number)
+//		{
+//			Verbose("osDetectedCountry(number);
+//		}
+
+		public void osDropAttachment()
         {
             Verbose("osDorpAttachment()");
         }
@@ -179,7 +184,12 @@ namespace LSLEditor
             return agents;
         }
 
-        public String osGetAvatarHomeURI(String uuid)
+/*         public LSL_String osGetAgentCountry(LSL_Key agentId)
+		{
+			return m_OSSL_Functions.osGetAgentCountry(agentId);
+		} */
+
+		public String osGetAvatarHomeURI(String uuid)
         {
             Verbose("osGetAvatarHomeURI(\"{0}\")=\"\"", uuid);
             return "";
@@ -259,7 +269,12 @@ namespace LSLEditor
             return health;
         }
 
-        public void osTeleportAgent(key agent, integer regionX, integer regionY, vector position, vector lookat)
+/*         public void osSetOwnerSpeed(LSL_Float SpeedModifier)
+		{
+			m_OSSL_Functions.osSetOwnerSpeed(SpeedModifier);
+		} */
+
+		public void osTeleportAgent(key agent, integer regionX, integer regionY, vector position, vector lookat)
         {
             Verbose("osTeleportAgent(\"{0}\", {1}, {2}, {3}, {4})", agent, regionX, regionY, position, lookat);
         }
@@ -390,7 +405,12 @@ namespace LSLEditor
             Chat(channel, message, CommunicationType.Say);
         }
 
-        public void osNpcSetProfileAbout(key npc, String about)
+/*         public void osNpcSayTo(LSL_Key npc, LSL_Key target, int channel, string msg)
+		{
+			m_OSSL_Functions.osNpcSayTo(npc, target, channel, msg);
+		} */
+
+		public void osNpcSetProfileAbout(key npc, String about)
         {
             Verbose("osNpcSetProfileAbout(\"{0}\", \"{1}\")", npc, about);
         }
@@ -469,13 +489,28 @@ namespace LSLEditor
             return l;
         }
 
-        public String osGetInventoryDesc(String name)
+		/*         public LSL_String osGetInventoryName(LSL_Key itemId)
+				{
+					return m_OSSL_Functions.osGetInventoryName(itemId);
+				} */
+
+		public String osGetInventoryDesc(String name)
         {
             Verbose("osGetInventoryDesc(\"{0}\")=\"\"", name);
             return "";
         }
 
-        public integer osGetLinkNumber(String name)
+/*         public LSL_Key osGetInventoryLastOwner(LSL_String itemNameOrId)
+		{
+			return m_OSSL_Functions.osGetInventoryLastOwner(itemNameOrId);
+		} */
+
+/*         public LSL_Key osGetLastChangedEventKey()
+		{
+			return m_OSSL_Functions.osGetLastChangedEventKey();
+		} */
+
+		public integer osGetLinkNumber(String name)
         {
             if (name == "")
             {
@@ -1077,7 +1112,12 @@ namespace LSLEditor
             return 0;
         }
 
-        public String osGetSimulatorVersion()
+/*         public LSL_Integer osGetSimulatorMemoryKB()
+		{
+			return m_OSSL_Functions.osGetSimulatorMemoryKB();
+		} */
+
+		public String osGetSimulatorVersion()
         {
             Verbose("osGetSimulatorVersion()=\"\"");
             return "";
@@ -1148,7 +1188,69 @@ namespace LSLEditor
             Verbose("osCollisionSound(\"{0}\", {1})", impact_sound, impact_volume);
         }
 
-        public Float osDie(key objectUUID)
+/*         public void osAdjustSoundVolume(LSL_Integer linknum, LSL_Float volume)
+		{
+			m_OSSL_Functions.osAdjustSoundVolume(linknum, volume);
+		}
+
+		public void osSetSoundRadius(LSL_Integer linknum, LSL_Float radius)
+		{
+			m_OSSL_Functions.osSetSoundRadius(linknum, radius);
+		}
+
+		public void osPlaySound(LSL_Integer linknum, LSL_String sound, LSL_Float volume)
+		{
+			m_OSSL_Functions.osPlaySound(linknum, sound, volume);
+		}
+
+		public void osLoopSound(LSL_Integer linknum, LSL_String sound, LSL_Float volume)
+		{
+			m_OSSL_Functions.osLoopSound(linknum, sound, volume);
+		}
+
+		public void osLoopSoundMaster(LSL_Integer linknum, LSL_String sound, LSL_Float volume)
+		{
+			m_OSSL_Functions.osLoopSoundMaster(linknum, sound, volume);
+		}
+
+		public void osLoopSoundSlave(LSL_Integer linknum, LSL_String sound, LSL_Float volume)
+		{
+			m_OSSL_Functions.osLoopSoundSlave(linknum, sound, volume);
+		}
+
+		public void osPlaySoundSlave(LSL_Integer linknum, LSL_String sound, LSL_Float volume)
+		{
+			m_OSSL_Functions.osPlaySoundSlave(linknum, sound, volume);
+		}
+
+		public void osTriggerSound(LSL_Integer linknum, LSL_String sound, LSL_Float volume)
+		{
+			m_OSSL_Functions.osTriggerSound(linknum, sound, volume);
+		}
+
+		public void osTriggerSoundLimited(LSL_Integer linknum, LSL_String sound, LSL_Float volume,
+					vector top_north_east, vector bottom_south_west)
+		{
+			m_OSSL_Functions.osTriggerSoundLimited(linknum, sound, volume,
+											top_north_east, bottom_south_west);
+		}
+
+		public void osStopSound(LSL_Integer linknum)
+		{
+			m_OSSL_Functions.osStopSound(linknum);
+		}
+
+		public void osPreloadSound(LSL_Integer linknum, LSL_String sound)
+		{
+			m_OSSL_Functions.osPreloadSound(linknum, sound);
+		}
+
+		public LSL_String osDetectedCountry(LSL_Integer number)
+		{
+			return m_OSSL_Functions.osDetectedCountry(number);
+		} */
+
+		public Float osDie(key objectUUID)
         {
             Verbose("osDie(\"{0}\")=1", objectUUID);
             return 1;
@@ -1238,8 +1340,13 @@ namespace LSLEditor
             Verbose("osMin({0}, {1})={2}", a, b, min);
             return min;
         }
-        
-        public Hashtable osParseJSON(String JSON)
+
+/*         public LSL_Float osRound(LSL_Float value, LSL_Integer digits)
+		{
+			return m_OSSL_Functions.osRound(value, digits);
+		} */
+
+		public Hashtable osParseJSON(String JSON)
         {
             var serializer = new JavaScriptSerializer()
             {
@@ -1310,7 +1417,87 @@ namespace LSLEditor
             return result;
         }
 
-        public integer osRegexIsMatch(String input, String pattern)
+/*         public LSL_String osStringSubString(LSL_String src, LSL_Integer offset)
+		{
+			return m_OSSL_Functions.osStringSubString(src, offset);
+		}
+
+		public LSL_String osStringSubString(LSL_String src, LSL_Integer offset, LSL_Integer length)
+		{
+			return m_OSSL_Functions.osStringSubString(src, offset, length);
+		}
+
+		public LSL_Integer osStringStartsWith(LSL_String src, LSL_String value, LSL_Integer ignorecase)
+		{
+			return m_OSSL_Functions.osStringStartsWith(src, value, ignorecase);
+		}
+
+		public LSL_Integer osStringEndsWith(LSL_String src, LSL_String value, LSL_Integer ignorecase)
+		{
+			return m_OSSL_Functions.osStringEndsWith(src, value, ignorecase);
+		}
+
+		public LSL_Integer osStringIndexOf(LSL_String src, LSL_String value, LSL_Integer ignorecase)
+		{
+			return m_OSSL_Functions.osStringIndexOf(src, value, ignorecase);
+		}
+
+		public LSL_Integer osStringIndexOf(LSL_String src, LSL_String value, LSL_Integer offset, LSL_Integer count, LSL_Integer ignorecase)
+		{
+			return m_OSSL_Functions.osStringIndexOf(src, value, offset, count, ignorecase);
+		}
+
+		public LSL_Integer osStringLastIndexOf(LSL_String src, LSL_String value, LSL_Integer ignorecase)
+		{
+			return m_OSSL_Functions.osStringLastIndexOf(src, value, ignorecase);
+		}
+
+		public LSL_Integer osStringLastIndexOf(LSL_String src, LSL_String value, LSL_Integer offset, LSL_Integer count, LSL_Integer ignorecase)
+		{
+			return m_OSSL_Functions.osStringLastIndexOf(src, value, offset, count, ignorecase);
+		}
+
+		public LSL_String osStringRemove(LSL_String src, LSL_Integer offset, LSL_Integer count)
+		{
+			return m_OSSL_Functions.osStringRemove(src, offset, count);
+		}
+
+		public LSL_String osStringReplace(LSL_String src, LSL_String oldvalue, LSL_String newvalue)
+		{
+			return m_OSSL_Functions.osStringReplace(src, oldvalue, newvalue);
+		}
+
+		public LSL_Integer osApproxEquals(LSL_Float a, LSL_Float b)
+		{
+			return m_OSSL_Functions.osApproxEquals(a, b);
+		}
+
+		public LSL_Integer osApproxEquals(LSL_Float a, LSL_Float b, LSL_Float margin)
+		{
+			return m_OSSL_Functions.osApproxEquals(a, b, margin);
+		}
+
+		public LSL_Integer osApproxEquals(vector va, vector vb)
+		{
+			return m_OSSL_Functions.osApproxEquals(va, vb);
+		}
+
+		public LSL_Integer osApproxEquals(vector va, vector vb, LSL_Float margin)
+		{
+			return m_OSSL_Functions.osApproxEquals(va, vb, margin);
+		}
+
+		public LSL_Integer osApproxEquals(rotation ra, rotation rb)
+		{
+			return m_OSSL_Functions.osApproxEquals(ra, rb);
+		}
+
+		public LSL_Integer osApproxEquals(rotation ra, rotation rb, LSL_Float margin)
+		{
+			return m_OSSL_Functions.osApproxEquals(ra, rb, margin);
+		} */
+
+		public integer osRegexIsMatch(String input, String pattern)
         {
             integer result = Regex.IsMatch(input, pattern);
             Verbose("osRegexIsMatch(\"{0}\", \"{1}\")={2}", input, pattern, result);
@@ -1341,7 +1528,17 @@ namespace LSLEditor
             return result;
         }
 
-        public void osVolumeDetect(integer detect)
+/*         public LSL_Float osVecDistSquare(vector a, vector b)
+		{
+			return m_OSSL_Functions.osVecDistSquare(a, b);
+		} */
+
+/*         public LSL_Float osVecMagSquare(vector a)
+		{
+			return m_OSSL_Functions.osVecMagSquare(a);
+		} */
+
+		public void osVolumeDetect(integer detect)
         {
             Verbose("osVolumeDetect({0})", detect);
         }
