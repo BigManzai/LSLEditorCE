@@ -4,6 +4,7 @@ Alphons van der Heijden, author of LSLEditor, the great off-line editor and debu
 German Edition
 
 # Missing
+Insert as comment
 
       osDetectedCountry 
       osGetAgentCountry 
