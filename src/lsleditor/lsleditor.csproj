@@ -1092,10 +1092,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://www.lsleditor.org/UploadBugReport/Service1.asmx">
+    <WebReferenceUrl Include="http://www.opensimulator.org">
       <UrlBehavior>Static</UrlBehavior>
       <RelPath>Web References\org.lsleditor.www\</RelPath>
-      <UpdateFromURL>http://www.lsleditor.org/UploadBugReport/Service1.asmx</UpdateFromURL>
+      <UpdateFromURL>http://www.opensimulator.org</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

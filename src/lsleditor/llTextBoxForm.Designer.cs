@@ -38,19 +38,21 @@
             // 
             // buttonIgnore
             // 
-            this.buttonIgnore.Location = new System.Drawing.Point(197, 129);
+            this.buttonIgnore.Location = new System.Drawing.Point(296, 198);
+            this.buttonIgnore.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonIgnore.Name = "buttonIgnore";
-            this.buttonIgnore.Size = new System.Drawing.Size(75, 23);
+            this.buttonIgnore.Size = new System.Drawing.Size(112, 35);
             this.buttonIgnore.TabIndex = 0;
-            this.buttonIgnore.Text = "Ignore";
+            this.buttonIgnore.Text = "Ignoriere";
             this.buttonIgnore.UseVisualStyleBackColor = true;
             this.buttonIgnore.Click += new System.EventHandler(this.buttonIgnore_Click);
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(12, 129);
+            this.buttonOK.Location = new System.Drawing.Point(18, 198);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(75, 23);
+            this.buttonOK.Size = new System.Drawing.Size(112, 35);
             this.buttonOK.TabIndex = 1;
             this.buttonOK.Text = "OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -58,40 +60,44 @@
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(12, 103);
+            this.textBox.Location = new System.Drawing.Point(18, 158);
+            this.textBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(260, 20);
+            this.textBox.Size = new System.Drawing.Size(388, 26);
             this.textBox.TabIndex = 2;
             // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(13, 13);
+            this.panel1.Location = new System.Drawing.Point(20, 20);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(259, 84);
+            this.panel1.Size = new System.Drawing.Size(388, 129);
             this.panel1.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 4);
+            this.label1.Location = new System.Drawing.Point(6, 6);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(51, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "label1";
             // 
             // llTextBoxForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.ClientSize = new System.Drawing.Size(284, 164);
+            this.ClientSize = new System.Drawing.Size(426, 252);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonIgnore);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "llTextBoxForm";
