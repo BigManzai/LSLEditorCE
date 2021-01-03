@@ -3,7 +3,7 @@ Alphons van der Heijden, Autor von LSLEditor, dem großartigen Offline-Editor un
 
 hat sein Opus Magnum an die freie und Open-Source-Community gespendet, wo es wachsen und mit der SL-Plattform Schritt halten kann!
 
-Dies ist eine DEUTSCHE Version!
+Dies ist eine teilweise eingedeutschte Version!
 
 Die Testversion befindet sich kompiliert im Verzeichnis LSLEditorCE2021
 
