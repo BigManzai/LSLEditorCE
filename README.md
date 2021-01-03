@@ -11,7 +11,7 @@ Die Example Dateien sind Stand 3.Januar.2021
 
 Diese Version wird von mir auf den neusten stand gebracht und ist noch nicht fertig.
 
-Benutzung auf eigene gefahr bitte speichern sie zwischendurch öfter ab.
+Benutzung auf eigene gefahr, bitte speichern sie zwischendurch öfter ab.
 
 
 ## Kompilieren dieser Version
