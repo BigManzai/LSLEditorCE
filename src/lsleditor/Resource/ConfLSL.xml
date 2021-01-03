@@ -4623,6 +4623,52 @@
 
 			Returns the stand target set on the prim see osSetStandTarget.
 		</Word>
+		
+		
+		<Word name="osDetectedCountry">
+			string osDetectedCountry();
+
+			No descriptions provided
+		</Word>
+		<Word name="osAddAgentToGroup">
+			string osAddAgentToGroup();
+
+			No descriptions provided
+		</Word>
+		<Word name="osGetAgentCountry">
+			string osGetAgentCountry();
+
+			No descriptions provided
+		</Word>
+		<Word name="osSetOwnerSpeed">
+			string osSetOwnerSpeed();
+
+			No descriptions provided
+		</Word>
+		<Word name="osLocalTeleportAgent">
+			string osLocalTeleportAgent();
+
+			No descriptions provided
+		</Word>
+		<Word name="osReplaceAgentEnvironment">
+			string osReplaceAgentEnvironment();
+
+			No descriptions provided
+		</Word>
+		<Word name="osNpcSayTo">
+			string osNpcSayTo();
+
+			No descriptions provided
+		</Word>
+		<Word name="osClearObjectAnimations">
+			string osClearObjectAnimations();
+
+			No descriptions provided
+		</Word>
+		
+		
+		
+		
 		<Word name="osGetLinkStandTarget">
 			string osGetLinkStandTarget(integer linkNumber);
 
