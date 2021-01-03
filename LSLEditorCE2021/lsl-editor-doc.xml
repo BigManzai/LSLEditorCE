@@ -973,6 +973,7 @@
             It checks for each occurance of lineBefore (when it's an include statement) if it has a BEGIN after it.
             </summary>
             <param name="lineBefore"></param>
+            <param name="context"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.WriteAfterLine(System.Text.StringBuilder,System.String,System.String)">
@@ -1003,6 +1004,8 @@
             Returns the amount of tabs in front of an include statement
             </summary>
             <param name="includeLine"></param>
+            <param name="includeDepth"></param>
+            <param name="isDebug"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.GetSpacesForIndentedInclude(System.String,System.Int32,System.Boolean)">
@@ -1010,6 +1013,8 @@
             Returns the amount of spaces in front of an include statement
             </summary>
             <param name="includeLine"></param>
+            <param name="includeDepth"></param>
+            <param name="isDebug"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.GetTabsForIncludeScript(System.String,System.Int32,System.Boolean)">
@@ -1035,7 +1040,7 @@
             </summary>
             <param name="pathOfInclude"></param>
             <param name="sb"></param>
-            <param name="line"></param>
+            <param name="includeLine"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.WriteDebugScript(System.String,System.Text.StringBuilder,System.String)">
@@ -1044,7 +1049,7 @@
             </summary>
             <param name="pathOfInclude"></param>
             <param name="sb"></param>
-            <param name="line"></param>
+            <param name="includeLine"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.ImportScripts(System.String,System.String,System.Boolean)">
@@ -1053,6 +1058,7 @@
             </summary>
             <param name="strC">Sourcecode</param>
             <param name="pathOfScript">Path of the source code of the script</param>
+            <param name="ShowBeginEnd"></param>
             <returns>Sourcecode with imported scripts</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.RemoveScripts(System.String)">
@@ -1066,7 +1072,6 @@
             <summary>
             Call this to collapse LSL to LSLI
             </summary>
-            <param name="editform"></param>
             <returns>LSLI</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.CollapseToLSLIFromEditform(LSLEditor.EditForm)">
@@ -1080,7 +1085,6 @@
             <summary>
             Call this to collapse LSL to LSLI
             </summary>
-            <param name="editform"></param>
             <returns>LSLI</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.ExpandToLSL(LSLEditor.EditForm,System.Boolean)">
@@ -1088,6 +1092,7 @@
             Call this to expand LSLI to LSL
             </summary>
             <param name="editForm"></param>
+            <param name="ShowBeginEnd"></param>
             <returns>LSL</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIPathHelper.IsLSLI(System.String)">
@@ -1365,8 +1370,6 @@
             </summary>
             <param name="alignment">String alignment</param>
             <param name="flags">String format flags</param>
-            <param name="controlstyle">DataGridView style to apply (if available)</param>
-            <param name="overrideformat">True if user overrode alignment or flags</param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.PrinterHelper.printDoc_PrintPage(System.Object,System.Drawing.Printing.PrintPageEventArgs)">
@@ -1389,7 +1392,6 @@
             <param name="color">Color to print in</param>
             <param name="alignment">Alignment - print to left, center or right</param>
             <param name="flags">String format flags</param>
-            <param name="useroverride">True if the user overrode the alignment or flags</param>
         </member>
         <member name="M:LSLEditor.Helpers.PrinterHelper.printfooter(System.Drawing.Graphics,System.Single@)">
             <summary>
@@ -2241,133 +2243,133 @@
         </member>
         <member name="T:LSLEditor.Properties.Resources">
             <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.ResourceManager">
             <summary>
-              Returns the cached ResourceManager instance used by this class.
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.Culture">
             <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.ADDITEM">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.COPY">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.CUT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.DEINDENT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.DELETE">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.END">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.export_file_32">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.FIND">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.ININDENT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.logo">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.NEWDOC">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.NEWPROJ">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.OPEN">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PASTE">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PRINT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PROJECT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PROPS">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.REDO">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.SAVE">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.SAVEALL">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.SAVEAS">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.START">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.UNDO">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="T:LSLEditor.GroupboxEvent">
