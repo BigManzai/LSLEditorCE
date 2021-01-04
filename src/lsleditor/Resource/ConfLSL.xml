@@ -41,6 +41,12 @@
 	</Words>
 
 
+	
+	<!--
+	States
+	-->
+			
+			
 	<Words icon="States" name="States" color="#0000ff" slcolor="#801A4D">
 		<Word name="default">
 			All scripts must have a <font color="blue">default</font> state, which is the first state entered when the script starts.
@@ -63,6 +69,13 @@
 	</Words>
 
 
+	
+	<!--
+	Class
+	-->
+		
+		
+		
 	<Words icon="Class" name="Types" color="#007700" slcolor="#1A4D1A">
 		<Word name="integer" />
 		<Word name="float" />
@@ -74,6 +87,13 @@
 	</Words>
 
 
+	
+	<!--
+	Functions
+	-->
+		
+
+			
 	<Words icon="Functions" name="Appendix A. Linden Library Functions" color="#A00000" slcolor="#800026">
 		Complete listing of the Linden Library function calls available in lsl.
 		<Word name="llAbs">
@@ -3340,7 +3360,15 @@
 		</Word>
 	</Words>
 
-	<Words icon="Functions" name="Appendix A. Linden Library Functions" color="#A00000" slcolor="#800026">
+	
+		
+		<!--
+	Functions
+	-->	
+			
+			
+	
+	<Words icon="Functions" name="Appendix A. Linden Library Functions" color="#DB0000" slcolor="#BC0038">
 		Complete listing of the OpenSim Library function calls available in lsl.
 		<Word name="osAgentSaveAppearance">
 			key osAgentSaveAppearance(key avatarId, string notecard);
@@ -4577,10 +4605,6 @@
 			format. Please note that there will be no second fractions. This is because 
 			the implementation works with seconds only.
 		</Word>
-
-
-
-
 		<Word name="osGetInventoryItemKey">
 			string osGetInventoryItemKey(string name);
 
@@ -4622,53 +4646,54 @@
 			string osGetStandTarget();
 
 			Returns the stand target set on the prim see osSetStandTarget.
-		</Word>
-		
-		
+		</Word>		
 		<Word name="osDetectedCountry">
-			string osDetectedCountry();
+			string osDetectedCountry(integer index);
 
-			No descriptions provided
+			Returns a string that indicates the country in which the avatar is located.
 		</Word>
 		<Word name="osAddAgentToGroup">
-			string osAddAgentToGroup();
+			string osAddAgentToGroup(key AgentID, string GroupName, string RequestedRole);
 
-			No descriptions provided
+			The Group must be created
+			You must have the Group UUID
+			Roles within the group must be defined (default has Everyone + Owners)
 		</Word>
 		<Word name="osGetAgentCountry">
-			string osGetAgentCountry();
+			string osGetAgentCountry(key avatarID);
 
-			No descriptions provided
+			Returns a string that indicates the country in which an avatar is located.
 		</Word>
 		<Word name="osSetOwnerSpeed">
-			string osSetOwnerSpeed();
+			string osSetOwnerSpeed(float SpeedModifier);
 
-			No descriptions provided
+			The default value for SpeedModifier is 1.0 and the maximum value is 4.0. 
 		</Word>
 		<Word name="osLocalTeleportAgent">
-			string osLocalTeleportAgent();
+			string osLocalTeleportAgent(key agentID, vector newPosition, vector newVelocity, vector newLookat, integer optionFlags);
 
-			No descriptions provided
+			Teleports an avatar with uuid agentID to the specified newPosition within same region.
 		</Word>
 		<Word name="osReplaceAgentEnvironment">
-			string osReplaceAgentEnvironment();
+			integer osReplaceAgentEnvironment(key agentKey, integer transition, string daycycle);
 
-			No descriptions provided
+			Forces a dayclycle on a agent. Will do nothing if the agent is using a viewer local environment
+
+			If parameter daycycle is NULL_KEY or "", agent will see normal environment for parcel or region,
+			daycycle can be a name of a daycycle asset on prim contents. If it is a UUID it can also be grid asset.
+			if return value is negative, it failed.
+			transition should be the viewer transition time to the new one. May not work on most viewers.
 		</Word>
 		<Word name="osNpcSayTo">
-			string osNpcSayTo();
+			string osNpcSayTo(key npc, key target, integer channel, string message);
 
-			No descriptions provided
+			npc says message on the given channel to the specified target.
 		</Word>
 		<Word name="osClearObjectAnimations">
-			string osClearObjectAnimations();
+			integer osClearObjectAnimations();
 
-			No descriptions provided
-		</Word>
-		
-		
-		
-		
+			Clears all animations on the prim, returning how many it had running.
+		</Word>		
 		<Word name="osGetLinkStandTarget">
 			string osGetLinkStandTarget(integer linkNumber);
 
@@ -4682,62 +4707,85 @@
 		<Word name="osSetLinkSitActiveRange">
 			string osSetLinkSitActiveRange(integer linkNumber, float range);
 
-			This function bla bla.
+			sets a limit on how far a avatar can be to have a sit request accepted, or disable sits
+
+			linkNumber is link number of the prim to change or one of LINK_SET,LINK_ROOT, LINK_ALL_OTHERS,LINK_ALL_CHILDREN or LINK_THIS
+			range more 0: if a avatar if far from the prim by more than that value, a sit request is silent ignored
+			range equal 0: disables this limit. Region default is used. Current that is unlimited if a sit target is set or physics can sit the avatar, otherwise 10m
+			range lower 0: sits are disabled. Requests are silently ignored 
+
+			this value is stored on the prim, even if the script is removed 
 		</Word>
 		<Word name="osSetStandTarget">
 			string osSetStandTarget(vector feetTarget);
 
-			This function bla bla.
+			Sets a position, relative to prim local frame, where to place the feet of a standing avatar. The final position may not be exactly that.
 		</Word>
 		<Word name="osSetLinkStandTarget">
 			string osSetLinkStandTarget(integer linkNumber, vector feetTarget);
 
-			This function bla bla.
+			Sets a position, relative to prim local frame, where to place the feet of a standing avatar. The final position may not be exactly that.
 		</Word>
 		<Word name="osAdjustSoundVolume">
 			string osAdjustSoundVolume(integer linknum, float volume);
 
-			This function bla bla.
+			Adjust the volume of attached sound for a prim in a linkset.
 		</Word>
 		<Word name="osLoopSound">
 			string osLoopSound(integer linknum, string sound, float volume);
 
-			This function bla bla.
+			Play the specified sound at the specified volume and loop it indefinitely.
+
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the target prim. 
 		</Word>
 		<Word name="osLoopSoundMaster">
 			string osLoopSoundMaster(integer linknum, string sound, float volume);
 
-			This function bla bla.
+			Play the specified sound at the specified volume and loop it indefinitely.
+
+			This sound will be set as a master sound. The playing of the sound in other prims using osLoopSoundSlave will be synchronized to this sound.
+
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the target prim. 
 		</Word>
 		<Word name="osLoopSoundSlave">
 			string osLoopSoundSlave(integer linknum, string sound, float volume);
 
-			This function bla bla.
+			Play the specified sound at the specified volume and loop it indefinitely.
+
+			This sound will be set as a slave sound. The playing of a slave sound will be synchronized to the playing of the same sound declared in another prim as the master sound.
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the target prim.
 		</Word>
 		<Word name="osPlaySound">
 			string osPlaySound(integer linknum, string sound, float volume);
 
-			This function bla bla.
+			Play the specified sound once at the specified volume.
+
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the prim containing the script calling this function. 
 		</Word>
 		<Word name="osPlaySoundSlave">
 			string osPlaySoundSlave(integer linknum, string sound, float volume);
 
-			This function bla bla.
+			Play the specified sound at the specified volume.
+
+			This sound will be set as a slave sound. The playing of a slave sound will be synchronized to the playing of the same sound declared in another prim as the master sound.
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the target prim. 
 		</Word>
 		<Word name="osPreloadSound">
 			string osPreloadSound(integer linknum, string sound);
 
-			This function bla bla.
+			Preload the specified sound in viewers of nearby avatars.
+
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the target prim. 
 		</Word>
 		<Word name="osSetSoundRadius">
 			string osSetSoundRadius(integer linknum, float radius);
 
-			This function bla bla.
+			Establishes a hard cut-off radius for audibility of scripted sounds (both attached and triggered) in the specified prim of a linkset. 
 		</Word>
 		<Word name="osStopSound">
 			string osStopSound(integer linknum);
 
-			This function bla bla.
+			Stop the sound playing in the specified prim or prims of a linkset.
 		</Word>
 		<Word name="osTriggerSound">
 			string osTriggerSound(integer linknum, string sound, float volume);
@@ -4747,102 +4795,129 @@
 		<Word name="osTriggerSoundLimited">
 			string osTriggerSoundLimited(integer linknum, string sound, float volume, vector north_east_corner, vector south_west_corner);
 
-			This function bla bla.
+			Start playing the specified sound in the viewers of nearby avatars once at the specified volume.
+
+			The sound parameter can be the UUID of a sound or the name of a sound that is in the inventory of the target prim. 
 		</Word>
 		<Word name="osGetParcelDwell">
 			string osGetParcelDwell(vector pos);
 
-			This function bla bla.
+			This function allows you to get parcel dwell.
+
+			Alternatively you can also use PARCEL_DETAILS_DWELL with the function llGetParcelDetails
 		</Word>
 		<Word name="osGetApparentTime">
 			string osGetApparentTime();
 
-			This function bla bla.
+			Returns parcel time in seconds since midnight. If parcel does not have own enviroment, region time is returned.
 		</Word>
 		<Word name="osGetApparentTimeString">
 			string osGetApparentTimeString(integer format24);
 
-			This function bla bla.
+			Returns a string with current parcel sun hour. 
+			Will use 12 or 24 hour format if format24 is 0 or 1, respectible. 
+			If parcel does not have own evironment, region hour is returned. 
 		</Word>
 		<Word name="osGetApparentRegionTime">
 			string osGetApparentRegionTime();
 
-			This function bla bla.
+			Returns region time in seconds since midnight.
 		</Word>
 		<Word name="osGetApparentRegionTimeString">
 			string osGetApparentRegionTimeString(integer format24);
 
-			This function bla bla.
+			Returns a string with current region sun hour. Will use 12 or 24 hour format if format24 is 0 or 1, respectible. 
 		</Word>
 		<Word name="osReplaceParcelEnvironment">
 			string osReplaceParcelEnvironment(integer transition, string daycycle);
 
-			This function bla bla.
+			Replaces parcel daycycle.
+
+			If parameter daycycle is NULL_KEY or "", parcel environment is removed,
+			daycycle can be a name of a daycycle asset on prim contents. If it is a UUID it can also be grid asset.
+			if return value is negative, it failed.
+			transition should be the viewer transition time to the new one. May not work on most viewers. 
 		</Word>
 		<Word name="osReplaceRegionEnvironment">
 			string osReplaceRegionEnvironment(integer transition, string daycycle, float daylenght, float dayoffset, float altitude1, float altitude2, float altitude3);
 
-			This function bla bla.
+			Replaces region dayclycle.
+
+			If parameter daycycle is NULL_KEY or "", current environment is used as base,
+			daycycle can be a name of a daycycle asset on prim contents. If it is a UUID it can also be grid asset.
+			daylenght in hours - if zero, current is used. Range 4 to 168
+			dayoffset in hours - offset from UTC. Range -11.5 to 11.5. if outside range current is used
+			altitudes in meters - defines environment transition altitudes 1 to 3 levels. Range 1 to 4000. If 0, current is used. Please keep them sorted
+			if return value is negative, it failed.
+			transition should be the viewer transition time to the new one. May not work on most viewers. 
 		</Word>
 		<Word name="osResetEnvironment">
 			string osResetEnvironment(integer ParcelOrRegion, integer transition);
 
-			This function bla bla.
+			Resets parcel or region environment.
+
+			if ParcelOrRegion == 1 parcel environment is removed, region will be used, else region environment is set to the default.
+			transition should be the viewer transition time to the new one. May not work on most viewers.
+			if return is negative the operation failed. 
 		</Word>
 		<Word name="osGetSimulatorMemoryKB">
 			string osGetSimulatorMemoryKB();
 
-			This function bla bla.
+			No descriptions provided
 		</Word>
 		<Word name="osSetParcelMusicURL">
 			string osSetParcelMusicURL(string url);
 
-			This function bla bla.
+			Sets the Music URL for the parcel the scripted object is in. 
 		</Word>
 		<Word name="osResetAllScripts">
 			string osResetAllScripts(integer AllLinkSet);
 
-			This function bla bla.
+			Resets all the scripts on the same prim if AllLinkSet is FALSE( or 0) or on same linkset if AllLinkSet is TRUE ( or 1 )
+
+			This function can be heavy, and can have negative side effects due to the asynchronous nature of script engines. 
 		</Word>
 		<Word name="osStringSubString">
 			string osStringSubString(string src, integer offset);
 
-			This function bla bla.
+			No descriptions provided
 		</Word>
 		<Word name="osStringStartsWith">
 			string osStringStartsWith(string src, string start, integer ignore_case);
 
-			This function bla bla.
+			Returns 1 if the string in src starts with the characters in start. Case is ignored if ignore_case is 1 otherwise the case of the characters matters. 
 		</Word>
 		<Word name="osStringEndsWith">
 			string osStringEndsWith(string src, string start, integer ignore_case);
 
-			This function bla bla.
+			Returns 1 if the string in src ends with the characters in start. Case is ignored if ignore_case is 1 otherwise the case of the characters matters. 
 		</Word>
 		<Word name="osStringIndexOf">
 			string osStringIndexOf(string src, string value, integer ignoreCase);
 
-			This function bla bla.
+			Reports the zero-based index of the first occurrence of string value withing string scr. returns -1 if not found. 
+			It can compare ignoring case with ignoreCase TRUE(1) or considering case if FALSE(0) 
 		</Word>
 		<Word name="osStringLastIndexOf">
 			string osStringLastIndexOf(string src, string value, integer ignoreCase);
 
-			This function bla bla.
+			Reports the zero-based index of the last occurrence of string value withing string scr. returns -1 if not found. 
+			It can compare ignoring case with ignoreCase TRUE(1) or considering case if FALSE(0)
 		</Word>
 		<Word name="osStringRemove">
 			string osStringRemove(string src, integer offset, integer count);
 
-			This function bla bla.
+			No descriptions provided.
 		</Word>
 		<Word name="osStringReplace">
 			string osStringReplace(string src, string oldvalue, string newvalue);
 
-			This function bla bla.
+			Returns a string in which all occurrences of the string oldvalue in string src are replaced by string newvalue.
 		</Word>
 		<Word name="osAngleBetween">
 			string osAngleBetween(vector a, vector b);
 
-			This function bla bla.
+			returns a angle between 0 and PI.
 		</Word>
 		<Word name="osApproxEquals">
 			string osApproxEquals(float fa, float fb);
@@ -4852,52 +4927,66 @@
 			string osApproxEquals(vector va, vector vb, float margin);
 			string osApproxEquals(rotation ra, rotation rb, float margin);
 
-			This function bla bla.
+			Returns 1 (true) if the quantities or all their components do not differ by the margin value, 
+			or 1e-6 (0.000001), if margin is not provided. Returns 0 (false) otherwise.
 		</Word>
 		<Word name="osGetPSTWallclock">
 			string osGetPSTWallclock();
 
-			This function bla bla.
+			returns the current PST or PDT time in seconds since midnight.
 		</Word>
 		<Word name="osIsNotValidNumber">
 			string osIsNotValidNumber(float d);
 
-			This function bla bla.
+			Returns 0 (false) if d is a valid float, else returns:
+
+			1 - if it is a NaN
+			2 - if it is a Negative Infinity
+			3 - if it is a Positive Infinity
 		</Word>
 		<Word name="osRound">
 			string osRound(float value, integer ndigits);
 
-			This function bla bla.
+			returns the value rounded to the number with a number if decimal places set by ndigits.
+			ndigits = 0 is same as llRound(), max value is 15. 
 		</Word>
 		<Word name="osSHA256">
 			string osSHA256(string input);
 
-			This function bla bla.
+			Generate a hash value (string input). Returns a string containing the calculated string input as lowercase. 
 		</Word>
 		<Word name="osSlerp">
 			string osSlerp(rotation a, rotation b, float ratio);
 
-			This function bla bla.
+			osSlerp Returns a rotation that is the spherical interpolation of a and b, 
+			according to ratio that can be from 0.0 (result is a) to 1.0 (result is b) 
 		</Word>
 		<Word name="osVecDistSquare">
 			string osVecDistSquare(vector a, vector b);
 
-			This function bla bla.
+			returns the square of norm of vector or distance vector (a - b), when expensive square root is not needed. 
 		</Word>
 		<Word name="osVecMagSquare">
-			string osVecMagSquare(vector a);
+			float osVecMagSquare(vector a) ;
 
-			This function bla bla.
+			No descriptions provided.
 		</Word>
-
-
-
-
-		<Word name="osVolumeDetect">
-			void osVolumeDetect(integer detect);
+			<Word name="osVolumeDetect">
+			osVolumeDetect(integer detect);
+			
+			If script is on root prim, it is like llVolumeDetect(). On child prims, it will turn just that prim a detector. 
 		</Word>
 	</Words>
+		
 
+	
+	
+	<!--
+	Evants
+	-->
+	
+	
+	
 		<Words icon="Events" name="Appendix B. Events" color="#00A0A0" slcolor="#004D80">
 		Every state must have at least one handler. You can choose to
 		handle an event by defining one of the the reserved
@@ -5203,6 +5292,13 @@
 	</Words>
 
 
+	
+	
+	<!--
+	Constants
+	-->
+		
+	
 	<Words icon="Constants" name="Appendix C. Constants" color="#0000A0" slcolor="#1A1A80">
 		To ease scripting, many useful constants are defined by LSL.
 		<WordsSubsection name="C.1. Boolean Constants">
@@ -6771,6 +6867,13 @@
 		<Word name="llSetObjectPermMask" />
 	</Words>
 
+	
+	
+		<!--
+	Enum
+	-->
+		
+	
 
 	<Words icon="Enum" name="Names" color="#A0A0A0" slcolor="#003300">
 		<Word name="aim_l_bow" />
