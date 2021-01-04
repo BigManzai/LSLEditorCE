@@ -1,6 +1,5 @@
 # LSLEditorCE
 Alphons van der Heijden, Autor von LSLEditor, dem großartigen Offline-Editor und Debugging-Tool für Skripte in Second Life, 
-
 hat sein Opus Magnum an die freie und Open-Source-Community gespendet, wo es wachsen und mit der SL-Plattform Schritt halten kann!
 
 Dies ist eine teilweise eingedeutschte Version!
