@@ -7,6 +7,8 @@ namespace System.Windows.Forms
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
+
+#pragma warning disable CS1587 // Der XML-Kommentar ist auf keinem gültigen Sprachelement abgelegt.
 		/// <summary> 
 		/// Clean up any resources being used.
 		/// </summary>
@@ -19,6 +21,7 @@ namespace System.Windows.Forms
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
+#pragma warning restore CS1587 // Der XML-Kommentar ist auf keinem gültigen Sprachelement abgelegt.
 		{
 			components = new System.ComponentModel.Container();
 		}

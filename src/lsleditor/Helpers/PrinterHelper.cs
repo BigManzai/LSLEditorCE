@@ -523,8 +523,6 @@ namespace LSLEditor.Helpers
 		/// </summary>
 		/// <param name="alignment">String alignment</param>
 		/// <param name="flags">String format flags</param>
-		/// <param name="controlstyle">DataGridView style to apply (if available)</param>
-		/// <param name="overrideformat">True if user overrode alignment or flags</param>
 		/// <returns></returns>
 		private static StringFormat managestringformat(StringAlignment alignment, StringFormatFlags flags)
 		{
@@ -619,7 +617,6 @@ namespace LSLEditor.Helpers
 		/// <param name="color">Color to print in</param>
 		/// <param name="alignment">Alignment - print to left, center or right</param>
 		/// <param name="flags">String format flags</param>
-		/// <param name="useroverride">True if the user overrode the alignment or flags</param>
 		private void printsection(Graphics g, ref float pos, string text,
 			Font font, Color color, StringAlignment alignment, StringFormatFlags flags)
 		{
