@@ -47,6 +47,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 
+#pragma warning disable IDE0007 // Impliziten Typ verwenden
+#pragma warning disable IDE0009 // Der Memberzugriff sollte qualifiziert sein.
+#pragma warning disable IDE0049 // Namen vereinfachen
+#pragma warning disable IDE0038 // Musterabgleich verwenden
+#pragma warning disable IDE0020 
+#pragma warning disable IDE0059 
+
 namespace LSLEditor
 {
 	/// <summary>
@@ -58,8 +65,12 @@ namespace LSLEditor
 		public key osAddAgentToGroup(key AgentID, string GroupName, string RequestedRole)
 		{
 			if (AgentID != "") {
+
 				key k = new key(Guid.NewGuid());
+
+
 				Verbose("osAgentSaveAppearance(\"{0}\", \"{1}\")=\"{2}\"", AgentID, GroupName, RequestedRole);
+
 				return k;
 			}
 			Verbose("osAgentSaveAppearance(\"{0}\", \"{1}\")=\"{2}\"", AgentID, GroupName, RequestedRole);
@@ -564,7 +575,9 @@ namespace LSLEditor
 			return 1;
 		}
 
+
 		public integer osListenRegex(Int32 channelID, String name, String ID, String msg, Int32 regexBitfield)
+
 		{
 			Verbose("osListenRegex({0}, \"{1}\", \"{2}\", \"{3}\", {4})=1", channelID, name, ID, msg, regexBitfield);
 			return 1;
@@ -1294,7 +1307,9 @@ namespace LSLEditor
 				MaxJsonLength = JSON.ToString().Length,
 			};
 			Object decoded = serializer.DeserializeObject(JSON);
+
 			if (decoded is Hashtable)
+
 			{
 				Verbose("osParseJSON(\"{0}\")={1}", JSON, (Hashtable)decoded);
 				return (Hashtable) decoded;
@@ -1456,35 +1471,35 @@ namespace LSLEditor
 
 		public void osAdjustSoundVolume(integer linknum, float volume)
 		{
-
+			Verbose("osAdjustSoundVolume(\"{0}\", \"{1}\")", linknum, volume);
 		}
 		public void osLoopSound(integer linknum, string sound, float volume)
 		{
-
+			Verbose("osLoopSound({0}, {1}, {2})", linknum, sound, volume);
 		}
 		public void osLoopSoundMaster(integer linknum, string sound, float volume)
 		{
-
+			Verbose("osLoopSoundMaster({0}, {1}, {2})", linknum, sound, volume);
 		}
 		public void osLoopSoundSlave(integer linknum, string sound, float volume)
 		{
-
+			Verbose("osLoopSoundSlave({0}, {1}, {2})", linknum, sound, volume);
 		}
 		public void osPlaySound(integer linknum, string sound, float volume)
 		{
-
+			Verbose("osPlaySound({0}, {1}, {2})", linknum, sound, volume);
 		}
 		public void osPlaySoundSlave(integer linknum, string sound, float volume)
 		{
-
+			Verbose("osPlaySoundSlave({0}, {1}, {2})", linknum, sound, volume);
 		}
 		public void osPreloadSound(integer linknum, string sound)
 		{
-
+			Verbose("osPreloadSound(\"{0}\", \"{1}\")", linknum, sound);
 		}
 		public void osSetSoundRadius(integer linknum, float radius)
 		{
-
+			Verbose("osSetSoundRadius(\"{0}\", \"{1}\")", linknum, radius);
 		}
 		public void osStopSound(integer linknum)
 		{
@@ -1492,7 +1507,7 @@ namespace LSLEditor
 		}
 		public void osTriggerSound(integer linknum, string sound, float volume)
 		{
-
+			Verbose("osTriggerSound({0}, {1}, {2})", linknum, sound, volume);
 		}
 		public void osTriggerSoundLimited(integer linknum, string sound, float volume, vector north_east_corner, vector south_west_corner)
 		{
@@ -1530,7 +1545,7 @@ namespace LSLEditor
 		}
 		public void osReplaceParcelEnvironment(integer transition, string daycycle)
 		{
-
+			Verbose("osReplaceParcelEnvironment(\"{0}\", \"{1}\")", transition, daycycle);
 		}
 		public void osReplaceRegionEnvironment(integer transition, string daycycle, float daylenght, float dayoffset, float altitude1, float altitude2, float altitude3)
 		{
@@ -1538,7 +1553,7 @@ namespace LSLEditor
 		}
 		public void osResetEnvironment(integer ParcelOrRegion, integer transition)
 		{
-
+			Verbose("osResetEnvironment(\"{0}\", \"{1}\")", ParcelOrRegion, transition);
 		}
 		//Grid / Region Information
 
@@ -1567,31 +1582,31 @@ namespace LSLEditor
 
 		public void osStringSubString(string src, integer offset)
 		{
-
+			Verbose("osStringSubString(\"{0}\", \"{1}\")", src, offset);
 		}
 		public void osStringStartsWith(string src, string start, integer ignore_case)
 		{
-
+			Verbose("osStringStartsWith({0}, {1}, {2})", src, start, ignore_case);
 		}
 		public void osStringEndsWith(string src, string start, integer ignore_case)
 		{
-
+			Verbose("osStringEndsWith({0}, {1}, {2})", src, start, ignore_case);
 		}
 		public void osStringIndexOf(string src, string value, integer ignoreCase)
 		{
-
+			Verbose("osStringIndexOf({0}, {1}, {2})", src, value, ignoreCase);
 		}
 		public void osStringLastIndexOf(string src, string value, integer ignoreCase)
 		{
-
+			Verbose("osStringLastIndexOf({0}, {1}, {2})", src, value, ignoreCase);
 		}
 		public void osStringRemove(string src, integer offset, integer count)
 		{
-
+			Verbose("osStringRemove({0}, {1}, {2})", src, offset, count);
 		}
 		public void osStringReplace(string src, string oldvalue, string newvalue)
 		{
-
+			Verbose("osStringReplace({0}, {1}, {2})", src, oldvalue, newvalue);
 		}
 
 
@@ -1599,33 +1614,32 @@ namespace LSLEditor
 
 		public void osAngleBetween(vector a, vector b)
 		{
-
+			Verbose("osAngleBetween(\"{0}\", \"{1}\")", a, b);
 		}
-
 
 		public void osApproxEquals(float fa, float fb)
 		{
-
+			Verbose("osAngleBetween(\"{0}\", \"{1}\")", fa, fb);
 		}
 		public void osApproxEquals(vector va, vector vb)
 		{
-
+			Verbose("osAngleBetween(\"{0}\", \"{1}\")", va, vb);
 		}
 		public void osApproxEquals(rotation ra, rotation rb)
 		{
-
+			Verbose("osAngleBetween(\"{0}\", \"{1}\")", ra, rb);
 		}
 		public void osApproxEquals(float fa, float fb, float margin)
 		{
-
+			Verbose("osApproxEquals({0}, {1}, {2})", fa, fb, margin);
 		}
 		public void osApproxEquals(vector va, vector vb, float margin)
 		{
-
+			Verbose("osApproxEquals({0}, {1}, {2})", va, vb, margin);
 		}
 		public void osApproxEquals(rotation ra, rotation rb, float margin)
 		{
-
+			Verbose("osApproxEquals({0}, {1}, {2})", ra, rb, margin);
 		}
 
 
@@ -1640,7 +1654,7 @@ namespace LSLEditor
 		}
 		public void osRound(float value, integer ndigits)
 		{
-
+			Verbose("osRound(\"{0}\", \"{1}\")", value, ndigits);
 		}
 		public void osSHA256(string input)
 		{
@@ -1648,11 +1662,11 @@ namespace LSLEditor
 		}
 		public void osSlerp(rotation a, rotation b, float ratio)
 		{
-
+			
 		}
 		public void osVecDistSquare(vector a, vector b)
 		{
-
+			Verbose("osRound(\"{0}\", \"{1}\")", a, b);
 		}
 		public void osVecMagSquare(vector a)
 		{
@@ -1663,3 +1677,9 @@ namespace LSLEditor
 
 	}
 }
+#pragma warning restore IDE0020
+#pragma warning restore IDE0059
+#pragma warning restore IDE0038 // Musterabgleich verwenden
+#pragma warning restore IDE0049 // Namen vereinfachen
+#pragma warning restore IDE0009 // Der Memberzugriff sollte qualifiziert sein.
+#pragma warning restore IDE0007 // Impliziten Typ verwenden
