@@ -43,51 +43,45 @@ using System.IO.Compression;
 
 using System.Security.Cryptography;
 
-
 namespace LSLEditor.Decompressor
 {
 	public class MD5Verify
-	{
-		public static string ComputeHash(string strFile)
-		{
-			MD5CryptoServiceProvider csp = new MD5CryptoServiceProvider();
-			FileStream stream = File.OpenRead(strFile);
-			byte[] hash = csp.ComputeHash(stream);
-			stream.Close();
-			return BitConverter.ToString(hash).Replace("-", "").ToLower();
-		}
-	}
+    {
+        public static string ComputeHash(string strFile)
+        {
+            MD5CryptoServiceProvider csp = new MD5CryptoServiceProvider();
+            FileStream stream = File.OpenRead(strFile);
+            byte[] hash = csp.ComputeHash(stream);
+            stream.Close();
+            return BitConverter.ToString(hash).Replace("-", "").ToLower();
+        }
+    }
 
-	public sealed class Gzip
-	{
-		public static void Decompress(Stream inStream, Stream outStream)
-		{
-			using (outStream)
-			{
-				using (GZipStream zipStream = new GZipStream(inStream, CompressionMode.Decompress))
-				{
-					int ch = zipStream.ReadByte();
-					while (ch != -1)
-					{
-						outStream.WriteByte((byte)ch);
-						ch = zipStream.ReadByte();
-					}
-				}
-			}
-		}
-	}
+    public sealed class Gzip
+    {
+        public static void Decompress(Stream inStream, Stream outStream)
+        {
+            using (outStream) {
+                using (GZipStream zipStream = new GZipStream(inStream, CompressionMode.Decompress)) {
+                    int ch = zipStream.ReadByte();
+                    while (ch != -1) {
+                        outStream.WriteByte((byte)ch);
+                        ch = zipStream.ReadByte();
+                    }
+                }
+            }
+        }
+    }
 
-	
-	public sealed class Zip
-	{
-		public static void Decompress(Stream inStream, Stream outStream)
-		{
-			ZipEntry zipEntry = ZipEntry.Read(inStream);
-			inStream.Close();
-			using (outStream)
-			{
-				zipEntry.Extract(outStream);
-			}
-		}
-	}
+    public sealed class Zip
+    {
+        public static void Decompress(Stream inStream, Stream outStream)
+        {
+            ZipEntry zipEntry = ZipEntry.Read(inStream);
+            inStream.Close();
+            using (outStream) {
+                zipEntry.Extract(outStream);
+            }
+        }
+    }
 }

@@ -1,11 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace LSLEditor.Docking
 {
-    public class DockContentCollection : ReadOnlyCollection<IDockContent>
+	public class DockContentCollection : ReadOnlyCollection<IDockContent>
     {
         private static List<IDockContent> _emptyList = new List<IDockContent>(0);
 
@@ -21,15 +20,13 @@ namespace LSLEditor.Docking
         }
 
         private DockPane m_dockPane = null;
-        private DockPane DockPane
-        {
+
+        private DockPane DockPane {
             get { return m_dockPane; }
         }
 
-        public new IDockContent this[int index]
-        {
-            get
-            {
+        public new IDockContent this[int index] {
+            get {
                 if (DockPane == null)
                     return Items[index] as IDockContent;
                 else
@@ -75,10 +72,8 @@ namespace LSLEditor.Docking
                 return (GetIndexOfVisibleContents(content) != -1);
         }
 
-        public new int Count
-        {
-            get
-            {
+        public new int Count {
+            get {
                 if (DockPane == null)
                     return base.Count;
                 else
@@ -88,14 +83,12 @@ namespace LSLEditor.Docking
 
         public new int IndexOf(IDockContent content)
         {
-            if (DockPane == null)
-            {
+            if (DockPane == null) {
                 if (!Contains(content))
                     return -1;
                 else
                     return Items.IndexOf(content);
-            }
-            else
+            } else
                 return GetIndexOfVisibleContents(content);
         }
 
@@ -110,18 +103,15 @@ namespace LSLEditor.Docking
             Items.Remove(content);
         }
 
-        private int CountOfVisibleContents
-        {
-            get
-            {
+        private int CountOfVisibleContents {
+            get {
 #if DEBUG
 				if (DockPane == null)
 					throw new InvalidOperationException();
 #endif
 
                 int count = 0;
-                foreach (IDockContent content in DockPane.Contents)
-                {
+                foreach (IDockContent content in DockPane.Contents) {
                     if (content.DockHandler.DockState == DockPane.DockState)
                         count++;
                 }
@@ -137,8 +127,7 @@ namespace LSLEditor.Docking
 #endif
 
             int currentIndex = -1;
-            foreach (IDockContent content in DockPane.Contents)
-            {
+            foreach (IDockContent content in DockPane.Contents) {
                 if (content.DockHandler.DockState == DockPane.DockState)
                     currentIndex++;
 
@@ -159,10 +148,8 @@ namespace LSLEditor.Docking
                 return -1;
 
             int index = -1;
-            foreach (IDockContent c in DockPane.Contents)
-            {
-                if (c.DockHandler.DockState == DockPane.DockState)
-                {
+            foreach (IDockContent c in DockPane.Contents) {
+                if (c.DockHandler.DockState == DockPane.DockState) {
                     index++;
 
                     if (c == content)

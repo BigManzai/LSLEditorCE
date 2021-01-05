@@ -1,200 +1,184 @@
 using System;
-using System.Collections;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Security.Permissions;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
 	public class FloatWindow : Form, INestedPanesContainer, IDockDragSource
-	{
-		private NestedPaneCollection m_nestedPanes;
-		internal const int WM_CHECKDISPOSE = (int)(Win32.Msgs.WM_USER + 1);
+    {
+        private NestedPaneCollection m_nestedPanes;
+        internal const int WM_CHECKDISPOSE = (int)(Win32.Msgs.WM_USER + 1);
 
-		internal protected FloatWindow(DockPanel dockPanel, DockPane pane)
+		protected internal FloatWindow(DockPanel dockPanel, DockPane pane)
 		{
 			InternalConstruct(dockPanel, pane, false, Rectangle.Empty);
 		}
 
-		internal protected FloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
+		protected internal FloatWindow(DockPanel dockPanel, DockPane pane, Rectangle bounds)
 		{
 			InternalConstruct(dockPanel, pane, true, bounds);
 		}
 
 		private void InternalConstruct(DockPanel dockPanel, DockPane pane, bool boundsSpecified, Rectangle bounds)
-		{
-			if (dockPanel == null)
-				throw(new ArgumentNullException(Strings.FloatWindow_Constructor_NullDockPanel));
+        {
+            if (dockPanel == null)
+                throw (new ArgumentNullException(Strings.FloatWindow_Constructor_NullDockPanel));
 
-			m_nestedPanes = new NestedPaneCollection(this);
+            m_nestedPanes = new NestedPaneCollection(this);
 
-			FormBorderStyle = FormBorderStyle.SizableToolWindow;
-			ShowInTaskbar = false;
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            ShowInTaskbar = false;
             if (dockPanel.RightToLeft != RightToLeft)
                 RightToLeft = dockPanel.RightToLeft;
             if (RightToLeftLayout != dockPanel.RightToLeftLayout)
                 RightToLeftLayout = dockPanel.RightToLeftLayout;
-			
-			SuspendLayout();
-            if (boundsSpecified)
-            {
+
+            SuspendLayout();
+            if (boundsSpecified) {
                 Bounds = bounds;
                 StartPosition = FormStartPosition.Manual;
-            }
-            else
-            {
+            } else {
                 StartPosition = FormStartPosition.WindowsDefaultLocation;
                 Size = dockPanel.DefaultFloatWindowSize;
             }
 
-			m_dockPanel = dockPanel;
-			Owner = DockPanel.FindForm();
-			DockPanel.AddFloatWindow(this);
-			if (pane != null)
-				pane.FloatWindow = this;
+            m_dockPanel = dockPanel;
+            Owner = DockPanel.FindForm();
+            DockPanel.AddFloatWindow(this);
+            if (pane != null)
+                pane.FloatWindow = this;
 
-			ResumeLayout();
-		}
+            ResumeLayout();
+        }
 
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (DockPanel != null)
-					DockPanel.RemoveFloatWindow(this);
-				m_dockPanel = null;
-			}
-			base.Dispose(disposing);
-		}
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) {
+                if (DockPanel != null)
+                    DockPanel.RemoveFloatWindow(this);
+                m_dockPanel = null;
+            }
+            base.Dispose(disposing);
+        }
 
-		private bool m_allowEndUserDocking = true;
-		public bool AllowEndUserDocking
-		{
-			get	{	return m_allowEndUserDocking;	}
-			set	{	m_allowEndUserDocking = value;	}
-		}
+        private bool m_allowEndUserDocking = true;
 
-		public NestedPaneCollection NestedPanes
-		{
-			get	{	return m_nestedPanes;	}
-		}
+        public bool AllowEndUserDocking {
+            get { return m_allowEndUserDocking; }
+            set { m_allowEndUserDocking = value; }
+        }
 
-		public VisibleNestedPaneCollection VisibleNestedPanes
-		{
-			get	{	return NestedPanes.VisibleNestedPanes;	}
-		}
+        public NestedPaneCollection NestedPanes {
+            get { return m_nestedPanes; }
+        }
 
-		private DockPanel m_dockPanel;
-		public DockPanel DockPanel
-		{
-			get	{	return m_dockPanel;	}
-		}
+        public VisibleNestedPaneCollection VisibleNestedPanes {
+            get { return NestedPanes.VisibleNestedPanes; }
+        }
 
-		public DockState DockState
-		{
-			get	{	return DockState.Float;	}
-		}
-	
-		public bool IsFloat
-		{
-			get	{	return DockState == DockState.Float;	}
-		}
+        private DockPanel m_dockPanel;
 
-		internal bool IsDockStateValid(DockState dockState)
-		{
-			foreach (DockPane pane in NestedPanes)
-				foreach (IDockContent content in pane.Contents)
-					if (!DockHelper.IsDockStateValid(dockState, content.DockHandler.DockAreas))
-						return false;
+        public DockPanel DockPanel {
+            get { return m_dockPanel; }
+        }
 
-			return true;
-		}
+        public DockState DockState {
+            get { return DockState.Float; }
+        }
 
-		protected override void OnActivated(EventArgs e)
-		{
-			DockPanel.FloatWindows.BringWindowToFront(this);
-			base.OnActivated (e);
-			// Propagate the Activated event to the visible panes content objects
-			foreach (DockPane pane in VisibleNestedPanes)
-				foreach (IDockContent content in pane.Contents)
-					content.OnActivated(e);
-		}
+        public bool IsFloat {
+            get { return DockState == DockState.Float; }
+        }
 
-		protected override void OnDeactivate(EventArgs e)
-		{
-			base.OnDeactivate(e);
-			// Propagate the Deactivate event to the visible panes content objects
-			foreach (DockPane pane in VisibleNestedPanes)
-				foreach (IDockContent content in pane.Contents)
-					content.OnDeactivate(e);
-		}
+        internal bool IsDockStateValid(DockState dockState)
+        {
+            foreach (DockPane pane in NestedPanes)
+                foreach (IDockContent content in pane.Contents)
+                    if (!DockHelper.IsDockStateValid(dockState, content.DockHandler.DockAreas))
+                        return false;
 
-		protected override void OnLayout(LayoutEventArgs levent)
-		{
-			VisibleNestedPanes.Refresh();
-			RefreshChanges();
+            return true;
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            DockPanel.FloatWindows.BringWindowToFront(this);
+            base.OnActivated(e);
+            // Propagate the Activated event to the visible panes content objects
+            foreach (DockPane pane in VisibleNestedPanes)
+                foreach (IDockContent content in pane.Contents)
+                    content.OnActivated(e);
+        }
+
+        protected override void OnDeactivate(EventArgs e)
+        {
+            base.OnDeactivate(e);
+            // Propagate the Deactivate event to the visible panes content objects
+            foreach (DockPane pane in VisibleNestedPanes)
+                foreach (IDockContent content in pane.Contents)
+                    content.OnDeactivate(e);
+        }
+
+        protected override void OnLayout(LayoutEventArgs levent)
+        {
+            VisibleNestedPanes.Refresh();
+            RefreshChanges();
             Visible = (VisibleNestedPanes.Count > 0);
             SetText();
 
-			base.OnLayout(levent);
-		}
-
+            base.OnLayout(levent);
+        }
 
         [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "System.Windows.Forms.Control.set_Text(System.String)")]
         internal void SetText()
-		{
-			DockPane theOnlyPane = (VisibleNestedPanes.Count == 1) ? VisibleNestedPanes[0] : null;
+        {
+            DockPane theOnlyPane = (VisibleNestedPanes.Count == 1) ? VisibleNestedPanes[0] : null;
 
-			if (theOnlyPane == null)
-				Text = " ";	// use " " instead of string.Empty because the whole title bar will disappear when ControlBox is set to false.
-			else if (theOnlyPane.ActiveContent == null)
-				Text = " ";
-			else
-				Text = theOnlyPane.ActiveContent.DockHandler.TabText;
-		}
+            if (theOnlyPane == null)
+                Text = " "; // use " " instead of string.Empty because the whole title bar will disappear when ControlBox is set to false.
+            else if (theOnlyPane.ActiveContent == null)
+                Text = " ";
+            else
+                Text = theOnlyPane.ActiveContent.DockHandler.TabText;
+        }
 
-		protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
-		{
-			Rectangle rectWorkArea = SystemInformation.VirtualScreen;
+        protected override void SetBoundsCore(int x, int y, int width, int height, BoundsSpecified specified)
+        {
+            Rectangle rectWorkArea = SystemInformation.VirtualScreen;
 
-			if (y + height > rectWorkArea.Bottom)
-				y -= (y + height) - rectWorkArea.Bottom;
+            if (y + height > rectWorkArea.Bottom)
+                y -= (y + height) - rectWorkArea.Bottom;
 
-			if (y < rectWorkArea.Top)
-				y += rectWorkArea.Top - y;
+            if (y < rectWorkArea.Top)
+                y += rectWorkArea.Top - y;
 
-			base.SetBoundsCore (x, y, width, height, specified);
-		}
+            base.SetBoundsCore(x, y, width, height, specified);
+        }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-		protected override void WndProc(ref Message m)
-		{
-			if (m.Msg == (int)Win32.Msgs.WM_NCLBUTTONDOWN)
-			{
-				if (IsDisposed)
-					return;
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == (int)Win32.Msgs.WM_NCLBUTTONDOWN) {
+                if (IsDisposed)
+                    return;
 
-				uint result = NativeMethods.SendMessage(this.Handle, (int)Win32.Msgs.WM_NCHITTEST, 0, (uint)m.LParam);
-				if (result == 2 && DockPanel.AllowEndUserDocking && this.AllowEndUserDocking)	// HITTEST_CAPTION
-				{
-					Activate();
-					m_dockPanel.BeginDrag(this);
-				}
-				else
-					base.WndProc(ref m);
+                uint result = NativeMethods.SendMessage(this.Handle, (int)Win32.Msgs.WM_NCHITTEST, 0, (uint)m.LParam);
+                if (result == 2 && DockPanel.AllowEndUserDocking && this.AllowEndUserDocking)   // HITTEST_CAPTION
+                {
+                    Activate();
+                    m_dockPanel.BeginDrag(this);
+                } else
+                    base.WndProc(ref m);
 
-				return;
-			}
-            else if (m.Msg == (int)Win32.Msgs.WM_NCRBUTTONDOWN)
-            {
+                return;
+            } else if (m.Msg == (int)Win32.Msgs.WM_NCRBUTTONDOWN) {
                 uint result = NativeMethods.SendMessage(this.Handle, (int)Win32.Msgs.WM_NCHITTEST, 0, (uint)m.LParam);
                 if (result == 2)	// HITTEST_CAPTION
                 {
                     DockPane theOnlyPane = (VisibleNestedPanes.Count == 1) ? VisibleNestedPanes[0] : null;
-                    if (theOnlyPane != null && theOnlyPane.ActiveContent != null)
-                    {
+                    if (theOnlyPane != null && theOnlyPane.ActiveContent != null) {
                         theOnlyPane.ShowTabPageContextMenu(this, PointToClient(Control.MousePosition));
                         return;
                     }
@@ -202,20 +186,15 @@ namespace LSLEditor.Docking
 
                 base.WndProc(ref m);
                 return;
-            }
-            else if (m.Msg == (int)Win32.Msgs.WM_CLOSE)
-            {
-                if (NestedPanes.Count == 0)
-                {
+            } else if (m.Msg == (int)Win32.Msgs.WM_CLOSE) {
+                if (NestedPanes.Count == 0) {
                     base.WndProc(ref m);
                     return;
                 }
 
-                for (int i = NestedPanes.Count - 1; i >= 0; i--)
-                {
+                for (int i = NestedPanes.Count - 1; i >= 0; i--) {
                     DockContentCollection contents = NestedPanes[i].Contents;
-                    for (int j = contents.Count - 1; j >= 0; j--)
-                    {
+                    for (int j = contents.Count - 1; j >= 0; j--) {
                         IDockContent content = contents[j];
                         if (content.DockHandler.DockState != DockState.Float)
                             continue;
@@ -231,9 +210,7 @@ namespace LSLEditor.Docking
                 }
 
                 return;
-            }
-            else if (m.Msg == (int)Win32.Msgs.WM_NCLBUTTONDBLCLK)
-            {
+            } else if (m.Msg == (int)Win32.Msgs.WM_NCLBUTTONDBLCLK) {
                 uint result = NativeMethods.SendMessage(this.Handle, (int)Win32.Msgs.WM_NCHITTEST, 0, (uint)m.LParam);
                 if (result != 2)	// HITTEST_CAPTION
                 {
@@ -244,70 +221,60 @@ namespace LSLEditor.Docking
                 DockPanel.SuspendLayout(true);
 
                 // Restore to panel
-                foreach (DockPane pane in NestedPanes)
-                {
+                foreach (DockPane pane in NestedPanes) {
                     if (pane.DockState != DockState.Float)
                         continue;
                     pane.RestoreToPanel();
                 }
 
-
                 DockPanel.ResumeLayout(true, true);
                 return;
-            }
-            else if (m.Msg == WM_CHECKDISPOSE)
-            {
+            } else if (m.Msg == WM_CHECKDISPOSE) {
                 if (NestedPanes.Count == 0)
                     Dispose();
 
                 return;
             }
 
-			base.WndProc(ref m);
-		}
+            base.WndProc(ref m);
+        }
 
-		internal void RefreshChanges()
-		{
+        internal void RefreshChanges()
+        {
             if (IsDisposed)
                 return;
 
-			if (VisibleNestedPanes.Count == 0)
-			{
-				ControlBox = true;
-				return;
-			}
+            if (VisibleNestedPanes.Count == 0) {
+                ControlBox = true;
+                return;
+            }
 
-			for (int i=VisibleNestedPanes.Count - 1; i>=0; i--)
-			{
-				DockContentCollection contents = VisibleNestedPanes[i].Contents;
-				for (int j=contents.Count - 1; j>=0; j--)
-				{
-					IDockContent content = contents[j];
-					if (content.DockHandler.DockState != DockState.Float)
-						continue;
+            for (int i = VisibleNestedPanes.Count - 1; i >= 0; i--) {
+                DockContentCollection contents = VisibleNestedPanes[i].Contents;
+                for (int j = contents.Count - 1; j >= 0; j--) {
+                    IDockContent content = contents[j];
+                    if (content.DockHandler.DockState != DockState.Float)
+                        continue;
 
-					if (content.DockHandler.CloseButton && content.DockHandler.CloseButtonVisible)
-					{
-						ControlBox = true;
-						return;
-					}
-				}
-			}
-			//Only if there is a ControlBox do we turn it off
-			//old code caused a flash of the window.
+                    if (content.DockHandler.CloseButton && content.DockHandler.CloseButtonVisible) {
+                        ControlBox = true;
+                        return;
+                    }
+                }
+            }
+            //Only if there is a ControlBox do we turn it off
+            //old code caused a flash of the window.
             if (ControlBox)
-				ControlBox = false;
-		}
+                ControlBox = false;
+        }
 
-		public virtual Rectangle DisplayingRectangle
-		{
-			get	{	return ClientRectangle;	}
-		}
+        public virtual Rectangle DisplayingRectangle {
+            get { return ClientRectangle; }
+        }
 
-		internal void TestDrop(IDockDragSource dragSource, DockOutlineBase dockOutline)
-		{
-            if (VisibleNestedPanes.Count == 1)
-            {
+        internal void TestDrop(IDockDragSource dragSource, DockOutlineBase dockOutline)
+        {
+            if (VisibleNestedPanes.Count == 1) {
                 DockPane pane = VisibleNestedPanes[0];
                 if (!dragSource.CanDockTo(pane))
                     return;
@@ -317,18 +284,17 @@ namespace LSLEditor.Docking
                 if (NativeMethods.SendMessage(Handle, (int)Win32.Msgs.WM_NCHITTEST, 0, lParam) == (uint)Win32.HitTest.HTCAPTION)
                     dockOutline.Show(VisibleNestedPanes[0], -1);
             }
-		}
+        }
 
         #region IDockDragSource Members
 
         #region IDragSource Members
 
-        Control IDragSource.DragControl
-        {
+        Control IDragSource.DragControl {
             get { return this; }
         }
 
-        #endregion
+        #endregion IDragSource Members
 
         bool IDockDragSource.IsDockStateValid(DockState dockState)
         {
@@ -351,20 +317,17 @@ namespace LSLEditor.Docking
             return Bounds;
         }
 
-        public  void FloatAt(Rectangle floatWindowBounds)
+        public void FloatAt(Rectangle floatWindowBounds)
         {
             Bounds = floatWindowBounds;
         }
 
         public void DockTo(DockPane pane, DockStyle dockStyle, int contentIndex)
         {
-            if (dockStyle == DockStyle.Fill)
-            {
-                for (int i = NestedPanes.Count - 1; i >= 0; i--)
-                {
+            if (dockStyle == DockStyle.Fill) {
+                for (int i = NestedPanes.Count - 1; i >= 0; i--) {
                     DockPane paneFrom = NestedPanes[i];
-                    for (int j = paneFrom.Contents.Count - 1; j >= 0; j--)
-                    {
+                    for (int j = paneFrom.Contents.Count - 1; j >= 0; j--) {
                         IDockContent c = paneFrom.Contents[j];
                         c.DockHandler.Pane = pane;
                         if (contentIndex != -1)
@@ -372,9 +335,7 @@ namespace LSLEditor.Docking
                         c.DockHandler.Activate();
                     }
                 }
-            }
-            else
-            {
+            } else {
                 DockAlignment alignment = DockAlignment.Left;
                 if (dockStyle == DockStyle.Left)
                     alignment = DockAlignment.Left;
@@ -425,8 +386,7 @@ namespace LSLEditor.Docking
             DockAlignment[] alignments = new DockAlignment[count];
             double[] proportions = new double[count];
 
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 panes[i] = nestedPanesFrom[i];
                 prevPanes[i] = nestedPanesFrom[i].NestedDockingStatus.PreviousPane;
                 alignments[i] = nestedPanesFrom[i].NestedDockingStatus.Alignment;
@@ -436,10 +396,8 @@ namespace LSLEditor.Docking
             DockPane pane = panes[0].DockTo(nestedPanesTo.Container, prevPane, alignment, proportion);
             panes[0].DockState = nestedPanesTo.DockState;
 
-            for (int i = 1; i < count; i++)
-            {
-                for (int j = i; j < count; j++)
-                {
+            for (int i = 1; i < count; i++) {
+                for (int j = i; j < count; j++) {
                     if (prevPanes[j] == panes[i - 1])
                         prevPanes[j] = pane;
                 }
@@ -448,6 +406,6 @@ namespace LSLEditor.Docking
             }
         }
 
-        #endregion
+        #endregion IDockDragSource Members
     }
 }

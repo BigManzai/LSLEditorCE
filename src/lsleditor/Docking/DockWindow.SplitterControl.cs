@@ -1,17 +1,10 @@
-using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace LSLEditor.Docking
 {
-    public partial class DockWindow
+	public partial class DockWindow
     {
         private class SplitterControl : SplitterBase
         {
-            protected override int SplitterSize
-            {
+            protected override int SplitterSize {
                 get { return Measures.SplitterSize; }
             }
 

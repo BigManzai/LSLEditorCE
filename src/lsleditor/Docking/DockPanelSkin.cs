@@ -1,21 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Design;
-using System.Windows.Forms.Design;
-using System.ComponentModel;
 
 namespace LSLEditor.Docking
 {
-    #region DockPanelSkin classes
-    /// <summary>
-    /// The skin to use when displaying the DockPanel.
-    /// The skin allows custom gradient color schemes to be used when drawing the
-    /// DockStrips and Tabs.
-    /// </summary>
-    [TypeConverter(typeof(DockPanelSkinConverter))]
+	#region DockPanelSkin classes
+
+	/// <summary>
+	/// The skin to use when displaying the DockPanel.
+	/// The skin allows custom gradient color schemes to be used when drawing the
+	/// DockStrips and Tabs.
+	/// </summary>
+	[TypeConverter(typeof(DockPanelSkinConverter))]
     public class DockPanelSkin
     {
         private AutoHideStripSkin m_autoHideStripSkin;
@@ -30,8 +27,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the auto hide strips and tabs.
         /// </summary>
-        public AutoHideStripSkin AutoHideStripSkin
-        {
+        public AutoHideStripSkin AutoHideStripSkin {
             get { return m_autoHideStripSkin; }
             set { m_autoHideStripSkin = value; }
         }
@@ -39,8 +35,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the Document and ToolWindow style DockStrips and Tabs.
         /// </summary>
-        public DockPaneStripSkin DockPaneStripSkin
-        {
+        public DockPaneStripSkin DockPaneStripSkin {
             get { return m_dockPaneStripSkin; }
             set { m_dockPaneStripSkin = value; }
         }
@@ -68,8 +63,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The gradient color skin for the DockStrips.
         /// </summary>
-        public DockPanelGradient DockStripGradient
-        {
+        public DockPanelGradient DockStripGradient {
             get { return m_dockStripGradient; }
             set { m_dockStripGradient = value; }
         }
@@ -77,8 +71,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The gradient color skin for the Tabs.
         /// </summary>
-        public TabGradient TabGradient
-        {
+        public TabGradient TabGradient {
             get { return m_TabGradient; }
             set { m_TabGradient = value; }
         }
@@ -106,14 +99,14 @@ namespace LSLEditor.Docking
             m_ToolWindowGradient = new DockPaneStripToolWindowGradient();
             m_ToolWindowGradient.DockStripGradient.StartColor = SystemColors.ControlLight;
             m_ToolWindowGradient.DockStripGradient.EndColor = SystemColors.ControlLight;
-            
+
             m_ToolWindowGradient.ActiveTabGradient.StartColor = SystemColors.Control;
             m_ToolWindowGradient.ActiveTabGradient.EndColor = SystemColors.Control;
-            
+
             m_ToolWindowGradient.InactiveTabGradient.StartColor = Color.Transparent;
             m_ToolWindowGradient.InactiveTabGradient.EndColor = Color.Transparent;
             m_ToolWindowGradient.InactiveTabGradient.TextColor = SystemColors.ControlDarkDark;
-            
+
             m_ToolWindowGradient.ActiveCaptionGradient.StartColor = SystemColors.GradientActiveCaption;
             m_ToolWindowGradient.ActiveCaptionGradient.EndColor = SystemColors.ActiveCaption;
             m_ToolWindowGradient.ActiveCaptionGradient.LinearGradientMode = LinearGradientMode.Vertical;
@@ -128,8 +121,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the Document style DockPane strip and tab.
         /// </summary>
-        public DockPaneStripGradient DocumentGradient
-        {
+        public DockPaneStripGradient DocumentGradient {
             get { return m_DocumentGradient; }
             set { m_DocumentGradient = value; }
         }
@@ -137,8 +129,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the ToolWindow style DockPane strip and tab.
         /// </summary>
-        public DockPaneStripToolWindowGradient ToolWindowGradient
-        {
+        public DockPaneStripToolWindowGradient ToolWindowGradient {
             get { return m_ToolWindowGradient; }
             set { m_ToolWindowGradient = value; }
         }
@@ -162,8 +153,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the active ToolWindow caption.
         /// </summary>
-        public TabGradient ActiveCaptionGradient
-        {
+        public TabGradient ActiveCaptionGradient {
             get { return m_activeCaptionGradient; }
             set { m_activeCaptionGradient = value; }
         }
@@ -171,8 +161,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the inactive ToolWindow caption.
         /// </summary>
-        public TabGradient InactiveCaptionGradient
-        {
+        public TabGradient InactiveCaptionGradient {
             get { return m_inactiveCaptionGradient; }
             set { m_inactiveCaptionGradient = value; }
         }
@@ -198,8 +187,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The gradient color skin for the DockStrip.
         /// </summary>
-        public DockPanelGradient DockStripGradient
-        {
+        public DockPanelGradient DockStripGradient {
             get { return m_dockStripGradient; }
             set { m_dockStripGradient = value; }
         }
@@ -207,8 +195,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the active DockPane tabs.
         /// </summary>
-        public TabGradient ActiveTabGradient
-        {
+        public TabGradient ActiveTabGradient {
             get { return m_activeTabGradient; }
             set { m_activeTabGradient = value; }
         }
@@ -216,8 +203,7 @@ namespace LSLEditor.Docking
         /// <summary>
         /// The skin used to display the inactive DockPane tabs.
         /// </summary>
-        public TabGradient InactiveTabGradient
-        {
+        public TabGradient InactiveTabGradient {
             get { return m_inactiveTabGradient; }
             set { m_inactiveTabGradient = value; }
         }
@@ -240,8 +226,7 @@ namespace LSLEditor.Docking
         /// The text color.
         /// </summary>
         [DefaultValue(typeof(SystemColors), "ControlText")]
-        public Color TextColor
-        {
+        public Color TextColor {
             get { return m_textColor; }
             set { m_textColor = value; }
         }
@@ -268,8 +253,7 @@ namespace LSLEditor.Docking
         /// The beginning gradient color.
         /// </summary>
         [DefaultValue(typeof(SystemColors), "Control")]
-        public Color StartColor
-        {
+        public Color StartColor {
             get { return m_startColor; }
             set { m_startColor = value; }
         }
@@ -278,8 +262,7 @@ namespace LSLEditor.Docking
         /// The ending gradient color.
         /// </summary>
         [DefaultValue(typeof(SystemColors), "Control")]
-        public Color EndColor
-        {
+        public Color EndColor {
             get { return m_endColor; }
             set { m_endColor = value; }
         }
@@ -288,16 +271,16 @@ namespace LSLEditor.Docking
         /// The gradient mode to display the colors.
         /// </summary>
         [DefaultValue(LinearGradientMode.Horizontal)]
-        public LinearGradientMode LinearGradientMode
-        {
+        public LinearGradientMode LinearGradientMode {
             get { return m_linearGradientMode; }
             set { m_linearGradientMode = value; }
         }
     }
 
-    #endregion
+    #endregion DockPanelSkin classes
 
     #region Converters
+
     public class DockPanelSkinConverter : ExpandableObjectConverter
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
@@ -310,8 +293,7 @@ namespace LSLEditor.Docking
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is DockPanelSkin)
-            {
+            if (destinationType == typeof(String) && value is DockPanelSkin) {
                 return "DockPanelSkin";
             }
             return base.ConvertTo(context, culture, value, destinationType);
@@ -330,8 +312,7 @@ namespace LSLEditor.Docking
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is DockPanelGradient)
-            {
+            if (destinationType == typeof(String) && value is DockPanelGradient) {
                 return "DockPanelGradient";
             }
             return base.ConvertTo(context, culture, value, destinationType);
@@ -350,8 +331,7 @@ namespace LSLEditor.Docking
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is AutoHideStripSkin)
-            {
+            if (destinationType == typeof(String) && value is AutoHideStripSkin) {
                 return "AutoHideStripSkin";
             }
             return base.ConvertTo(context, culture, value, destinationType);
@@ -370,8 +350,7 @@ namespace LSLEditor.Docking
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is DockPaneStripSkin)
-            {
+            if (destinationType == typeof(String) && value is DockPaneStripSkin) {
                 return "DockPaneStripSkin";
             }
             return base.ConvertTo(context, culture, value, destinationType);
@@ -390,8 +369,7 @@ namespace LSLEditor.Docking
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is DockPaneStripGradient)
-            {
+            if (destinationType == typeof(String) && value is DockPaneStripGradient) {
                 return "DockPaneStripGradient";
             }
             return base.ConvertTo(context, culture, value, destinationType);
@@ -410,12 +388,12 @@ namespace LSLEditor.Docking
 
         public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(String) && value is TabGradient)
-            {
+            if (destinationType == typeof(String) && value is TabGradient) {
                 return "DockPaneTabGradient";
             }
             return base.ConvertTo(context, culture, value, destinationType);
         }
     }
-    #endregion
+
+    #endregion Converters
 }

@@ -1,10 +1,9 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    internal abstract class DockOutlineBase
+	internal abstract class DockOutlineBase
     {
         public DockOutlineBase()
         {
@@ -18,33 +17,31 @@ namespace LSLEditor.Docking
         }
 
         private Rectangle m_oldFloatWindowBounds;
-        protected Rectangle OldFloatWindowBounds
-        {
+
+        protected Rectangle OldFloatWindowBounds {
             get { return m_oldFloatWindowBounds; }
         }
 
         private Control m_oldDockTo;
-        protected Control OldDockTo
-        {
+
+        protected Control OldDockTo {
             get { return m_oldDockTo; }
         }
 
         private DockStyle m_oldDock;
-        protected DockStyle OldDock
-        {
+
+        protected DockStyle OldDock {
             get { return m_oldDock; }
         }
 
         private int m_oldContentIndex;
-        protected int OldContentIndex
-        {
+
+        protected int OldContentIndex {
             get { return m_oldContentIndex; }
         }
 
-        protected bool SameAsOldValue
-        {
-            get
-            {
+        protected bool SameAsOldValue {
+            get {
                 return FloatWindowBounds == OldFloatWindowBounds &&
                     DockTo == OldDockTo &&
                     Dock == OldDock &&
@@ -53,37 +50,36 @@ namespace LSLEditor.Docking
         }
 
         private Rectangle m_floatWindowBounds;
-        public Rectangle FloatWindowBounds
-        {
+
+        public Rectangle FloatWindowBounds {
             get { return m_floatWindowBounds; }
         }
 
         private Control m_dockTo;
-        public Control DockTo
-        {
+
+        public Control DockTo {
             get { return m_dockTo; }
         }
 
         private DockStyle m_dock;
-        public DockStyle Dock
-        {
+
+        public DockStyle Dock {
             get { return m_dock; }
         }
 
         private int m_contentIndex;
-        public int ContentIndex
-        {
+
+        public int ContentIndex {
             get { return m_contentIndex; }
         }
 
-        public bool FlagFullEdge
-        {
+        public bool FlagFullEdge {
             get { return m_contentIndex != 0; }
         }
 
         private bool m_flagTestDrop = false;
-        public bool FlagTestDrop
-        {
+
+        public bool FlagTestDrop {
             get { return m_flagTestDrop; }
             set { m_flagTestDrop = value; }
         }

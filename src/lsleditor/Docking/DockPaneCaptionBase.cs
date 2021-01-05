@@ -1,37 +1,33 @@
-using System;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
 	public abstract class DockPaneCaptionBase : Control
-	{
-		protected internal DockPaneCaptionBase(DockPane pane)
-		{
-			m_dockPane = pane;
+    {
+        protected internal DockPaneCaptionBase(DockPane pane)
+        {
+            m_dockPane = pane;
 
-			SetStyle(ControlStyles.OptimizedDoubleBuffer |
+            SetStyle(ControlStyles.OptimizedDoubleBuffer |
                 ControlStyles.ResizeRedraw |
                 ControlStyles.UserPaint |
                 ControlStyles.AllPaintingInWmPaint, true);
-			SetStyle(ControlStyles.Selectable, false);
-		}
+            SetStyle(ControlStyles.Selectable, false);
+        }
 
-		private DockPane m_dockPane;
-		protected DockPane DockPane
-		{
-			get	{	return m_dockPane;	}
-		}
+        private DockPane m_dockPane;
 
-		protected DockPane.AppearanceStyle Appearance
-		{
-			get	{	return DockPane.Appearance;	}
-		}
+        protected DockPane DockPane {
+            get { return m_dockPane; }
+        }
 
-        protected bool HasTabPageContextMenu
-        {
+        protected DockPane.AppearanceStyle Appearance {
+            get { return DockPane.Appearance; }
+        }
+
+        protected bool HasTabPageContextMenu {
             get { return DockPane.HasTabPageContextMenu; }
         }
 
@@ -53,20 +49,18 @@ namespace LSLEditor.Docking
             base.OnMouseDown(e);
 
             if (e.Button == MouseButtons.Left &&
-			    DockPane.DockPanel.AllowEndUserDocking &&
+                DockPane.DockPanel.AllowEndUserDocking &&
                 DockPane.AllowDockDragAndDrop &&
-				!DockHelper.IsDockStateAutoHide(DockPane.DockState) &&
+                !DockHelper.IsDockStateAutoHide(DockPane.DockState) &&
                 DockPane.ActiveContent != null)
-				DockPane.DockPanel.BeginDrag(DockPane);
+                DockPane.DockPanel.BeginDrag(DockPane);
         }
 
-        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]         
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == (int)Win32.Msgs.WM_LBUTTONDBLCLK)
-            {
-                if (DockHelper.IsDockStateAutoHide(DockPane.DockState))
-                {
+            if (m.Msg == (int)Win32.Msgs.WM_LBUTTONDBLCLK) {
+                if (DockHelper.IsDockStateAutoHide(DockPane.DockState)) {
                     DockPane.DockPanel.ActiveAutoHideContent = null;
                     return;
                 }
@@ -79,22 +73,22 @@ namespace LSLEditor.Docking
             base.WndProc(ref m);
         }
 
-		internal void RefreshChanges()
-		{
+        internal void RefreshChanges()
+        {
             if (IsDisposed)
                 return;
 
-			OnRefreshChanges();
-		}
+            OnRefreshChanges();
+        }
 
         protected virtual void OnRightToLeftLayoutChanged()
         {
         }
 
-		protected virtual void OnRefreshChanges()
-		{
-		}
+        protected virtual void OnRefreshChanges()
+        {
+        }
 
-		protected internal abstract int MeasureHeight();
-	}
+        protected internal abstract int MeasureHeight();
+    }
 }

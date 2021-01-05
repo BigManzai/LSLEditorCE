@@ -1,28 +1,29 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    partial class DockPanel
+	partial class DockPanel
     {
         private sealed class DockDragHandler : DragHandler
         {
             private class DockIndicator : DragForm
             {
                 #region IHitTest
+
                 private interface IHitTest
                 {
                     DockStyle HitTest(Point pt);
-                    DockStyle Status { get;	set;	}
+
+                    DockStyle Status { get; set; }
                 }
-                #endregion
+
+                #endregion IHitTest
 
                 #region PanelIndicator
+
                 private class PanelIndicator : PictureBox, IHitTest
                 {
                     private static Image _imagePanelLeft = Resources.DockIndicator_PanelLeft;
@@ -44,17 +45,16 @@ namespace LSLEditor.Docking
                     }
 
                     private DockStyle m_dockStyle;
-                    private DockStyle DockStyle
-                    {
+
+                    private DockStyle DockStyle {
                         get { return m_dockStyle; }
                     }
 
                     private DockStyle m_status;
-                    public DockStyle Status
-                    {
+
+                    public DockStyle Status {
                         get { return m_status; }
-                        set
-                        {
+                        set {
                             if (value != DockStyle && value != DockStyle.None)
                                 throw new InvalidEnumArgumentException();
 
@@ -66,10 +66,8 @@ namespace LSLEditor.Docking
                         }
                     }
 
-                    private Image ImageInactive
-                    {
-                        get
-                        {
+                    private Image ImageInactive {
+                        get {
                             if (DockStyle == DockStyle.Left)
                                 return _imagePanelLeft;
                             else if (DockStyle == DockStyle.Right)
@@ -85,10 +83,8 @@ namespace LSLEditor.Docking
                         }
                     }
 
-                    private Image ImageActive
-                    {
-                        get
-                        {
+                    private Image ImageActive {
+                        get {
                             if (DockStyle == DockStyle.Left)
                                 return _imagePanelLeftActive;
                             else if (DockStyle == DockStyle.Right)
@@ -105,11 +101,10 @@ namespace LSLEditor.Docking
                     }
 
                     private bool m_isActivated = false;
-                    private bool IsActivated
-                    {
+
+                    private bool IsActivated {
                         get { return m_isActivated; }
-                        set
-                        {
+                        set {
                             m_isActivated = value;
                             Image = IsActivated ? ImageActive : ImageInactive;
                         }
@@ -120,9 +115,11 @@ namespace LSLEditor.Docking
                         return this.Visible && ClientRectangle.Contains(PointToClient(pt)) ? DockStyle : DockStyle.None;
                     }
                 }
+
                 #endregion PanelIndicator
 
                 #region PaneIndicator
+
                 private class PaneIndicator : PictureBox, IHitTest
                 {
                     private struct HotSpotIndex
@@ -135,20 +132,20 @@ namespace LSLEditor.Docking
                         }
 
                         private int m_x;
-                        public int X
-                        {
+
+                        public int X {
                             get { return m_x; }
                         }
 
                         private int m_y;
-                        public int Y
-                        {
+
+                        public int Y {
                             get { return m_y; }
                         }
 
                         private DockStyle m_dockStyle;
-                        public DockStyle DockStyle
-                        {
+
+                        public DockStyle DockStyle {
                             get { return m_dockStyle; }
                         }
                     }
@@ -161,14 +158,16 @@ namespace LSLEditor.Docking
                     private static Bitmap _bitmapPaneDiamondFill = Resources.DockIndicator_PaneDiamond_Fill;
                     private static Bitmap _bitmapPaneDiamondHotSpot = Resources.DockIndicator_PaneDiamond_HotSpot;
                     private static Bitmap _bitmapPaneDiamondHotSpotIndex = Resources.DockIndicator_PaneDiamond_HotSpotIndex;
+
                     private static HotSpotIndex[] _hotSpots = new HotSpotIndex[]
-			{
-				new HotSpotIndex(1, 0, DockStyle.Top),
-				new HotSpotIndex(0, 1, DockStyle.Left),
-				new HotSpotIndex(1, 1, DockStyle.Fill),
-				new HotSpotIndex(2, 1, DockStyle.Right),
-				new HotSpotIndex(1, 2, DockStyle.Bottom)
-			};
+            {
+                new HotSpotIndex(1, 0, DockStyle.Top),
+                new HotSpotIndex(0, 1, DockStyle.Left),
+                new HotSpotIndex(1, 1, DockStyle.Fill),
+                new HotSpotIndex(2, 1, DockStyle.Right),
+                new HotSpotIndex(1, 2, DockStyle.Bottom)
+            };
+
                     private static GraphicsPath _displayingGraphicsPath = DrawHelper.CalculateGraphicsPathFromBitmap(_bitmapPaneDiamond);
 
                     public PaneIndicator()
@@ -178,8 +177,7 @@ namespace LSLEditor.Docking
                         Region = new Region(DisplayingGraphicsPath);
                     }
 
-                    public static GraphicsPath DisplayingGraphicsPath
-                    {
+                    public static GraphicsPath DisplayingGraphicsPath {
                         get { return _displayingGraphicsPath; }
                     }
 
@@ -192,8 +190,7 @@ namespace LSLEditor.Docking
                         if (!ClientRectangle.Contains(pt))
                             return DockStyle.None;
 
-                        for (int i = _hotSpots.GetLowerBound(0); i <= _hotSpots.GetUpperBound(0); i++)
-                        {
+                        for (int i = _hotSpots.GetLowerBound(0); i <= _hotSpots.GetUpperBound(0); i++) {
                             if (_bitmapPaneDiamondHotSpot.GetPixel(pt.X, pt.Y) == _bitmapPaneDiamondHotSpotIndex.GetPixel(_hotSpots[i].X, _hotSpots[i].Y))
                                 return _hotSpots[i].DockStyle;
                         }
@@ -202,11 +199,10 @@ namespace LSLEditor.Docking
                     }
 
                     private DockStyle m_status = DockStyle.None;
-                    public DockStyle Status
-                    {
+
+                    public DockStyle Status {
                         get { return m_status; }
-                        set
-                        {
+                        set {
                             m_status = value;
                             if (m_status == DockStyle.None)
                                 Image = _bitmapPaneDiamond;
@@ -223,11 +219,14 @@ namespace LSLEditor.Docking
                         }
                     }
                 }
+
                 #endregion PaneIndicator
 
                 #region consts
+
                 private int _PanelIndicatorMargin = 10;
-                #endregion
+
+                #endregion consts
 
                 private DockDragHandler m_dragHandler;
 
@@ -235,21 +234,20 @@ namespace LSLEditor.Docking
                 {
                     m_dragHandler = dragHandler;
                     Controls.AddRange(new Control[] {
-			            PaneDiamond,
-			            PanelLeft,
-			            PanelRight,
-			            PanelTop,
-			            PanelBottom,
-			            PanelFill
-			            });
+                        PaneDiamond,
+                        PanelLeft,
+                        PanelRight,
+                        PanelTop,
+                        PanelBottom,
+                        PanelFill
+                        });
                     Region = new Region(Rectangle.Empty);
                 }
 
                 private PaneIndicator m_paneDiamond = null;
-                private PaneIndicator PaneDiamond
-                {
-                    get
-                    {
+
+                private PaneIndicator PaneDiamond {
+                    get {
                         if (m_paneDiamond == null)
                             m_paneDiamond = new PaneIndicator();
 
@@ -258,10 +256,9 @@ namespace LSLEditor.Docking
                 }
 
                 private PanelIndicator m_panelLeft = null;
-                private PanelIndicator PanelLeft
-                {
-                    get
-                    {
+
+                private PanelIndicator PanelLeft {
+                    get {
                         if (m_panelLeft == null)
                             m_panelLeft = new PanelIndicator(DockStyle.Left);
 
@@ -270,10 +267,9 @@ namespace LSLEditor.Docking
                 }
 
                 private PanelIndicator m_panelRight = null;
-                private PanelIndicator PanelRight
-                {
-                    get
-                    {
+
+                private PanelIndicator PanelRight {
+                    get {
                         if (m_panelRight == null)
                             m_panelRight = new PanelIndicator(DockStyle.Right);
 
@@ -282,10 +278,9 @@ namespace LSLEditor.Docking
                 }
 
                 private PanelIndicator m_panelTop = null;
-                private PanelIndicator PanelTop
-                {
-                    get
-                    {
+
+                private PanelIndicator PanelTop {
+                    get {
                         if (m_panelTop == null)
                             m_panelTop = new PanelIndicator(DockStyle.Top);
 
@@ -294,10 +289,9 @@ namespace LSLEditor.Docking
                 }
 
                 private PanelIndicator m_panelBottom = null;
-                private PanelIndicator PanelBottom
-                {
-                    get
-                    {
+
+                private PanelIndicator PanelBottom {
+                    get {
                         if (m_panelBottom == null)
                             m_panelBottom = new PanelIndicator(DockStyle.Bottom);
 
@@ -306,10 +300,9 @@ namespace LSLEditor.Docking
                 }
 
                 private PanelIndicator m_panelFill = null;
-                private PanelIndicator PanelFill
-                {
-                    get
-                    {
+
+                private PanelIndicator PanelFill {
+                    get {
                         if (m_panelFill == null)
                             m_panelFill = new PanelIndicator(DockStyle.Fill);
 
@@ -318,11 +311,10 @@ namespace LSLEditor.Docking
                 }
 
                 private bool m_fullPanelEdge = false;
-                public bool FullPanelEdge
-                {
+
+                public bool FullPanelEdge {
                     get { return m_fullPanelEdge; }
-                    set
-                    {
+                    set {
                         if (m_fullPanelEdge == value)
                             return;
 
@@ -331,22 +323,19 @@ namespace LSLEditor.Docking
                     }
                 }
 
-                public DockDragHandler DragHandler
-                {
+                public DockDragHandler DragHandler {
                     get { return m_dragHandler; }
                 }
 
-                public DockPanel DockPanel
-                {
+                public DockPanel DockPanel {
                     get { return DragHandler.DockPanel; }
                 }
 
                 private DockPane m_dockPane = null;
-                public DockPane DockPane
-                {
+
+                public DockPane DockPane {
                     get { return m_dockPane; }
-                    internal set
-                    {
+                    internal set {
                         if (m_dockPane == value)
                             return;
 
@@ -358,11 +347,10 @@ namespace LSLEditor.Docking
                 }
 
                 private IHitTest m_hitTest = null;
-                private IHitTest HitTestResult
-                {
+
+                private IHitTest HitTestResult {
                     get { return m_hitTest; }
-                    set
-                    {
+                    set {
                         if (m_hitTest == value)
                             return;
 
@@ -373,8 +361,7 @@ namespace LSLEditor.Docking
                     }
                 }
 
-                private DockPane DisplayingPane
-                {
+                private DockPane DisplayingPane {
                     get { return ShouldPaneDiamondVisible() ? DockPane : null; }
                 }
 
@@ -384,73 +371,59 @@ namespace LSLEditor.Docking
                     Rectangle rectDockArea = FullPanelEdge ? DockPanel.DockArea : DockPanel.DocumentWindowBounds;
 
                     rectDockArea = RectangleToClient(DockPanel.RectangleToScreen(rectDockArea));
-                    if (ShouldPanelIndicatorVisible(DockState.DockLeft))
-                    {
+                    if (ShouldPanelIndicatorVisible(DockState.DockLeft)) {
                         PanelLeft.Location = new Point(rectDockArea.X + _PanelIndicatorMargin, rectDockArea.Y + (rectDockArea.Height - PanelRight.Height) / 2);
                         PanelLeft.Visible = true;
                         region.Union(PanelLeft.Bounds);
-                    }
-                    else
+                    } else
                         PanelLeft.Visible = false;
 
-                    if (ShouldPanelIndicatorVisible(DockState.DockRight))
-                    {
+                    if (ShouldPanelIndicatorVisible(DockState.DockRight)) {
                         PanelRight.Location = new Point(rectDockArea.X + rectDockArea.Width - PanelRight.Width - _PanelIndicatorMargin, rectDockArea.Y + (rectDockArea.Height - PanelRight.Height) / 2);
                         PanelRight.Visible = true;
                         region.Union(PanelRight.Bounds);
-                    }
-                    else
+                    } else
                         PanelRight.Visible = false;
 
-                    if (ShouldPanelIndicatorVisible(DockState.DockTop))
-                    {
+                    if (ShouldPanelIndicatorVisible(DockState.DockTop)) {
                         PanelTop.Location = new Point(rectDockArea.X + (rectDockArea.Width - PanelTop.Width) / 2, rectDockArea.Y + _PanelIndicatorMargin);
                         PanelTop.Visible = true;
                         region.Union(PanelTop.Bounds);
-                    }
-                    else
+                    } else
                         PanelTop.Visible = false;
 
-                    if (ShouldPanelIndicatorVisible(DockState.DockBottom))
-                    {
+                    if (ShouldPanelIndicatorVisible(DockState.DockBottom)) {
                         PanelBottom.Location = new Point(rectDockArea.X + (rectDockArea.Width - PanelBottom.Width) / 2, rectDockArea.Y + rectDockArea.Height - PanelBottom.Height - _PanelIndicatorMargin);
                         PanelBottom.Visible = true;
                         region.Union(PanelBottom.Bounds);
-                    }
-                    else
+                    } else
                         PanelBottom.Visible = false;
 
-                    if (ShouldPanelIndicatorVisible(DockState.Document))
-                    {
+                    if (ShouldPanelIndicatorVisible(DockState.Document)) {
                         Rectangle rectDocumentWindow = RectangleToClient(DockPanel.RectangleToScreen(DockPanel.DocumentWindowBounds));
                         PanelFill.Location = new Point(rectDocumentWindow.X + (rectDocumentWindow.Width - PanelFill.Width) / 2, rectDocumentWindow.Y + (rectDocumentWindow.Height - PanelFill.Height) / 2);
                         PanelFill.Visible = true;
                         region.Union(PanelFill.Bounds);
-                    }
-                    else
+                    } else
                         PanelFill.Visible = false;
 
-                    if (ShouldPaneDiamondVisible())
-                    {
+                    if (ShouldPaneDiamondVisible()) {
                         Rectangle rect = RectangleToClient(DockPane.RectangleToScreen(DockPane.ClientRectangle));
                         PaneDiamond.Location = new Point(rect.Left + (rect.Width - PaneDiamond.Width) / 2, rect.Top + (rect.Height - PaneDiamond.Height) / 2);
                         PaneDiamond.Visible = true;
-                        using (GraphicsPath graphicsPath = PaneIndicator.DisplayingGraphicsPath.Clone() as GraphicsPath)
-                        {
+                        using (GraphicsPath graphicsPath = PaneIndicator.DisplayingGraphicsPath.Clone() as GraphicsPath) {
                             Point[] pts = new Point[]
-						{
-							new Point(PaneDiamond.Left, PaneDiamond.Top),
-							new Point(PaneDiamond.Right, PaneDiamond.Top),
-							new Point(PaneDiamond.Left, PaneDiamond.Bottom)
-						};
-                            using (Matrix matrix = new Matrix(PaneDiamond.ClientRectangle, pts))
-                            {
+                        {
+                            new Point(PaneDiamond.Left, PaneDiamond.Top),
+                            new Point(PaneDiamond.Right, PaneDiamond.Top),
+                            new Point(PaneDiamond.Left, PaneDiamond.Bottom)
+                        };
+                            using (Matrix matrix = new Matrix(PaneDiamond.ClientRectangle, pts)) {
                                 graphicsPath.Transform(matrix);
                             }
                             region.Union(graphicsPath);
                         }
-                    }
-                    else
+                    } else
                         PaneDiamond.Visible = false;
 
                     Region = region;
@@ -505,8 +478,7 @@ namespace LSLEditor.Docking
                     else
                         HitTestResult = null;
 
-                    if (HitTestResult != null)
-                    {
+                    if (HitTestResult != null) {
                         if (HitTestResult is PaneIndicator)
                             DragHandler.Outline.Show(DockPane, HitTestResult.Status);
                         else
@@ -531,9 +503,9 @@ namespace LSLEditor.Docking
                     DragForm.Show(false);
                 }
 
-                DragForm m_dragForm;
-                private DragForm DragForm
-                {
+				private DragForm m_dragForm;
+
+				private DragForm DragForm {
                     get { return m_dragForm; }
                 }
 
@@ -576,28 +548,19 @@ namespace LSLEditor.Docking
                 {
                     Rectangle rect = fullPanelEdge ? dockPanel.DockArea : dockPanel.DocumentWindowBounds;
                     rect.Location = dockPanel.PointToScreen(rect.Location);
-                    if (dock == DockStyle.Top)
-                    {
+                    if (dock == DockStyle.Top) {
                         int height = dockPanel.GetDockWindowSize(DockState.DockTop);
                         rect = new Rectangle(rect.X, rect.Y, rect.Width, height);
-                    }
-                    else if (dock == DockStyle.Bottom)
-                    {
+                    } else if (dock == DockStyle.Bottom) {
                         int height = dockPanel.GetDockWindowSize(DockState.DockBottom);
                         rect = new Rectangle(rect.X, rect.Bottom - height, rect.Width, height);
-                    }
-                    else if (dock == DockStyle.Left)
-                    {
+                    } else if (dock == DockStyle.Left) {
                         int width = dockPanel.GetDockWindowSize(DockState.DockLeft);
                         rect = new Rectangle(rect.X, rect.Y, width, rect.Height);
-                    }
-                    else if (dock == DockStyle.Right)
-                    {
+                    } else if (dock == DockStyle.Right) {
                         int width = dockPanel.GetDockWindowSize(DockState.DockRight);
                         rect = new Rectangle(rect.Right - width, rect.Y, width, rect.Height);
-                    }
-                    else if (dock == DockStyle.Fill)
-                    {
+                    } else if (dock == DockStyle.Fill) {
                         rect = dockPanel.DocumentWindowBounds;
                         rect.Location = dockPanel.PointToScreen(rect.Location);
                     }
@@ -607,8 +570,7 @@ namespace LSLEditor.Docking
 
                 private void SetOutline(DockPane pane, DockStyle dock, int contentIndex)
                 {
-                    if (dock != DockStyle.Fill)
-                    {
+                    if (dock != DockStyle.Fill) {
                         Rectangle rect = pane.DisplayingRectangle;
                         if (dock == DockStyle.Right)
                             rect.X += rect.Width / 2;
@@ -621,21 +583,15 @@ namespace LSLEditor.Docking
                         rect.Location = pane.PointToScreen(rect.Location);
 
                         SetDragForm(rect);
-                    }
-                    else if (contentIndex == -1)
-                    {
+                    } else if (contentIndex == -1) {
                         Rectangle rect = pane.DisplayingRectangle;
                         rect.Location = pane.PointToScreen(rect.Location);
                         SetDragForm(rect);
-                    }
-                    else
-                    {
-                        using (GraphicsPath path = pane.TabStripControl.GetOutline(contentIndex))
-                        {
+                    } else {
+                        using (GraphicsPath path = pane.TabStripControl.GetOutline(contentIndex)) {
                             RectangleF rectF = path.GetBounds();
                             Rectangle rect = new Rectangle((int)rectF.X, (int)rectF.Y, (int)rectF.Width, (int)rectF.Height);
-                            using (Matrix matrix = new Matrix(rect, new Point[] { new Point(0, 0), new Point(rect.Width, 0), new Point(0, rect.Height) }))
-                            {
+                            using (Matrix matrix = new Matrix(rect, new Point[] { new Point(0, 0), new Point(rect.Width, 0), new Point(0, rect.Height) })) {
                                 path.Transform(matrix);
                             }
                             Region region = new Region(path);
@@ -665,29 +621,28 @@ namespace LSLEditor.Docking
             {
             }
 
-            public new IDockDragSource DragSource
-            {
+            public new IDockDragSource DragSource {
                 get { return base.DragSource as IDockDragSource; }
                 set { base.DragSource = value; }
             }
 
             private DockOutlineBase m_outline;
-            public DockOutlineBase Outline
-            {
+
+            public DockOutlineBase Outline {
                 get { return m_outline; }
                 private set { m_outline = value; }
             }
 
             private DockIndicator m_indicator;
-            private DockIndicator Indicator
-            {
+
+            private DockIndicator Indicator {
                 get { return m_indicator; }
                 set { m_indicator = value; }
             }
 
             private Rectangle m_floatOutlineBounds;
-            private Rectangle FloatOutlineBounds
-            {
+
+            private Rectangle FloatOutlineBounds {
                 get { return m_floatOutlineBounds; }
                 set { m_floatOutlineBounds = value; }
             }
@@ -696,8 +651,7 @@ namespace LSLEditor.Docking
             {
                 DragSource = dragSource;
 
-                if (!BeginDrag())
-                {
+                if (!BeginDrag()) {
                     DragSource = null;
                     return;
                 }
@@ -737,43 +691,35 @@ namespace LSLEditor.Docking
 
                 Indicator.FullPanelEdge = ((Control.ModifierKeys & Keys.Shift) != 0);
 
-                if ((Control.ModifierKeys & Keys.Control) == 0)
-                {
+                if ((Control.ModifierKeys & Keys.Control) == 0) {
                     Indicator.TestDrop();
 
-                    if (!Outline.FlagTestDrop)
-                    {
+                    if (!Outline.FlagTestDrop) {
                         DockPane pane = DockHelper.PaneAtPoint(Control.MousePosition, DockPanel);
                         if (pane != null && DragSource.IsDockStateValid(pane.DockState))
                             pane.TestDrop(DragSource, Outline);
                     }
 
-                    if (!Outline.FlagTestDrop && DragSource.IsDockStateValid(DockState.Float))
-                    {
+                    if (!Outline.FlagTestDrop && DragSource.IsDockStateValid(DockState.Float)) {
                         FloatWindow floatWindow = DockHelper.FloatWindowAtPoint(Control.MousePosition, DockPanel);
                         if (floatWindow != null)
                             floatWindow.TestDrop(DragSource, Outline);
                     }
-                }
-                else
+                } else
                     Indicator.DockPane = DockHelper.PaneAtPoint(Control.MousePosition, DockPanel);
 
-                if (!Outline.FlagTestDrop)
-                {
-                    if (DragSource.IsDockStateValid(DockState.Float))
-                    {
+                if (!Outline.FlagTestDrop) {
+                    if (DragSource.IsDockStateValid(DockState.Float)) {
                         Rectangle rect = FloatOutlineBounds;
                         rect.Offset(Control.MousePosition.X - StartMousePosition.X, Control.MousePosition.Y - StartMousePosition.Y);
                         Outline.Show(rect);
                     }
                 }
 
-                if (!Outline.FlagTestDrop)
-                {
+                if (!Outline.FlagTestDrop) {
                     Cursor.Current = Cursors.No;
                     Outline.Show();
-                }
-                else
+                } else
                     Cursor.Current = DragControl.Cursor;
             }
 
@@ -784,13 +730,10 @@ namespace LSLEditor.Docking
 
                 if (!Outline.FloatWindowBounds.IsEmpty)
                     DragSource.FloatAt(Outline.FloatWindowBounds);
-                else if (Outline.DockTo is DockPane)
-                {
+                else if (Outline.DockTo is DockPane) {
                     DockPane pane = Outline.DockTo as DockPane;
                     DragSource.DockTo(pane, Outline.Dock, Outline.ContentIndex);
-                }
-                else if (Outline.DockTo is DockPanel)
-                {
+                } else if (Outline.DockTo is DockPanel) {
                     DockPanel panel = Outline.DockTo as DockPanel;
                     panel.UpdateDockWindowZOrder(Outline.Dock, Outline.FlagFullEdge);
                     DragSource.DockTo(panel, Outline.Dock);
@@ -799,6 +742,7 @@ namespace LSLEditor.Docking
         }
 
         private DockDragHandler m_dockDragHandler = null;
+
         private DockDragHandler GetDockDragHandler()
         {
             if (m_dockDragHandler == null)

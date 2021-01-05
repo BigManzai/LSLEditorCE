@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    partial class DockPanel
+	partial class DockPanel
     {
         private sealed class SplitterDragHandler : DragHandler
         {
@@ -23,9 +18,9 @@ namespace LSLEditor.Docking
                     DragForm.Show(false);
                 }
 
-                DragForm m_dragForm;
-                private DragForm DragForm
-                {
+				private DragForm m_dragForm;
+
+				private DragForm DragForm {
                     get { return m_dragForm; }
                 }
 
@@ -54,22 +49,21 @@ namespace LSLEditor.Docking
             {
             }
 
-            public new ISplitterDragSource DragSource
-            {
+            public new ISplitterDragSource DragSource {
                 get { return base.DragSource as ISplitterDragSource; }
                 private set { base.DragSource = value; }
             }
 
             private SplitterOutline m_outline;
-            private SplitterOutline Outline
-            {
+
+            private SplitterOutline Outline {
                 get { return m_outline; }
                 set { m_outline = value; }
             }
 
             private Rectangle m_rectSplitter;
-            private Rectangle RectSplitter
-            {
+
+            private Rectangle RectSplitter {
                 get { return m_rectSplitter; }
                 set { m_rectSplitter = value; }
             }
@@ -79,8 +73,7 @@ namespace LSLEditor.Docking
                 DragSource = dragSource;
                 RectSplitter = rectSplitter;
 
-                if (!BeginDrag())
-                {
+                if (!BeginDrag()) {
                     DragSource = null;
                     return;
                 }
@@ -125,13 +118,10 @@ namespace LSLEditor.Docking
                 if (rectLimit.Width <= 0 || rectLimit.Height <= 0)
                     return rect;
 
-                if (DragSource.IsVertical)
-                {
+                if (DragSource.IsVertical) {
                     rect.X += ptMouse.X - StartMousePosition.X;
                     rect.Height = rectLimit.Height;
-                }
-                else
-                {
+                } else {
                     rect.Y += ptMouse.Y - StartMousePosition.Y;
                     rect.Width = rectLimit.Width;
                 }
@@ -150,6 +140,7 @@ namespace LSLEditor.Docking
         }
 
         private SplitterDragHandler m_splitterDragHandler = null;
+
         private SplitterDragHandler GetSplitterDragHandler()
         {
             if (m_splitterDragHandler == null)

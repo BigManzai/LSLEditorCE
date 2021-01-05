@@ -1,13 +1,12 @@
 using System;
-using System.Drawing;
-using System.Windows.Forms;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Runtime.InteropServices;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    partial class DockPanel
+	partial class DockPanel
     {
         //  This class comes from Jacob Slusser's MdiClientController class:
         //  http://www.codeproject.com/cs/miscctrl/mdiclientcontroller.asp
@@ -31,10 +30,8 @@ namespace LSLEditor.Docking
 
             protected virtual void Dispose(bool disposing)
             {
-                if (disposing)
-                {
-                    lock (this)
-                    {
+                if (disposing) {
+                    lock (this) {
                         if (Site != null && Site.Container != null)
                             Site.Container.Remove(this);
 
@@ -44,11 +41,9 @@ namespace LSLEditor.Docking
                 }
             }
 
-            public bool AutoScroll
-            {
+            public bool AutoScroll {
                 get { return m_autoScroll; }
-                set
-                {
+                set {
                     // By default the MdiClient control scrolls. It can appear though that
                     // there are no scrollbars by turning them off when the non-client
                     // area is calculated. I decided to expose this method following
@@ -59,10 +54,8 @@ namespace LSLEditor.Docking
                 }
             }
 
-            public BorderStyle BorderStyle
-            {
-                set
-                {
+            public BorderStyle BorderStyle {
+                set {
                     // Error-check the enum.
                     if (!Enum.IsDefined(typeof(BorderStyle), value))
                         throw new InvalidEnumArgumentException();
@@ -92,8 +85,7 @@ namespace LSLEditor.Docking
                     int exStyle = NativeMethods.GetWindowLong(MdiClient.Handle, (int)Win32.GetWindowLongIndex.GWL_EXSTYLE);
 
                     // Add or remove style flags as necessary.
-                    switch (m_borderStyle)
-                    {
+                    switch (m_borderStyle) {
                         case BorderStyle.Fixed3D:
                             exStyle |= (int)Win32.WindowExStyles.WS_EX_CLIENTEDGE;
                             style &= ~((int)Win32.WindowStyles.WS_BORDER);
@@ -119,21 +111,17 @@ namespace LSLEditor.Docking
                 }
             }
 
-            public MdiClient MdiClient
-            {
+            public MdiClient MdiClient {
                 get { return m_mdiClient; }
             }
 
             [Browsable(false)]
-            public Form ParentForm
-            {
+            public Form ParentForm {
                 get { return m_parentForm; }
-                set
-                {
+                set {
                     // If the ParentForm has previously been set,
                     // unwire events connected to the old parent.
-                    if (m_parentForm != null)
-                    {
+                    if (m_parentForm != null) {
                         m_parentForm.HandleCreated -= new EventHandler(ParentFormHandleCreated);
                         m_parentForm.MdiChildActivate -= new EventHandler(ParentFormMdiChildActivate);
                     }
@@ -145,23 +133,19 @@ namespace LSLEditor.Docking
 
                     // If the parent form has not been created yet,
                     // wait to initialize the MDI client until it is.
-                    if (m_parentForm.IsHandleCreated)
-                    {
+                    if (m_parentForm.IsHandleCreated) {
                         InitializeMdiClient();
                         RefreshProperties();
-                    }
-                    else
+                    } else
                         m_parentForm.HandleCreated += new EventHandler(ParentFormHandleCreated);
 
                     m_parentForm.MdiChildActivate += new EventHandler(ParentFormMdiChildActivate);
                 }
             }
 
-            public ISite Site
-            {
+            public ISite Site {
                 get { return m_site; }
-                set
-                {
+                set {
                     m_site = value;
 
                     if (m_site == null)
@@ -170,8 +154,7 @@ namespace LSLEditor.Docking
                     // If the component is dropped onto a form during design-time,
                     // set the ParentForm property.
                     IDesignerHost host = (value.GetService(typeof(IDesignerHost)) as IDesignerHost);
-                    if (host != null)
-                    {
+                    if (host != null) {
                         Form parent = host.RootComponent as Form;
                         if (parent != null)
                             ParentForm = parent;
@@ -226,8 +209,7 @@ namespace LSLEditor.Docking
 
             protected override void WndProc(ref Message m)
             {
-                switch (m.Msg)
-                {
+                switch (m.Msg) {
                     case (int)Win32.Msgs.WM_NCCALCSIZE:
                         // If AutoScroll is set to false, hide the scrollbars when the control
                         // calculates its non-client area.
@@ -261,8 +243,7 @@ namespace LSLEditor.Docking
             {
                 // If the MdiClient handle has been released, drop the reference and
                 // release the handle.
-                if (m_mdiClient != null)
-                {
+                if (m_mdiClient != null) {
                     m_mdiClient.HandleDestroyed -= new EventHandler(MdiClientHandleDestroyed);
                     m_mdiClient = null;
                 }
@@ -274,8 +255,7 @@ namespace LSLEditor.Docking
             {
                 // If the mdiClient has previously been set, unwire events connected
                 // to the old MDI.
-                if (MdiClient != null)
-                {
+                if (MdiClient != null) {
                     MdiClient.HandleDestroyed -= new EventHandler(MdiClientHandleDestroyed);
                     MdiClient.Layout -= new LayoutEventHandler(MdiClientLayout);
                 }
@@ -284,8 +264,7 @@ namespace LSLEditor.Docking
                     return;
 
                 // Get the MdiClient from the parent form.
-                foreach (Control control in ParentForm.Controls)
-                {
+                foreach (Control control in ParentForm.Controls) {
                     // If the form is an MDI container, it will contain an MdiClient control
                     // just as it would any other control.
 
@@ -331,10 +310,10 @@ namespace LSLEditor.Docking
         }
 
         private MdiClientController m_mdiClientController = null;
+
         private MdiClientController GetMdiClientController()
         {
-            if (m_mdiClientController == null)
-            {
+            if (m_mdiClientController == null) {
                 m_mdiClientController = new MdiClientController();
                 m_mdiClientController.HandleAssigned += new EventHandler(MdiClientHandleAssigned);
                 m_mdiClientController.MdiChildActivate += new EventHandler(ParentFormMdiChildActivate);
@@ -357,8 +336,7 @@ namespace LSLEditor.Docking
                 content.DockHandler.Pane.ActiveContent = content;
         }
 
-        private bool MdiClientExists
-        {
+        private bool MdiClientExists {
             get { return GetMdiClientController().MdiClient != null; }
         }
 
@@ -393,26 +371,20 @@ namespace LSLEditor.Docking
         {
             MdiClientController controller = GetMdiClientController();
 
-            if (this.DocumentStyle == DocumentStyle.DockingMdi)
-            {
+            if (this.DocumentStyle == DocumentStyle.DockingMdi) {
                 controller.AutoScroll = false;
                 controller.BorderStyle = BorderStyle.None;
                 if (MdiClientExists)
                     controller.MdiClient.Dock = DockStyle.Fill;
-            }
-            else if (DocumentStyle == DocumentStyle.DockingSdi || DocumentStyle == DocumentStyle.DockingWindow)
-            {
+            } else if (DocumentStyle == DocumentStyle.DockingSdi || DocumentStyle == DocumentStyle.DockingWindow) {
                 controller.AutoScroll = true;
                 controller.BorderStyle = BorderStyle.Fixed3D;
                 if (MdiClientExists)
                     controller.MdiClient.Dock = DockStyle.Fill;
-            }
-            else if (this.DocumentStyle == DocumentStyle.SystemMdi)
-            {
+            } else if (this.DocumentStyle == DocumentStyle.SystemMdi) {
                 controller.AutoScroll = true;
                 controller.BorderStyle = BorderStyle.Fixed3D;
-                if (controller.MdiClient != null)
-                {
+                if (controller.MdiClient != null) {
                     controller.MdiClient.Dock = DockStyle.None;
                     controller.MdiClient.Bounds = SystemMdiClientBounds;
                 }

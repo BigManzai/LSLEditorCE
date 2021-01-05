@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    partial class DockPanel
+	partial class DockPanel
     {
         /// <summary>
         /// DragHandlerBase is the base class for drag handlers. The derived class should:
@@ -23,14 +18,13 @@ namespace LSLEditor.Docking
             {
             }
 
-            protected abstract Control DragControl
-            {
+            protected abstract Control DragControl {
                 get;
             }
 
             private Point m_startMousePosition = Point.Empty;
-            protected Point StartMousePosition
-            {
+
+            protected Point StartMousePosition {
                 get { return m_startMousePosition; }
                 private set { m_startMousePosition = value; }
             }
@@ -38,8 +32,7 @@ namespace LSLEditor.Docking
             protected bool BeginDrag()
             {
                 // Avoid re-entrance;
-                lock (this)
-                {
+                lock (this) {
                     if (DragControl == null)
                         return false;
 
@@ -105,20 +98,18 @@ namespace LSLEditor.Docking
                 m_dockPanel = dockPanel;
             }
 
-            public DockPanel DockPanel
-            {
+            public DockPanel DockPanel {
                 get { return m_dockPanel; }
             }
 
             private IDragSource m_dragSource;
-            protected IDragSource DragSource
-            {
+
+            protected IDragSource DragSource {
                 get { return m_dragSource; }
                 set { m_dragSource = value; }
             }
 
-            protected sealed override Control DragControl
-            {
+            protected sealed override Control DragControl {
                 get { return DragSource == null ? null : DragSource.DragControl; }
             }
 

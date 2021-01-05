@@ -1,11 +1,10 @@
 using System;
-using System.Windows.Forms;
 using System.Drawing;
-using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    partial class DockPanel
+	partial class DockPanel
     {
         private class AutoHideWindowControl : Panel, ISplitterDragSource
         {
@@ -17,25 +16,26 @@ namespace LSLEditor.Docking
                 }
 
                 private AutoHideWindowControl m_autoHideWindow;
-                private AutoHideWindowControl AutoHideWindow
-                {
+
+                private AutoHideWindowControl AutoHideWindow {
                     get { return m_autoHideWindow; }
                 }
 
-                protected override int SplitterSize
-                {
+                protected override int SplitterSize {
                     get { return Measures.SplitterSize; }
                 }
 
                 protected override void StartDrag()
                 {
-        			AutoHideWindow.DockPanel.BeginDrag(AutoHideWindow, AutoHideWindow.RectangleToScreen(Bounds));
+                    AutoHideWindow.DockPanel.BeginDrag(AutoHideWindow, AutoHideWindow.RectangleToScreen(Bounds));
                 }
             }
 
             #region consts
+
             private const int ANIMATE_TIME = 100;	// in mini-seconds
-            #endregion
+
+            #endregion consts
 
             private Timer m_timerMouseTrack;
             private SplitterControl m_splitter;
@@ -54,24 +54,24 @@ namespace LSLEditor.Docking
 
             protected override void Dispose(bool disposing)
             {
-                if (disposing)
-                {
+                if (disposing) {
                     m_timerMouseTrack.Dispose();
                 }
                 base.Dispose(disposing);
             }
 
             private DockPanel m_dockPanel = null;
-            public DockPanel DockPanel
-            {
+
+            public DockPanel DockPanel {
                 get { return m_dockPanel; }
             }
 
             private DockPane m_activePane = null;
-            public DockPane ActivePane
-            {
+
+            public DockPane ActivePane {
                 get { return m_activePane; }
             }
+
             private void SetActivePane()
             {
                 DockPane value = (ActiveContent == null ? null : ActiveContent.DockHandler.Pane);
@@ -83,24 +83,21 @@ namespace LSLEditor.Docking
             }
 
             private IDockContent m_activeContent = null;
-            public IDockContent ActiveContent
-            {
+
+            public IDockContent ActiveContent {
                 get { return m_activeContent; }
-                set
-                {
+                set {
                     if (value == m_activeContent)
                         return;
 
-                    if (value != null)
-                    {
+                    if (value != null) {
                         if (!DockHelper.IsDockStateAutoHide(value.DockHandler.DockState) || value.DockHandler.DockPanel != DockPanel)
                             throw (new InvalidOperationException(Strings.DockPanel_ActiveAutoHideContent_InvalidValue));
                     }
 
                     DockPanel.SuspendLayout();
 
-                    if (m_activeContent != null)
-                    {
+                    if (m_activeContent != null) {
                         if (m_activeContent.DockHandler.Form.ContainsFocus)
                             DockPanel.ContentFocusManager.GiveUpFocus(m_activeContent);
                         AnimateWindow(false);
@@ -121,24 +118,22 @@ namespace LSLEditor.Docking
                 }
             }
 
-            public DockState DockState
-            {
+            public DockState DockState {
                 get { return ActiveContent == null ? DockState.Unknown : ActiveContent.DockHandler.DockState; }
             }
 
             private bool m_flagAnimate = true;
-            private bool FlagAnimate
-            {
+
+            private bool FlagAnimate {
                 get { return m_flagAnimate; }
                 set { m_flagAnimate = value; }
             }
 
             private bool m_flagDragging = false;
-            internal bool FlagDragging
-            {
+
+            internal bool FlagDragging {
                 get { return m_flagDragging; }
-                set
-                {
+                set {
                     if (m_flagDragging == value)
                         return;
 
@@ -149,8 +144,7 @@ namespace LSLEditor.Docking
 
             private void AnimateWindow(bool show)
             {
-                if (!FlagAnimate && Visible != show)
-                {
+                if (!FlagAnimate && Visible != show) {
                     Visible = show;
                     return;
                 }
@@ -166,19 +160,15 @@ namespace LSLEditor.Docking
                     dHeight = show ? 1 : -1;
                 else if (DockState == DockState.DockLeftAutoHide)
                     dWidth = show ? 1 : -1;
-                else if (DockState == DockState.DockRightAutoHide)
-                {
+                else if (DockState == DockState.DockRightAutoHide) {
                     dxLoc = show ? -1 : 1;
                     dWidth = show ? 1 : -1;
-                }
-                else if (DockState == DockState.DockBottomAutoHide)
-                {
+                } else if (DockState == DockState.DockBottomAutoHide) {
                     dyLoc = (show ? -1 : 1);
                     dHeight = (show ? 1 : -1);
                 }
 
-                if (show)
-                {
+                if (show) {
                     Bounds = DockPanel.GetAutoHideWindowBounds(new Rectangle(-rectTarget.Width, -rectTarget.Height, rectTarget.Width, rectTarget.Height));
                     if (Visible == false)
                         Visible = true;
@@ -197,8 +187,7 @@ namespace LSLEditor.Docking
                     Math.Abs(rectSource.Height - rectTarget.Height);
                 int remainPixels = totalPixels;
                 DateTime startingTime = DateTime.Now;
-                while (rectSource != rectTarget)
-                {
+                while (rectSource != rectTarget) {
                     DateTime startPerMove = DateTime.Now;
 
                     rectSource.X += dxLoc * speedFactor;
@@ -220,17 +209,14 @@ namespace LSLEditor.Docking
 
                     remainPixels -= speedFactor;
 
-                    while (true)
-                    {
+                    while (true) {
                         TimeSpan time = new TimeSpan(0, 0, 0, 0, ANIMATE_TIME);
                         TimeSpan elapsedPerMove = DateTime.Now - startPerMove;
                         TimeSpan elapsedTime = DateTime.Now - startingTime;
-                        if (((int)((time - elapsedTime).TotalMilliseconds)) <= 0)
-                        {
+                        if (((int)((time - elapsedTime).TotalMilliseconds)) <= 0) {
                             speedFactor = remainPixels;
                             break;
-                        }
-                        else
+                        } else
                             speedFactor = remainPixels * (int)elapsedPerMove.TotalMilliseconds / (int)((time - elapsedTime).TotalMilliseconds);
                         if (speedFactor >= 1)
                             break;
@@ -264,15 +250,12 @@ namespace LSLEditor.Docking
 
                 if (DockState == DockState.DockLeftAutoHide)
                     rect.Width = 0;
-                else if (DockState == DockState.DockRightAutoHide)
-                {
+                else if (DockState == DockState.DockRightAutoHide) {
                     rect.X += rect.Width;
                     rect.Width = 0;
-                }
-                else if (DockState == DockState.DockTopAutoHide)
+                } else if (DockState == DockState.DockTopAutoHide)
                     rect.Height = 0;
-                else
-                {
+                else {
                     rect.Y += rect.Height;
                     rect.Height = 0;
                 }
@@ -282,14 +265,13 @@ namespace LSLEditor.Docking
 
             private void SetTimerMouseTrack()
             {
-                if (ActivePane == null || ActivePane.IsActivated || FlagDragging)
-                {
+                if (ActivePane == null || ActivePane.IsActivated || FlagDragging) {
                     m_timerMouseTrack.Enabled = false;
                     return;
                 }
 
                 // start the timer
-                int hovertime = SystemInformation.MouseHoverTime ;
+                int hovertime = SystemInformation.MouseHoverTime;
 
                 // assign a default value 400 in case of setting Timer.Interval invalid value exception
                 if (hovertime <= 0)
@@ -299,24 +281,18 @@ namespace LSLEditor.Docking
                 m_timerMouseTrack.Enabled = true;
             }
 
-            protected virtual Rectangle DisplayingRectangle
-            {
-                get
-                {
+            protected virtual Rectangle DisplayingRectangle {
+                get {
                     Rectangle rect = ClientRectangle;
 
                     // exclude the border and the splitter
-                    if (DockState == DockState.DockBottomAutoHide)
-                    {
+                    if (DockState == DockState.DockBottomAutoHide) {
                         rect.Y += 2 + Measures.SplitterSize;
                         rect.Height -= 2 + Measures.SplitterSize;
-                    }
-                    else if (DockState == DockState.DockRightAutoHide)
-                    {
+                    } else if (DockState == DockState.DockRightAutoHide) {
                         rect.X += 2 + Measures.SplitterSize;
                         rect.Width -= 2 + Measures.SplitterSize;
-                    }
-                    else if (DockState == DockState.DockTopAutoHide)
+                    } else if (DockState == DockState.DockTopAutoHide)
                         rect.Height -= 2 + Measures.SplitterSize;
                     else if (DockState == DockState.DockLeftAutoHide)
                         rect.Width -= 2 + Measures.SplitterSize;
@@ -328,36 +304,27 @@ namespace LSLEditor.Docking
             protected override void OnLayout(LayoutEventArgs levent)
             {
                 DockPadding.All = 0;
-                if (DockState == DockState.DockLeftAutoHide)
-                {
+                if (DockState == DockState.DockLeftAutoHide) {
                     DockPadding.Right = 2;
                     m_splitter.Dock = DockStyle.Right;
-                }
-                else if (DockState == DockState.DockRightAutoHide)
-                {
+                } else if (DockState == DockState.DockRightAutoHide) {
                     DockPadding.Left = 2;
                     m_splitter.Dock = DockStyle.Left;
-                }
-                else if (DockState == DockState.DockTopAutoHide)
-                {
+                } else if (DockState == DockState.DockTopAutoHide) {
                     DockPadding.Bottom = 2;
                     m_splitter.Dock = DockStyle.Bottom;
-                }
-                else if (DockState == DockState.DockBottomAutoHide)
-                {
+                } else if (DockState == DockState.DockBottomAutoHide) {
                     DockPadding.Top = 2;
                     m_splitter.Dock = DockStyle.Top;
                 }
 
                 Rectangle rectDisplaying = DisplayingRectangle;
                 Rectangle rectHidden = new Rectangle(-rectDisplaying.Width, rectDisplaying.Y, rectDisplaying.Width, rectDisplaying.Height);
-                foreach (Control c in Controls)
-                {
+                foreach (Control c in Controls) {
                     DockPane pane = c as DockPane;
                     if (pane == null)
                         continue;
-                    
-                    
+
                     if (pane == ActivePane)
                         pane.Bounds = rectDisplaying;
                     else
@@ -376,13 +343,10 @@ namespace LSLEditor.Docking
                     g.DrawLine(SystemPens.ControlLightLight, 0, 1, ClientRectangle.Right, 1);
                 else if (DockState == DockState.DockRightAutoHide)
                     g.DrawLine(SystemPens.ControlLightLight, 1, 0, 1, ClientRectangle.Bottom);
-                else if (DockState == DockState.DockTopAutoHide)
-                {
+                else if (DockState == DockState.DockTopAutoHide) {
                     g.DrawLine(SystemPens.ControlDark, 0, ClientRectangle.Height - 2, ClientRectangle.Right, ClientRectangle.Height - 2);
                     g.DrawLine(SystemPens.ControlDarkDark, 0, ClientRectangle.Height - 1, ClientRectangle.Right, ClientRectangle.Height - 1);
-                }
-                else if (DockState == DockState.DockLeftAutoHide)
-                {
+                } else if (DockState == DockState.DockLeftAutoHide) {
                     g.DrawLine(SystemPens.ControlDark, ClientRectangle.Width - 2, 0, ClientRectangle.Width - 2, ClientRectangle.Bottom);
                     g.DrawLine(SystemPens.ControlDarkDark, ClientRectangle.Width - 1, 0, ClientRectangle.Width - 1, ClientRectangle.Bottom);
                 }
@@ -395,8 +359,7 @@ namespace LSLEditor.Docking
                 if (ActiveContent == null)
                     return;
 
-                if (!DockHelper.IsDockStateAutoHide(ActiveContent.DockHandler.DockState))
-                {
+                if (!DockHelper.IsDockStateAutoHide(ActiveContent.DockHandler.DockState)) {
                     FlagAnimate = false;
                     ActiveContent = null;
                     FlagAnimate = true;
@@ -413,8 +376,7 @@ namespace LSLEditor.Docking
                 if (IsDisposed)
                     return;
 
-                if (ActivePane == null || ActivePane.IsActivated)
-                {
+                if (ActivePane == null || ActivePane.IsActivated) {
                     m_timerMouseTrack.Enabled = false;
                     return;
                 }
@@ -425,8 +387,7 @@ namespace LSLEditor.Docking
 
                 Rectangle rectTabStrip = DockPanel.GetTabStripRectangle(pane.DockState);
 
-                if (!ClientRectangle.Contains(ptMouseInAutoHideWindow) && !rectTabStrip.Contains(ptMouseInDockPanel))
-                {
+                if (!ClientRectangle.Contains(ptMouseInAutoHideWindow) && !rectTabStrip.Contains(ptMouseInDockPanel)) {
                     ActiveContent = null;
                     m_timerMouseTrack.Enabled = false;
                 }
@@ -444,24 +405,18 @@ namespace LSLEditor.Docking
                 FlagDragging = false;
             }
 
-            bool ISplitterDragSource.IsVertical
-            {
+            bool ISplitterDragSource.IsVertical {
                 get { return (DockState == DockState.DockLeftAutoHide || DockState == DockState.DockRightAutoHide); }
             }
 
-            Rectangle ISplitterDragSource.DragLimitBounds
-            {
-                get
-                {
+            Rectangle ISplitterDragSource.DragLimitBounds {
+                get {
                     Rectangle rectLimit = DockPanel.DockArea;
 
-                    if ((this as ISplitterDragSource).IsVertical)
-                    {
+                    if ((this as ISplitterDragSource).IsVertical) {
                         rectLimit.X += MeasurePane.MinSize;
                         rectLimit.Width -= 2 * MeasurePane.MinSize;
-                    }
-                    else
-                    {
+                    } else {
                         rectLimit.Y += MeasurePane.MinSize;
                         rectLimit.Height -= 2 * MeasurePane.MinSize;
                     }
@@ -474,29 +429,22 @@ namespace LSLEditor.Docking
             {
                 Rectangle rectDockArea = DockPanel.DockArea;
                 IDockContent content = ActiveContent;
-                if (DockState == DockState.DockLeftAutoHide && rectDockArea.Width > 0)
-                {
+                if (DockState == DockState.DockLeftAutoHide && rectDockArea.Width > 0) {
                     if (content.DockHandler.AutoHidePortion < 1)
                         content.DockHandler.AutoHidePortion += ((double)offset) / (double)rectDockArea.Width;
                     else
                         content.DockHandler.AutoHidePortion = Width + offset;
-                }
-                else if (DockState == DockState.DockRightAutoHide && rectDockArea.Width > 0)
-                {
+                } else if (DockState == DockState.DockRightAutoHide && rectDockArea.Width > 0) {
                     if (content.DockHandler.AutoHidePortion < 1)
                         content.DockHandler.AutoHidePortion -= ((double)offset) / (double)rectDockArea.Width;
                     else
                         content.DockHandler.AutoHidePortion = Width - offset;
-                }
-                else if (DockState == DockState.DockBottomAutoHide && rectDockArea.Height > 0)
-                {
+                } else if (DockState == DockState.DockBottomAutoHide && rectDockArea.Height > 0) {
                     if (content.DockHandler.AutoHidePortion < 1)
                         content.DockHandler.AutoHidePortion -= ((double)offset) / (double)rectDockArea.Height;
                     else
                         content.DockHandler.AutoHidePortion = Height - offset;
-                }
-                else if (DockState == DockState.DockTopAutoHide && rectDockArea.Height > 0)
-                {
+                } else if (DockState == DockState.DockTopAutoHide && rectDockArea.Height > 0) {
                     if (content.DockHandler.AutoHidePortion < 1)
                         content.DockHandler.AutoHidePortion += ((double)offset) / (double)rectDockArea.Height;
                     else
@@ -506,23 +454,20 @@ namespace LSLEditor.Docking
 
             #region IDragSource Members
 
-            Control IDragSource.DragControl
-            {
+            Control IDragSource.DragControl {
                 get { return this; }
             }
 
-            #endregion
+            #endregion IDragSource Members
 
-            #endregion
+            #endregion ISplitterDragSource Members
         }
 
-        private AutoHideWindowControl AutoHideWindow
-        {
+        private AutoHideWindowControl AutoHideWindow {
             get { return m_autoHideWindow; }
         }
 
-        internal Control AutoHideControl
-        {
+        internal Control AutoHideControl {
             get { return m_autoHideWindow; }
         }
 
@@ -531,10 +476,8 @@ namespace LSLEditor.Docking
             AutoHideWindow.RefreshActiveContent();
         }
 
-        internal Rectangle AutoHideWindowRectangle
-        {
-            get
-            {
+        internal Rectangle AutoHideWindowRectangle {
+            get {
                 DockState state = AutoHideWindow.DockState;
                 Rectangle rectDockArea = DockArea;
                 if (ActiveAutoHideContent == null)
@@ -545,8 +488,7 @@ namespace LSLEditor.Docking
 
                 Rectangle rect = Rectangle.Empty;
                 double autoHideSize = ActiveAutoHideContent.DockHandler.AutoHidePortion;
-                if (state == DockState.DockLeftAutoHide)
-                {
+                if (state == DockState.DockLeftAutoHide) {
                     if (autoHideSize < 1)
                         autoHideSize = rectDockArea.Width * autoHideSize;
                     if (autoHideSize > rectDockArea.Width - MeasurePane.MinSize)
@@ -555,9 +497,7 @@ namespace LSLEditor.Docking
                     rect.Y = rectDockArea.Y;
                     rect.Width = (int)autoHideSize;
                     rect.Height = rectDockArea.Height;
-                }
-                else if (state == DockState.DockRightAutoHide)
-                {
+                } else if (state == DockState.DockRightAutoHide) {
                     if (autoHideSize < 1)
                         autoHideSize = rectDockArea.Width * autoHideSize;
                     if (autoHideSize > rectDockArea.Width - MeasurePane.MinSize)
@@ -566,9 +506,7 @@ namespace LSLEditor.Docking
                     rect.Y = rectDockArea.Y;
                     rect.Width = (int)autoHideSize;
                     rect.Height = rectDockArea.Height;
-                }
-                else if (state == DockState.DockTopAutoHide)
-                {
+                } else if (state == DockState.DockTopAutoHide) {
                     if (autoHideSize < 1)
                         autoHideSize = rectDockArea.Height * autoHideSize;
                     if (autoHideSize > rectDockArea.Height - MeasurePane.MinSize)
@@ -577,9 +515,7 @@ namespace LSLEditor.Docking
                     rect.Y = rectDockArea.Y;
                     rect.Width = rectDockArea.Width;
                     rect.Height = (int)autoHideSize;
-                }
-                else if (state == DockState.DockBottomAutoHide)
-                {
+                } else if (state == DockState.DockBottomAutoHide) {
                     if (autoHideSize < 1)
                         autoHideSize = rectDockArea.Height * autoHideSize;
                     if (autoHideSize > rectDockArea.Height - MeasurePane.MinSize)
@@ -607,6 +543,5 @@ namespace LSLEditor.Docking
         {
             AutoHideStripControl.RefreshChanges();
         }
-
     }
 }

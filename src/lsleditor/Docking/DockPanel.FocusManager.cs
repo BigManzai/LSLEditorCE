@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LSLEditor.Docking
 {
-    internal interface IContentFocusManager
+	internal interface IContentFocusManager
     {
         void Activate(IDockContent content);
+
         void GiveUpFocus(IDockContent content);
+
         void AddToList(IDockContent content);
+
         void RemoveFromList(IDockContent content);
     }
 
@@ -21,7 +23,9 @@ namespace LSLEditor.Docking
         private interface IFocusManager
         {
             void SuspendFocusTracking();
+
             void ResumeFocusTracking();
+
             bool IsFocusTrackingSuspended { get; }
             IDockContent ActiveContent { get; }
             DockPane ActivePane { get; }
@@ -35,8 +39,10 @@ namespace LSLEditor.Docking
             {
                 [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
                 public int HookCode;
+
                 [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
                 public IntPtr wParam;
+
                 public IntPtr lParam;
             }
 
@@ -44,14 +50,16 @@ namespace LSLEditor.Docking
             {
                 // Internal properties
                 private IntPtr m_hHook = IntPtr.Zero;
+
                 private NativeMethods.HookProc m_filterFunc = null;
                 private Win32.HookType m_hookType;
 
                 // Event delegate
                 public delegate void HookEventHandler(object sender, HookEventArgs e);
 
-                // Event: HookInvoked 
+                // Event: HookInvoked
                 public event HookEventHandler HookInvoked;
+
                 protected void OnHookInvoked(HookEventArgs e)
                 {
                     if (HookInvoked != null)
@@ -94,8 +102,7 @@ namespace LSLEditor.Docking
                 // Uninstall the hook
                 public void Uninstall()
                 {
-                    if (m_hHook != IntPtr.Zero)
-                    {
+                    if (m_hHook != IntPtr.Zero) {
                         NativeMethods.UnhookWindowsHookEx(m_hHook);
                         m_hHook = IntPtr.Zero;
                     }
@@ -131,18 +138,17 @@ namespace LSLEditor.Docking
             }
 
             private DockPanel m_dockPanel;
-            public DockPanel DockPanel
-            {
+
+            public DockPanel DockPanel {
                 get { return m_dockPanel; }
             }
 
             private bool m_disposed = false;
+
             protected override void Dispose(bool disposing)
             {
-                lock (this)
-                {
-                    if (!m_disposed && disposing)
-                    {
+                lock (this) {
+                    if (!m_disposed && disposing) {
                         m_localWindowsHook.Dispose();
                         m_disposed = true;
                     }
@@ -152,16 +158,15 @@ namespace LSLEditor.Docking
             }
 
             private IDockContent m_contentActivating = null;
-            private IDockContent ContentActivating
-            {
+
+            private IDockContent ContentActivating {
                 get { return m_contentActivating; }
                 set { m_contentActivating = value; }
             }
 
             public void Activate(IDockContent content)
             {
-                if (IsFocusTrackingSuspended)
-                {
+                if (IsFocusTrackingSuspended) {
                     ContentActivating = content;
                     return;
                 }
@@ -173,8 +178,7 @@ namespace LSLEditor.Docking
                     return; // Should not reach here, but better than throwing an exception
                 if (ContentContains(content, handler.ActiveWindowHandle))
                     NativeMethods.SetFocus(handler.ActiveWindowHandle);
-                if (!handler.Form.ContainsFocus)
-                {
+                if (!handler.Form.ContainsFocus) {
                     if (!handler.Form.SelectNextControl(handler.Form.ActiveControl, true, true, true, true))
                         // Since DockContent Form is not selectalbe, use Win32 SetFocus instead
                         NativeMethods.SetFocus(handler.Form.Handle);
@@ -182,10 +186,11 @@ namespace LSLEditor.Docking
             }
 
             private List<IDockContent> m_listContent = new List<IDockContent>();
-            private List<IDockContent> ListContent
-            {
+
+            private List<IDockContent> ListContent {
                 get { return m_listContent; }
             }
+
             public void AddToList(IDockContent content)
             {
                 if (ListContent.Contains(content) || IsInActiveList(content))
@@ -203,8 +208,8 @@ namespace LSLEditor.Docking
             }
 
             private IDockContent m_lastActiveContent = null;
-            private IDockContent LastActiveContent
-            {
+
+            private IDockContent LastActiveContent {
                 get { return m_lastActiveContent; }
                 set { m_lastActiveContent = value; }
             }
@@ -257,15 +262,13 @@ namespace LSLEditor.Docking
                 if (IsFocusTrackingSuspended)
                     DockPanel.DummyControl.Focus();
 
-                if (LastActiveContent == content)
-                {
+                if (LastActiveContent == content) {
                     IDockContent prev = handler.PreviousActive;
                     if (prev != null)
                         Activate(prev);
                     else if (ListContent.Count > 0)
                         Activate(ListContent[ListContent.Count - 1]);
-                }
-                else if (LastActiveContent != null)
+                } else if (LastActiveContent != null)
                     Activate(LastActiveContent);
                 else if (ListContent.Count > 0)
                     Activate(ListContent[ListContent.Count - 1]);
@@ -282,6 +285,7 @@ namespace LSLEditor.Docking
             }
 
             private int m_countSuspendFocusTracking = 0;
+
             public void SuspendFocusTracking()
             {
                 m_countSuspendFocusTracking++;
@@ -293,10 +297,8 @@ namespace LSLEditor.Docking
                 if (m_countSuspendFocusTracking > 0)
                     m_countSuspendFocusTracking--;
 
-                if (m_countSuspendFocusTracking == 0)
-                {
-                    if (ContentActivating != null)
-                    {
+                if (m_countSuspendFocusTracking == 0) {
+                    if (ContentActivating != null) {
                         Activate(ContentActivating);
                         ContentActivating = null;
                     }
@@ -306,8 +308,7 @@ namespace LSLEditor.Docking
                 }
             }
 
-            public bool IsFocusTrackingSuspended
-            {
+            public bool IsFocusTrackingSuspended {
                 get { return m_countSuspendFocusTracking != 0; }
             }
 
@@ -316,14 +317,12 @@ namespace LSLEditor.Docking
             {
                 Win32.Msgs msg = (Win32.Msgs)Marshal.ReadInt32(e.lParam, IntPtr.Size * 3);
 
-                if (msg == Win32.Msgs.WM_KILLFOCUS)
-                {
+                if (msg == Win32.Msgs.WM_KILLFOCUS) {
                     IntPtr wParam = Marshal.ReadIntPtr(e.lParam, IntPtr.Size * 2);
                     DockPane pane = GetPaneFromHandle(wParam);
                     if (pane == null)
                         RefreshActiveWindow();
-                }
-                else if (msg == Win32.Msgs.WM_SETFOCUS)
+                } else if (msg == Win32.Msgs.WM_SETFOCUS)
                     RefreshActiveWindow();
             }
 
@@ -333,8 +332,7 @@ namespace LSLEditor.Docking
 
                 IDockContent content = null;
                 DockPane pane = null;
-                for (; control != null; control = control.Parent)
-                {
+                for (; control != null; control = control.Parent) {
                     content = control as IDockContent;
                     if (content != null)
                         content.DockHandler.ActiveWindowHandle = hWnd;
@@ -351,8 +349,8 @@ namespace LSLEditor.Docking
             }
 
             private bool m_inRefreshActiveWindow = false;
-            private bool InRefreshActiveWindow
-            {
+
+            private bool InRefreshActiveWindow {
                 get { return m_inRefreshActiveWindow; }
             }
 
@@ -383,8 +381,8 @@ namespace LSLEditor.Docking
             }
 
             private DockPane m_activePane = null;
-            public DockPane ActivePane
-            {
+
+            public DockPane ActivePane {
                 get { return m_activePane; }
             }
 
@@ -404,8 +402,8 @@ namespace LSLEditor.Docking
             }
 
             private IDockContent m_activeContent = null;
-            public IDockContent ActiveContent
-            {
+
+            public IDockContent ActiveContent {
                 get { return m_activeContent; }
             }
 
@@ -421,8 +419,7 @@ namespace LSLEditor.Docking
 
                 m_activeContent = value;
 
-                if (m_activeContent != null)
-                {
+                if (m_activeContent != null) {
                     m_activeContent.DockHandler.IsActivated = true;
                     if (!DockHelper.IsDockStateAutoHide((m_activeContent.DockHandler.DockState)))
                         AddLastToActiveList(m_activeContent);
@@ -430,8 +427,8 @@ namespace LSLEditor.Docking
             }
 
             private DockPane m_activeDocumentPane = null;
-            public DockPane ActiveDocumentPane
-            {
+
+            public DockPane ActiveDocumentPane {
                 get { return m_activeDocumentPane; }
             }
 
@@ -442,8 +439,7 @@ namespace LSLEditor.Docking
                 if (ActivePane != null && ActivePane.DockState == DockState.Document)
                     value = ActivePane;
 
-                if (value == null && DockPanel.DockWindows != null)
-                {
+                if (value == null && DockPanel.DockWindows != null) {
                     if (ActiveDocumentPane == null)
                         value = DockPanel.DockWindows[DockState.Document].DefaultPane;
                     else if (ActiveDocumentPane.DockPanel != DockPanel || ActiveDocumentPane.DockState != DockState.Document)
@@ -465,8 +461,8 @@ namespace LSLEditor.Docking
             }
 
             private IDockContent m_activeDocument = null;
-            public IDockContent ActiveDocument
-            {
+
+            public IDockContent ActiveDocument {
                 get { return m_activeDocument; }
             }
 
@@ -481,13 +477,11 @@ namespace LSLEditor.Docking
             }
         }
 
-        private IFocusManager FocusManager
-        {
+        private IFocusManager FocusManager {
             get { return m_focusManager; }
         }
 
-        internal IContentFocusManager ContentFocusManager
-        {
+        internal IContentFocusManager ContentFocusManager {
             get { return m_focusManager; }
         }
 
@@ -497,37 +491,34 @@ namespace LSLEditor.Docking
         }
 
         [Browsable(false)]
-        public IDockContent ActiveContent
-        {
+        public IDockContent ActiveContent {
             get { return FocusManager.ActiveContent; }
         }
 
         [Browsable(false)]
-        public DockPane ActivePane
-        {
+        public DockPane ActivePane {
             get { return FocusManager.ActivePane; }
         }
 
         [Browsable(false)]
-        public IDockContent ActiveDocument
-        {
+        public IDockContent ActiveDocument {
             get { return FocusManager.ActiveDocument; }
         }
 
         [Browsable(false)]
-        public DockPane ActiveDocumentPane
-        {
+        public DockPane ActiveDocumentPane {
             get { return FocusManager.ActiveDocumentPane; }
         }
 
         private static readonly object ActiveDocumentChangedEvent = new object();
+
         [LocalizedCategory("Category_PropertyChanged")]
         [LocalizedDescription("DockPanel_ActiveDocumentChanged_Description")]
-        public event EventHandler ActiveDocumentChanged
-        {
+        public event EventHandler ActiveDocumentChanged {
             add { Events.AddHandler(ActiveDocumentChangedEvent, value); }
             remove { Events.RemoveHandler(ActiveDocumentChangedEvent, value); }
         }
+
         protected virtual void OnActiveDocumentChanged(EventArgs e)
         {
             EventHandler handler = (EventHandler)Events[ActiveDocumentChangedEvent];
@@ -536,13 +527,14 @@ namespace LSLEditor.Docking
         }
 
         private static readonly object ActiveContentChangedEvent = new object();
+
         [LocalizedCategory("Category_PropertyChanged")]
         [LocalizedDescription("DockPanel_ActiveContentChanged_Description")]
-        public event EventHandler ActiveContentChanged
-        {
+        public event EventHandler ActiveContentChanged {
             add { Events.AddHandler(ActiveContentChangedEvent, value); }
             remove { Events.RemoveHandler(ActiveContentChangedEvent, value); }
         }
+
         protected void OnActiveContentChanged(EventArgs e)
         {
             EventHandler handler = (EventHandler)Events[ActiveContentChangedEvent];
@@ -551,13 +543,14 @@ namespace LSLEditor.Docking
         }
 
         private static readonly object ActivePaneChangedEvent = new object();
+
         [LocalizedCategory("Category_PropertyChanged")]
         [LocalizedDescription("DockPanel_ActivePaneChanged_Description")]
-        public event EventHandler ActivePaneChanged
-        {
+        public event EventHandler ActivePaneChanged {
             add { Events.AddHandler(ActivePaneChangedEvent, value); }
             remove { Events.RemoveHandler(ActivePaneChangedEvent, value); }
         }
+
         protected virtual void OnActivePaneChanged(EventArgs e)
         {
             EventHandler handler = (EventHandler)Events[ActivePaneChangedEvent];

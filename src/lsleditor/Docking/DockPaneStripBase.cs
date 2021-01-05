@@ -1,17 +1,17 @@
 using System;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Permissions;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Security.Permissions;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
 	public abstract class DockPaneStripBase : Control
-	{
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]        
+    {
+        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         protected internal class Tab : IDisposable
         {
             private IDockContent m_content;
@@ -26,13 +26,11 @@ namespace LSLEditor.Docking
                 Dispose(false);
             }
 
-            public IDockContent Content
-            {
+            public IDockContent Content {
                 get { return m_content; }
             }
 
-            public Form ContentForm
-            {
+            public Form ContentForm {
                 get { return m_content as Form; }
             }
 
@@ -47,10 +45,11 @@ namespace LSLEditor.Docking
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]        
+        [SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         protected sealed class TabCollection : IEnumerable<Tab>
         {
             #region IEnumerable Members
+
             IEnumerator<Tab> IEnumerable<Tab>.GetEnumerator()
             {
                 for (int i = 0; i < Count; i++)
@@ -62,7 +61,8 @@ namespace LSLEditor.Docking
                 for (int i = 0; i < Count; i++)
                     yield return this[i];
             }
-            #endregion
+
+            #endregion IEnumerable Members
 
             internal TabCollection(DockPane pane)
             {
@@ -70,20 +70,17 @@ namespace LSLEditor.Docking
             }
 
             private DockPane m_dockPane;
-            public DockPane DockPane
-            {
+
+            public DockPane DockPane {
                 get { return m_dockPane; }
             }
 
-            public int Count
-            {
+            public int Count {
                 get { return DockPane.DisplayingContents.Count; }
             }
 
-            public Tab this[int index]
-            {
-                get
-                {
+            public Tab this[int index] {
+                get {
                     IDockContent content = DockPane.DisplayingContents[index];
                     if (content == null)
                         throw (new ArgumentOutOfRangeException("index"));
@@ -115,62 +112,60 @@ namespace LSLEditor.Docking
             }
         }
 
-		protected DockPaneStripBase(DockPane pane)
-		{
-			m_dockPane = pane;
+        protected DockPaneStripBase(DockPane pane)
+        {
+            m_dockPane = pane;
 
-			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-			SetStyle(ControlStyles.Selectable, false);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.Selectable, false);
             AllowDrop = true;
-		}
+        }
 
-		private DockPane m_dockPane;
-		protected DockPane DockPane
-		{
-			get	{	return m_dockPane;	}
-		}
+        private DockPane m_dockPane;
 
-		protected DockPane.AppearanceStyle Appearance
-		{
-			get	{	return DockPane.Appearance;	}
-		}
+        protected DockPane DockPane {
+            get { return m_dockPane; }
+        }
+
+        protected DockPane.AppearanceStyle Appearance {
+            get { return DockPane.Appearance; }
+        }
 
         private TabCollection m_tabs = null;
-		protected TabCollection Tabs
-		{
-			get
-            {
+
+        protected TabCollection Tabs {
+            get {
                 if (m_tabs == null)
                     m_tabs = new TabCollection(DockPane);
 
                 return m_tabs;
             }
-		}
+        }
 
-		internal void RefreshChanges()
-		{
+        internal void RefreshChanges()
+        {
             if (IsDisposed)
                 return;
 
-			OnRefreshChanges();
-		}
+            OnRefreshChanges();
+        }
 
-		protected virtual void OnRefreshChanges()
-		{
-		}
+        protected virtual void OnRefreshChanges()
+        {
+        }
 
-		protected internal abstract int MeasureHeight();
+        protected internal abstract int MeasureHeight();
 
-		protected internal abstract void EnsureTabVisible(IDockContent content);
+        protected internal abstract void EnsureTabVisible(IDockContent content);
 
-		protected int HitTest()
-		{
-			return HitTest(PointToClient(Control.MousePosition));
-		}
+        protected int HitTest()
+        {
+            return HitTest(PointToClient(Control.MousePosition));
+        }
 
-		protected internal abstract int HitTest(Point point);
+        protected internal abstract int HitTest(Point point);
 
-		protected internal abstract GraphicsPath GetOutline(int index);
+        protected internal abstract GraphicsPath GetOutline(int index);
 
         protected internal virtual Tab CreateTab(IDockContent content)
         {
@@ -182,22 +177,19 @@ namespace LSLEditor.Docking
             base.OnMouseDown(e);
 
             int index = HitTest();
-            if (index != -1)
-            {
+            if (index != -1) {
                 IDockContent content = Tabs[index].Content;
                 if (DockPane.ActiveContent != content)
                     DockPane.ActiveContent = content;
             }
 
-            if (e.Button == MouseButtons.Left)
-            {
+            if (e.Button == MouseButtons.Left) {
                 if (DockPane.DockPanel.AllowEndUserDocking && DockPane.AllowDockDragAndDrop && DockPane.ActiveContent.DockHandler.AllowEndUserDocking)
                     DockPane.DockPanel.BeginDrag(DockPane.ActiveContent.DockHandler);
             }
         }
 
-        protected bool HasTabPageContextMenu
-        {
+        protected bool HasTabPageContextMenu {
             get { return DockPane.HasTabPageContextMenu; }
         }
 
@@ -215,38 +207,35 @@ namespace LSLEditor.Docking
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-		protected override void WndProc(ref Message m)
-		{
-			if (m.Msg == (int)Win32.Msgs.WM_LBUTTONDBLCLK)
-			{
-				base.WndProc(ref m);
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == (int)Win32.Msgs.WM_LBUTTONDBLCLK) {
+                base.WndProc(ref m);
 
-				int index = HitTest();
-				if (DockPane.DockPanel.AllowEndUserDocking && index != -1)
-				{
-					IDockContent content = Tabs[index].Content;
+                int index = HitTest();
+                if (DockPane.DockPanel.AllowEndUserDocking && index != -1) {
+                    IDockContent content = Tabs[index].Content;
                     if (content.DockHandler.CheckDockState(!content.DockHandler.IsFloat) != DockState.Unknown)
-					    content.DockHandler.IsFloat = !content.DockHandler.IsFloat;	
-				}
+                        content.DockHandler.IsFloat = !content.DockHandler.IsFloat;
+                }
 
-				return;
-			}
+                return;
+            }
 
-			base.WndProc(ref m);
-			return;
-		}
+            base.WndProc(ref m);
+            return;
+        }
 
         protected override void OnDragOver(DragEventArgs drgevent)
         {
             base.OnDragOver(drgevent);
 
             int index = HitTest();
-            if (index != -1)
-            {
+            if (index != -1) {
                 IDockContent content = Tabs[index].Content;
                 if (DockPane.ActiveContent != content)
                     DockPane.ActiveContent = content;
             }
         }
-	}
+    }
 }

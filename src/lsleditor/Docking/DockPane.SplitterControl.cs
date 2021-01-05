@@ -1,34 +1,29 @@
-using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    partial class DockPane
+	partial class DockPane
     {
         private class SplitterControl : Control, ISplitterDragSource
-        {
-            DockPane m_pane;
+		{
+			private DockPane m_pane;
 
-            public SplitterControl(DockPane pane)
+			public SplitterControl(DockPane pane)
             {
                 SetStyle(ControlStyles.Selectable, false);
                 m_pane = pane;
             }
 
-            public DockPane DockPane
-            {
+            public DockPane DockPane {
                 get { return m_pane; }
             }
 
             private DockAlignment m_alignment;
-            public DockAlignment Alignment
-            {
+
+            public DockAlignment Alignment {
                 get { return m_alignment; }
-                set
-                {
+                set {
                     m_alignment = value;
                     if (m_alignment == DockAlignment.Left || m_alignment == DockAlignment.Right)
                         Cursor = Cursors.VSplit;
@@ -77,29 +72,22 @@ namespace LSLEditor.Docking
             {
             }
 
-            bool ISplitterDragSource.IsVertical
-            {
-                get
-                {
+            bool ISplitterDragSource.IsVertical {
+                get {
                     NestedDockingStatus status = DockPane.NestedDockingStatus;
                     return (status.DisplayingAlignment == DockAlignment.Left ||
                         status.DisplayingAlignment == DockAlignment.Right);
                 }
             }
 
-            Rectangle ISplitterDragSource.DragLimitBounds
-            {
-                get
-                {
+            Rectangle ISplitterDragSource.DragLimitBounds {
+                get {
                     NestedDockingStatus status = DockPane.NestedDockingStatus;
                     Rectangle rectLimit = Parent.RectangleToScreen(status.LogicalBounds);
-                    if (((ISplitterDragSource)this).IsVertical)
-                    {
+                    if (((ISplitterDragSource)this).IsVertical) {
                         rectLimit.X += MeasurePane.MinSize;
                         rectLimit.Width -= 2 * MeasurePane.MinSize;
-                    }
-                    else
-                    {
+                    } else {
                         rectLimit.Y += MeasurePane.MinSize;
                         rectLimit.Height -= 2 * MeasurePane.MinSize;
                     }
@@ -128,29 +116,26 @@ namespace LSLEditor.Docking
 
             #region IDragSource Members
 
-            Control IDragSource.DragControl
-            {
+            Control IDragSource.DragControl {
                 get { return this; }
             }
 
-            #endregion
+            #endregion IDragSource Members
 
-            #endregion
+            #endregion ISplitterDragSource Members
         }
 
         private SplitterControl m_splitter;
-        private SplitterControl Splitter
-        {
+
+        private SplitterControl Splitter {
             get { return m_splitter; }
         }
 
-        internal Rectangle SplitterBounds
-        {
+        internal Rectangle SplitterBounds {
             set { Splitter.Bounds = value; }
         }
 
-        internal DockAlignment SplitterAlignment
-        {
+        internal DockAlignment SplitterAlignment {
             set { Splitter.Alignment = value; }
         }
     }

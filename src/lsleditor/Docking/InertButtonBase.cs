@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Windows.Forms;
 
 namespace LSLEditor.Docking
 {
-    internal abstract class InertButtonBase : Control
+	internal abstract class InertButtonBase : Control
     {
         protected InertButtonBase()
         {
@@ -15,17 +13,15 @@ namespace LSLEditor.Docking
             BackColor = Color.Transparent;
         }
 
-        public abstract Bitmap Image
-        {
+        public abstract Bitmap Image {
             get;
         }
 
         private bool m_isMouseOver = false;
-        protected bool IsMouseOver
-        {
+
+        protected bool IsMouseOver {
             get { return m_isMouseOver; }
-            private set
-            {
+            private set {
                 if (m_isMouseOver == value)
                     return;
 
@@ -34,8 +30,7 @@ namespace LSLEditor.Docking
             }
         }
 
-        protected override Size DefaultSize
-        {
+        protected override Size DefaultSize {
             get { return Resources.DockPane_Close.Size; }
         }
 
@@ -63,16 +58,13 @@ namespace LSLEditor.Docking
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (IsMouseOver && Enabled)
-            {
-                using (Pen pen = new Pen(ForeColor))
-                {
+            if (IsMouseOver && Enabled) {
+                using (Pen pen = new Pen(ForeColor)) {
                     e.Graphics.DrawRectangle(pen, Rectangle.Inflate(ClientRectangle, -1, -1));
                 }
             }
 
-            using (ImageAttributes imageAttributes = new ImageAttributes())
-            {
+            using (ImageAttributes imageAttributes = new ImageAttributes()) {
                 ColorMap[] colorMap = new ColorMap[2];
                 colorMap[0] = new ColorMap();
                 colorMap[0].OldColor = Color.FromArgb(0, 0, 0);
