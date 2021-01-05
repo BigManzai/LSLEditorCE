@@ -14,6 +14,7 @@ Benutzung auf eigene gefahr, bitte speichern sie zwischendurch öfter ab.
 
 ## English
 If you prefer the English version, you have to insert the *.resx files from the original, 
+
 these are available here:  https://github.com/LSLEditor/LSLEditorCE/tree/master/src/lsleditor
 
 ## Kompilieren dieser Version
