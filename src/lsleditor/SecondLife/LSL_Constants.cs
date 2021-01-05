@@ -1,4 +1,4 @@
-﻿// <copyright file="gpl-2.0.txt">
+// <copyright file="gpl-2.0.txt">
 // ORIGINAL CODE BASE IS Copyright (C) 2006-2010 by Alphons van der Heijden.
 // The code was donated on 2010-04-28 by Alphons van der Heijden to Brandon 'Dimentox Travanti' Husbands &
 // Malcolm J. Kudra, who in turn License under the GPLv2 in agreement with Alphons van der Heijden's wishes.
@@ -37,7 +37,6 @@
 //
 // </summary>
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LSLEditor
@@ -53,6 +52,15 @@ namespace LSLEditor
 		public const int FRICTION = 2;
 		public const int GRAVITY_MULTIPLIER = 8;
 		public const int RESTITUTION = 4;
+
+		public const int LSL_STATUS_OK = 0;
+		public const int LSL_STATUS_MALFORMED_PARAMS = 1000;
+		public const int LSL_STATUS_TYPE_MISMATCH = 1001;
+		public const int LSL_STATUS_BOUNDS_ERROR = 1002;
+		public const int LSL_STATUS_NOT_FOUND = 1003;
+		public const int LSL_STATUS_NOT_SUPPORTED = 1004;
+		public const int LSL_STATUS_INTERNAL_ERROR = 1999;
+		public const int LSL_STATUS_WHITELIST_FAILED = 2001;
 
 		public const int AGENT = 1;
 		public const int ACTIVE = 2;
@@ -86,14 +94,41 @@ namespace LSLEditor
 		public const int AGENT_BUSY = 2048;
 		public const int AGENT_ALWAYS_RUN = 4096;
 		public const int AGENT_AUTOPILOT = 0x2000;
+
+		public const int AGENT_MALE = 0x40000000;
+
 		public const int AGENT_BY_LEGACY_NAME = 0x1;
 		public const int AGENT_BY_USERNAME = 0x10;
+		public const int NPC = 0x20;
 
 		public const int AGENT_LIST_PARCEL = 0x01;
 		public const int AGENT_LIST_PARCEL_OWNER = 0x02;
 		public const int AGENT_LIST_REGION = 0x04;
 
+		public const int AGENT_LIST_EXCLUDENPC = 0x4000000;
+
 		public const int ATTACH_AVATAR_CENTER = 40;
+
+		public const int ATTACH_LHAND_RING1 = 41;
+		public const int ATTACH_RHAND_RING1 = 42;
+		public const int ATTACH_TAIL_BASE = 43;
+		public const int ATTACH_TAIL_TIP = 44;
+		public const int ATTACH_LWING = 45;
+		public const int ATTACH_RWING = 46;
+		public const int ATTACH_FACE_JAW = 47;
+		public const int ATTACH_FACE_LEAR = 48;
+		public const int ATTACH_FACE_REAR = 49;
+		public const int ATTACH_FACE_LEYE = 50;
+		public const int ATTACH_FACE_REYE = 51;
+		public const int ATTACH_FACE_TONGUE = 52;
+		public const int ATTACH_GROIN = 53;
+		public const int ATTACH_HIND_LFOOT = 54;
+		public const int ATTACH_HIND_RFOOT = 55;
+		public const int OS_ATTACH_MSG_ALL = -65535;
+		public const int OS_ATTACH_MSG_INVERT_POINTS = 1;
+		public const int OS_ATTACH_MSG_OBJECT_CREATOR = 2;
+		public const int OS_ATTACH_MSG_SCRIPT_CREATOR = 4;
+
 		public const int ATTACH_BACK = 9;
 		public const int ATTACH_CHEST = 1;
 		public const int ATTACH_CHIN = 12;
@@ -143,6 +178,12 @@ namespace LSLEditor
 
 		public const int CAMERA_PITCH = 0;
 		public const int CAMERA_FOCUS_OFFSET = 1;
+
+		public const int CAMERA_FOCUS_OFFSET_X = 2;
+		public const int CAMERA_FOCUS_OFFSET_Y = 3;
+		public const int CAMERA_FOCUS_OFFSET_Z = 4;
+
+
 		public const int CAMERA_POSITION_LAG = 5;
 		public const int CAMERA_FOCUS_LAG = 6;
 		public const int CAMERA_DISTANCE = 7;
@@ -152,7 +193,17 @@ namespace LSLEditor
 		public const int CAMERA_FOCUS_THRESHOLD = 11;
 		public const int CAMERA_ACTIVE = 12;
 		public const int CAMERA_POSITION = 13;
+
+		public const int CAMERA_POSITION_X = 14;
+		public const int CAMERA_POSITION_Y = 15;
+		public const int CAMERA_POSITION_Z = 16;
+
 		public const int CAMERA_FOCUS = 17;
+
+		public const int CAMERA_FOCUS_X = 18;
+		public const int CAMERA_FOCUS_Y = 19;
+		public const int CAMERA_FOCUS_Z = 20;
+
 		public const int CAMERA_FOCUS_LOCKED = 22;
 		public const int CAMERA_POSITION_LOCKED = 21;
 
@@ -166,8 +217,14 @@ namespace LSLEditor
 		public const int CHANGED_OWNER = 128;
 		public const int CHANGED_REGION = 256;
 		public const int CHANGED_TELEPORT = 512;
+
+		public const int CHANGED_REGION_RESTART = 1024;
+
 		public const int CHANGED_REGION_START = 1024;
 		public const int CHANGED_MEDIA = 2048;
+
+		public const int CHANGED_ANIMATION = 16384;
+		public const int CHANGED_POSITION = 32768;
 
 		public const int CHARACTER_ACCOUNT_FOR_SKIPPED_FRAMES = 14;
 		public const int CHARACTER_AVOIDANCE_MODE = 5;
@@ -197,6 +254,7 @@ namespace LSLEditor
 		public const int CLICK_ACTION_OPEN = 4;
 		public const int CLICK_ACTION_PLAY = 5;
 		public const int CLICK_ACTION_OPEN_MEDIA = 6;
+		public const int CLICK_ACTION_ZOOM = 7;
 
 		public const string CONTENT_TYPE_ATOM = "application/atom+xml";
 		public const string CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
@@ -229,6 +287,8 @@ namespace LSLEditor
 		public const int DATA_SIM_RATING = 7;
 
 		public const int DATA_PAYINFO = 8;
+
+		public const int DATA_SIM_RELEASE = 128;
 
 		public const int ERR_GENERIC = -1;
 		public const int ERR_MALFORMED_PARAMS = -3;
@@ -268,6 +328,8 @@ namespace LSLEditor
 		public const int INVENTORY_ANIMATION = 20;
 		public const int INVENTORY_GESTURE = 21;
 
+		public const int INVENTORY_SETTING = 56;
+
 		public const int JSON_APPEND = -1;
 		public const string JSON_ARRAY = "\uFDD2";
 		public const string JSON_DELETE = "\uFDD8";
@@ -278,6 +340,51 @@ namespace LSLEditor
 		public const string JSON_OBJECT = "\uFDD1";
 		public const string JSON_STRING = "\uFDD4";
 		public const string JSON_TRUE = "\uFDD6";
+
+		public const int OS_LISTEN_REGEX_NAME = 0x1;
+		public const int OS_LISTEN_REGEX_MESSAGE = 0x2;
+		public const int OSTPOBJ_NONE = 0x0;
+		public const int OSTPOBJ_STOPATTARGET = 0x1;
+		public const int OSTPOBJ_STOPONFAIL = 0x2;
+		public const int OSTPOBJ_SETROT = 0x4;
+		public const int WL_WATER_COLOR = 0;
+		public const int WL_WATER_FOG_DENSITY_EXPONENT = 1;
+		public const int WL_UNDERWATER_FOG_MODIFIER = 2;
+		public const int WL_REFLECTION_WAVELET_SCALE = 3;
+		public const int WL_FRESNEL_SCALE = 4;
+		public const int WL_FRESNEL_OFFSET = 5;
+		public const int WL_REFRACT_SCALE_ABOVE = 6;
+		public const int WL_REFRACT_SCALE_BELOW = 7;
+		public const int WL_BLUR_MULTIPLIER = 8;
+		public const int WL_BIG_WAVE_DIRECTION = 9;
+		public const int WL_LITTLE_WAVE_DIRECTION = 10;
+		public const int WL_NORMAL_MAP_TEXTURE = 11;
+		public const int WL_HORIZON = 12;
+		public const int WL_HAZE_HORIZON = 13;
+		public const int WL_BLUE_DENSITY = 14;
+		public const int WL_HAZE_DENSITY = 15;
+		public const int WL_DENSITY_MULTIPLIER = 16;
+		public const int WL_DISTANCE_MULTIPLIER = 17;
+		public const int WL_MAX_ALTITUDE = 18;
+		public const int WL_SUN_MOON_COLOR = 19;
+		public const int WL_AMBIENT = 20;
+		public const int WL_EAST_ANGLE = 21;
+		public const int WL_SUN_GLOW_FOCUS = 22;
+		public const int WL_SUN_GLOW_SIZE = 23;
+		public const int WL_SCENE_GAMMA = 24;
+		public const int WL_STAR_BRIGHTNESS = 25;
+		public const int WL_CLOUD_COLOR = 26;
+		public const int WL_CLOUD_XY_DENSITY = 27;
+		public const int WL_CLOUD_COVERAGE = 28;
+		public const int WL_CLOUD_SCALE = 29;
+		public const int WL_CLOUD_DETAIL_XY_DENSITY = 30;
+		public const int WL_CLOUD_SCROLL_X = 31;
+		public const int WL_CLOUD_SCROLL_Y = 32;
+		public const int WL_CLOUD_SCROLL_Y_LOCK = 33;
+		public const int WL_CLOUD_SCROLL_X_LOCK = 34;
+		public const int WL_DRAW_CLASSIC_CLOUDS = 35;
+		public const int WL_SUN_MOON_POSITION = 36;
+
 
 		public const int KFM_CMD_PAUSE = 2;
 		public const int KFM_CMD_PLAY = 0;
@@ -319,6 +426,7 @@ namespace LSLEditor
 		public const int LIST_STAT_SUM_SQUARES = 7;
 		public const int LIST_STAT_NUM_COUNT = 8;
 		public const int LIST_STAT_GEOMETRIC_MEAN = 9;
+		public const int LIST_STAT_HARMONIC_MEAN = 100;
 
 		public const int MASK_BASE = 0;
 		public const int MASK_EVERYONE = 3;
@@ -341,6 +449,24 @@ namespace LSLEditor
 		public const int OBJECT_PHYSICS = 21;
 		public const int OBJECT_PHANTOM = 22;
 		public const int OBJECT_TEMP_ON_REZ = 23;
+
+		public const int OBJECT_RENDER_WEIGHT = 24;
+		public const int OBJECT_HOVER_HEIGHT = 25;
+		public const int OBJECT_BODY_SHAPE_TYPE = 26;
+		public const int OBJECT_LAST_OWNER_ID = 27;
+		public const int OBJECT_CLICK_ACTION  = 28;
+		public const int OBJECT_OMEGA = 29;
+		public const int OBJECT_PRIM_COUNT = 30;
+		public const int OBJECT_TOTAL_INVENTORY_COUNT = 31;
+		public const int OBJECT_REZZER_KEY = 32;
+		public const int OBJECT_GROUP_TAG = 33;
+		public const int OBJECT_TEMP_ATTACHED = 34;
+		public const int OBJECT_ATTACHED_SLOTS_AVAILABLE = 35;
+		public const int OBJECT_CREATION_TIME = 36;
+		public const int OBJECT_SELECT_COUNT = 37;
+		public const int OBJECT_SIT_COUNT = 38;
+		public const int OBJECT_ANIMATED_COUNT = 39;
+		//public const int OBJECT_ATTACHED_SLOTS_AVAILABLE = 40;
 
 		public const int OBJECT_STREAMING_COST = 15;
 		public const int OBJECT_PHYSICS_COST = 16;
@@ -380,6 +506,10 @@ namespace LSLEditor
 		public const int PARCEL_DETAILS_NAME = 0;
 		public const int PARCEL_DETAILS_OWNER = 2;
 		public const int PARCEL_DETAILS_SEE_AVATARS = 6;
+
+		public const int PARCEL_DETAILS_ANY_AVATAR_SOUNDS = 7;
+		public const int PARCEL_DETAILS_GROUP_SOUNDS = 8;
+		public const int PARCEL_DETAILS_CLAIMDATE = 10;
 
 		public const int PARCEL_FLAG_ALLOW_FLY = 0x0000001;
 		public const int PARCEL_FLAG_ALLOW_SCRIPTS = 0x0000002;
@@ -525,6 +655,18 @@ namespace LSLEditor
 		public const int PRIM_SHINY_NONE = 0;
 		public const int PRIM_SIZE = 7;
 		public const int PRIM_SLICE = 35;
+
+		public const int PRIM_SPECULARE = 36;
+		public const int PRIM_NORMALE = 37;
+		public const int PRIM_ALPHA_MODEE = 38;
+		public const int PRIM_ALLOW_UNSITE = 39;
+		public const int PRIM_SCRIPTED_SIT_ONLYE = 40;
+		public const int PRIM_SIT_TARGETE = 41;
+		public const int PRIM_ALPHA_MODE_NONEE = 0;
+		public const int PRIM_ALPHA_MODE_BLENDE = 1;
+		public const int PRIM_ALPHA_MODE_MASKE = 2;
+		public const int PRIM_ALPHA_MODE_EMISSIVEE = 3;
+
 		public const int PRIM_TEMP_ON_REZ = 4;
 		public const int PRIM_TEXGEN = 22;
 		public const int PRIM_TEXGEN_DEFAULT = 0;
@@ -563,6 +705,7 @@ namespace LSLEditor
 		public const int PSYS_PART_TARGET_POS_MASK = 64;
 		public const int PSYS_PART_TARGET_LINEAR_MASK = 128;
 		public const int PSYS_PART_EMISSIVE_MASK = 256;
+		public const int PSYS_PART_RIBBON_MASK = 1024;
 
 		public const int PSYS_PART_SRC_PATTERN_ANGLE = 0x04;
 		public const int PSYS_PART_SRC_PATTERN_ANGLE_CONE = 0x08;
@@ -592,6 +735,19 @@ namespace LSLEditor
 		public const int PSYS_SRC_OMEGA = 21;
 		public const int PSYS_SRC_ANGLE_BEGIN = 22;
 		public const int PSYS_SRC_ANGLE_END = 23;
+
+		public const int PSYS_PART_BLEND_FUNC_SOURCE = 24;
+		public const int PSYS_PART_BLEND_FUNC_DEST = 25;
+		public const int PSYS_PART_START_GLOW = 26;
+		public const int PSYS_PART_END_GLOW = 27;
+		public const int PSYS_PART_BF_ONE = 0;
+		public const int PSYS_PART_BF_ZERO = 1;
+		public const int PSYS_PART_BF_DEST_COLOR = 2;
+		public const int PSYS_PART_BF_SOURCE_COLOR = 3;
+		public const int PSYS_PART_BF_ONE_MINUS_DEST_COLOR = 4;
+		public const int PSYS_PART_BF_ONE_MINUS_SOURCE_COLOR = 5;
+		public const int PSYS_PART_BF_SOURCE_ALPHA = 7;
+		public const int PSYS_PART_BF_ONE_MINUS_SOURCE_ALPHA = 9;
 
 		public const int PSYS_SRC_PATTERN_DROP = 1;
 		public const int PSYS_SRC_PATTERN_EXPLODE = 2;
@@ -681,6 +837,38 @@ namespace LSLEditor
 		public const string TEXTURE_TRANSPARENT = "8dcd4a48-2d37-4909-9f78-f7a9eb4ef903";
 		public const string TEXTURE_MEDIA = "8b5fec65-8d8d-9dc5-cda8-8fdf2716e361";
 
+
+		public const int STATS_TIME_DILATION = 0;
+		public const int STATS_SIM_FPS = 1;
+		public const int STATS_PHYSICS_FPS = 2;
+		public const int STATS_AGENT_UPDATES = 3;
+		public const int STATS_ROOT_AGENTS = 4;
+		public const int STATS_CHILD_AGENTS = 5;
+		public const int STATS_TOTAL_PRIMS = 6;
+		public const int STATS_ACTIVE_PRIMS = 7;
+		public const int STATS_FRAME_MS = 8;
+		public const int STATS_NET_MS = 9;
+		public const int STATS_PHYSICS_MS = 10;
+		public const int STATS_IMAGE_MS = 11;
+		public const int STATS_OTHER_MS = 12;
+		public const int STATS_IN_PACKETS_PER_SECOND  = 13;
+		public const int STATS_OUT_PACKETS_PER_SECOND = 14;
+		public const int STATS_UNACKED_BYTES = 15;
+		public const int STATS_AGENT_MS = 16;
+		public const int STATS_PENDING_DOWNLOADS = 17;
+		public const int STATS_PENDING_UPLOADS = 18;
+		public const int STATS_ACTIVE_SCRIPTS = 19;
+		public const int STATS_SCRIPT_LPS = 20;
+		public const int OS_NPC_FLY = 0;
+		public const int OS_NPC_NO_FLY = 1;
+		public const int OS_NPC_LAND_AT_TARGET = 2;
+		public const int OS_NPC_RUNNING = 4;
+		public const int OS_NPC_SIT_NOW = 0;
+		public const int OS_NPC_CREATOR_OWNED = 0x1;
+		public const int OS_NPC_NOT_OWNED = 0x2;
+		public const int OS_NPC_SENSE_AS_AGENT = 0x4;
+		public const int OS_NPC_OBJECT_GROUP = 0x8;
+
 		public const int TOUCH_INVALID_FACE = -1;
 
 		public const int TRAVERSAL_TYPE = 7;
@@ -725,6 +913,9 @@ namespace LSLEditor
 		public const int VEHICLE_BANKING_TIMESCALE = 40;
 		public const int VEHICLE_REFERENCE_FRAME = 44;
 
+		public const int VEHICLE_RANGE_BLOCK = 45;
+		public const int VEHICLE_ROLL_FRAME = 46;
+
 		public const int VEHICLE_FLAG_NO_FLY_UP = 1;
 
 		public const int VEHICLE_FLAG_NO_DEFLECTION_UP = 1;
@@ -737,6 +928,13 @@ namespace LSLEditor
 		public const int VEHICLE_FLAG_MOUSELOOK_STEER = 128;
 		public const int VEHICLE_FLAG_MOUSELOOK_BANK = 256;
 		public const int VEHICLE_FLAG_CAMERA_DECOUPLED = 512;
+
+		public const int VEHICLE_FLAG_NO_X = 1024;
+		public const int VEHICLE_FLAG_NO_Y = 2048;
+		public const int VEHICLE_FLAG_NO_Z = 4096;
+		public const int VEHICLE_FLAG_LOCK_HOVER_HEIGHT = 8192;
+		public const int VEHICLE_FLAG_NO_DEFLECTION = 16392;
+		public const int VEHICLE_FLAG_LOCK_ROTATION = 32784;
 
 		public const int VEHICLE_TYPE_SLED = 1;
 		public const int VEHICLE_TYPE_CAR = 2;

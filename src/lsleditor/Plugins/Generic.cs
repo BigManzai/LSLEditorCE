@@ -39,13 +39,14 @@
 
 using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Reflection;
+using System.Windows.Forms;
+
 using LSLEditor.Docking;
 
 namespace LSLEditor.Plugins
 {
-	class Generic
+	internal class Generic
 	{
 		private delegate void RunDelegate(string strFilePath, RichTextBox tb);
 
@@ -64,12 +65,9 @@ namespace LSLEditor.Plugins
 
 			Assembly assembly = null;
 
-			try
-			{
+			try {
 				assembly = Assembly.LoadFrom(strProgram);
-			}
-			catch
-			{
+			} catch {
 				MessageBox.Show("Not a valid plugin, see http://www.lsleditor.org/help/Plugins.aspx", "Plugins", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
@@ -78,15 +76,12 @@ namespace LSLEditor.Plugins
 
 			object[] args = new object[] { strFilePath, tb };
 
-			foreach (Type t in assembly.GetTypes())
-			{
-				if (t.BaseType.Name == "DockContent")
-				{
+			foreach (Type t in assembly.GetTypes()) {
+				if (t.BaseType.Name == "DockContent") {
 					DockContent form = assembly.CreateInstance(t.FullName, false,
-						BindingFlags.Public|BindingFlags.Instance|BindingFlags.CreateInstance,
-                        null, args, null, null) as DockContent;
-					if (form != null)
-					{
+						BindingFlags.Public | BindingFlags.Instance | BindingFlags.CreateInstance,
+						null, args, null, null) as DockContent;
+					if (form != null) {
 						parent.AddForm(form);
 						return;
 					}

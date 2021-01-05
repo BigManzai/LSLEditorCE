@@ -42,111 +42,109 @@ using System;
 namespace LSLEditor
 {
 	public partial class SecondLife
-	{
-		public struct key
-		{
-			private string m_value;
+    {
+        public struct key
+        {
+            private string m_value;
 
-			public string guid
-			{
-				get
-				{
-					if (m_value == null)
-						m_value = "";
-					return m_value;
-				}
-				set
-				{
-					m_value = value;
-				}
-			}
+            public string guid {
+                get {
+                    if (m_value == null)
+                        m_value = "";
+                    return m_value;
+                }
+                set {
+                    m_value = value;
+                }
+            }
 
-			public key(Guid guid)
-			{
-				this.m_value = guid.ToString();
-			}
+            public key(Guid guid)
+            {
+                this.m_value = guid.ToString();
+            }
 
-			public key(string strGuid)
-			{
-				this.m_value = strGuid;
-			}
+            public key(string strGuid)
+            {
+                this.m_value = strGuid;
+            }
 
-			public static readonly key NULL_KEY;
-			static key()
-			{
-				NULL_KEY = new key("00000000-0000-0000-0000-000000000000");
-			}
+            public static readonly key NULL_KEY;
 
-			// This is the one-and-only implicit typecasting in SecondLife
-			public static implicit operator key(string strGuid)
-			{
-				return strGuid == null ? new key("") : new key(strGuid);
-			}
+            static key()
+            {
+                NULL_KEY = new key("00000000-0000-0000-0000-000000000000");
+            }
 
-			public static implicit operator key(String _strGuid)
-			{
-				string strGuid = _strGuid;
-				return strGuid == null ? new key("") : new key(strGuid);
-			}
+            // This is the one-and-only implicit typecasting in SecondLife
+            public static implicit operator key(string strGuid)
+            {
+                return strGuid == null ? new key("") : new key(strGuid);
+            }
 
-			public override string ToString()
-			{
-				if (this.guid == null) this.guid = "";
-				return this.guid.ToString();
-			}
+            public static implicit operator key(String _strGuid)
+            {
+                string strGuid = _strGuid;
+                return strGuid == null ? new key("") : new key(strGuid);
+            }
 
-			//public static explicit operator String(key k)
-			//{
-			//	return k.ToString();
-			//}
+            public override string ToString()
+            {
+                if (this.guid == null) this.guid = "";
+                return this.guid.ToString();
+            }
 
-			// Check this!!!!
-			public static implicit operator String(key k)
-			{
-				return k.ToString();
-			}
+            //public static explicit operator String(key k)
+            //{
+            //	return k.ToString();
+            //}
 
-			public static bool operator ==(key key1, key key2)
-			{
-				return (key1.guid == key2.guid);
-			}
+            // Check this!!!!
+            public static implicit operator String(key k)
+            {
+                return k.ToString();
+            }
 
-			public static bool operator !=(key key1, key key2)
-			{
-				return !(key1.guid == key2.guid);
-			}
+            public static bool operator ==(key key1, key key2)
+            {
+                return (key1.guid == key2.guid);
+            }
 
-			public static bool operator true(key k)
-			{
-				bool bResult = true;
-				if ((object)k == null || k.guid == NULL_KEY || k.guid == "") {
-					bResult = false;
-				}
-				return bResult;
-			}
+            public static bool operator !=(key key1, key key2)
+            {
+                return !(key1.guid == key2.guid);
+            }
 
-			public static bool operator false(key k)
-			{
-				bool bResult = false;
-				if ((object)k == null || k.guid == NULL_KEY || k.guid == "") {
-					bResult = true;
-				}
-				return bResult;
-			}
+            public static bool operator true(key k)
+            {
+                bool bResult = true;
+                if ((object)k == null || k.guid == NULL_KEY || k.guid == "") {
+                    bResult = false;
+                }
+                return bResult;
+            }
 
-			public override bool Equals(object obj)
-			{
-				try {
-					return (this == (key)obj);
-				} catch {
-					return false;
-				}
-			}
+            public static bool operator false(key k)
+            {
+                bool bResult = false;
+                if ((object)k == null || k.guid == NULL_KEY || k.guid == "") {
+                    bResult = true;
+                }
+                return bResult;
+            }
 
-			public override int GetHashCode()
-			{
-				return base.GetHashCode();
-			}
-		}
-	}
+            public override bool Equals(object obj)
+            {
+                try {
+                    return (this == (key)obj);
+                } catch {
+                    return false;
+                }
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
+        }
+    }
 }

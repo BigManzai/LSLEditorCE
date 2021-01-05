@@ -38,66 +38,53 @@
 // </summary>
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor.Solution
 {
 	public partial class SvnAguments : Form
-	{
-		public SvnAguments()
-		{
-			InitializeComponent();
-			this.DialogResult = DialogResult.Cancel;
-		}
+    {
+        public SvnAguments()
+        {
+            InitializeComponent();
+            this.DialogResult = DialogResult.Cancel;
+        }
 
-		public string Repository
-		{
-			get
-			{
-				return this.textBox1.Text.Trim();
-			}
-			set
-			{
-				this.textBox1.Text = value;
-			}
-		}
+        public string Repository {
+            get {
+                return this.textBox1.Text.Trim();
+            }
+            set {
+                this.textBox1.Text = value;
+            }
+        }
 
-		public string Comment
-		{
-			get
-			{
-				return this.textBox2.Text.Trim();
-			}
-			set
-			{
-				this.textBox2.Text = value;
-			}
-		}
+        public string Comment {
+            get {
+                return this.textBox2.Text.Trim();
+            }
+            set {
+                this.textBox2.Text = value;
+            }
+        }
 
-		public bool ReadOnly
-		{
-			set
-			{
-				this.textBox1.Enabled = !value;
-			}
-		}
+        public bool ReadOnly {
+            set {
+                this.textBox1.Enabled = !value;
+            }
+        }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			//Import();
-			this.DialogResult = DialogResult.OK;
-			this.Close();
-		}
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Import();
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
-		}
-	}
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+    }
 }

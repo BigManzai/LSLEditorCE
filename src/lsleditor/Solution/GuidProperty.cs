@@ -38,48 +38,40 @@
 // </summary>
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor.Solution
 {
 	public partial class GuidProperty : Form
-	{
-		private Solution.SolutionExplorer.RealTag realTag;
-		public Guid guid;
-		public GuidProperty(Solution.SolutionExplorer.RealTag realTag)
-		{
-			InitializeComponent();
+    {
+        private Solution.SolutionExplorer.RealTag realTag;
+        public Guid guid;
 
-			this.DialogResult = DialogResult.Cancel;
+        public GuidProperty(Solution.SolutionExplorer.RealTag realTag)
+        {
+            InitializeComponent();
 
-			this.Text += ": " + realTag.Name;
+            this.DialogResult = DialogResult.Cancel;
 
-			this.realTag = realTag;
-			this.textBox1.Text = realTag.Guid.ToString();
-		}
+            this.Text += ": " + realTag.Name;
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			this.Close();
-		}
+            this.realTag = realTag;
+            this.textBox1.Text = realTag.Guid.ToString();
+        }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				this.guid = new Guid(this.textBox1.Text);
-				this.DialogResult = DialogResult.OK;
-			}
-			catch
-			{
-			}
-			this.Close();
-		}
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
-
-	}
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try {
+                this.guid = new Guid(this.textBox1.Text);
+                this.DialogResult = DialogResult.OK;
+            } catch {
+            }
+            this.Close();
+        }
+    }
 }

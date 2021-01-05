@@ -37,32 +37,25 @@
 //
 // </summary>
 
-using System;
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
-
 using System.Windows.Forms;
 
 using Microsoft.Win32;
 
-using System.IO;
-using System.Diagnostics;
-
 namespace LSLEditor
 {
-	class Svn
+	internal class Svn
 	{
 		public string Output;
 		public string Error;
 
 		// HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\App Paths\svn.exe
 		// HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\svn.exe
-		public static string Executable
-		{
-			get
-			{
-				try
-				{
+		public static string Executable {
+			get {
+				try {
 					string strKey = @"Software\Microsoft\Windows\CurrentVersion\App Paths\svn.exe";
 					RegistryKey key = Registry.CurrentUser.OpenSubKey(strKey, false);
 					if (key == null)
@@ -70,18 +63,14 @@ namespace LSLEditor
 					string strExe = key.GetValue("").ToString();
 					key.Close();
 					return strExe;
-				}
-				catch
-				{
+				} catch {
 					return null;
 				}
 			}
 		}
 
-		public static bool IsInstalled
-		{
-			get
-			{
+		public static bool IsInstalled {
+			get {
 				return (Svn.Executable != null);
 			}
 		}
@@ -114,8 +103,7 @@ namespace LSLEditor
 
 			StringBuilder sb = new StringBuilder();
 
-			while (sr.Peek() >= 0)
-			{
+			while (sr.Peek() >= 0) {
 				char[] buffer = new char[1024];
 				sr.Read(buffer, 0, buffer.Length);
 				sb.Append(new string(buffer));
@@ -124,8 +112,7 @@ namespace LSLEditor
 			this.Output = sb.ToString();
 
 			sb = new StringBuilder();
-			while (err.Peek() >= 0)
-			{
+			while (err.Peek() >= 0) {
 				char[] buffer = new char[4096];
 				err.Read(buffer, 0, buffer.Length);
 				sb.Append(new string(buffer));
@@ -134,9 +121,9 @@ namespace LSLEditor
 
 			if (this.Error != "" && ShowError)
 				MessageBox.Show(this.Error, "SVN Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			
+
 			if (this.Output != "" && ShowOutput)
-					MessageBox.Show(this.Output, "SVN Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show(this.Output, "SVN Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
 			return (this.Error == "");
 		}

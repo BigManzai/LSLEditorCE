@@ -38,12 +38,11 @@
 // </summary>
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Diagnostics;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Text;
+
 /*
  	<p>
 		- Added: <b>Plugin support</b><br />
@@ -53,11 +52,12 @@ using System.Text;
 		Menu Tools - Options - Environment - Plugins - Check lslint checkbox<br />
 		When hitting the OK button, Menu - Tools - lslint should appear<br />
 	</p>
- 
+
  */
+
 namespace LSLEditor.Plugins
 {
-	class LSLint
+	internal class LSLint
 	{
 		public string ExceptionMessage;
 		public bool HasErrors;
@@ -66,11 +66,11 @@ namespace LSLEditor.Plugins
 		{
 			ExceptionMessage = "";
 		}
+
 		private string Execute(string strSourceCode)
 		{
 			string strAll = "";
-			try
-			{
+			try {
 				string strPluginName = "lslint";
 				string strArguments = "";
 				Process process = new Process();
@@ -91,9 +91,7 @@ namespace LSLEditor.Plugins
 				process.StandardInput.Close();
 				strAll = process.StandardError.ReadToEnd();
 				process.WaitForExit();
-			}
-			catch(Exception exception)
-			{
+			} catch (Exception exception) {
 				this.ExceptionMessage += exception.Message + "\r\n";
 			}
 			return strAll;
@@ -101,12 +99,11 @@ namespace LSLEditor.Plugins
 
 		private void RunOnce(ListView listView, EditForm editForm)
 		{
-			// ProjectName, ScriptName, 
+			// ProjectName, ScriptName,
 			string strErrors = Execute(editForm.SourceCode);
 			StringReader sr = new StringReader(strErrors);
 			int intNr = 1;
-			while (true)
-			{
+			while (true) {
 				string strLine = sr.ReadLine();
 				if (strLine == null)
 					break;
@@ -127,16 +124,13 @@ namespace LSLEditor.Plugins
 					intImageIndex = 0;
 
 				int intI = strLine.IndexOf("::");
-				if (intI > 0)
-				{
+				if (intI > 0) {
 					strLine = strLine.Substring(intI + 2).Trim();
 					intI = strLine.IndexOf(":");
-					if (intI > 0)
-					{
+					if (intI > 0) {
 						string strLineColumn = strLine.Substring(0, intI).Replace("(", "").Replace(")", "").Replace(" ", "");
 						string[] LineColumn = strLineColumn.Split(new char[] { ',' });
-						if (LineColumn.Length > 1)
-						{
+						if (LineColumn.Length > 1) {
 							int intLine = 0;
 							int intColumn = 0;
 
@@ -162,17 +156,16 @@ namespace LSLEditor.Plugins
 						editForm.FullPathName,		// 7
 						editForm.guid.ToString(),	// 8
 						editForm.IsScript.ToString()// 9
-							} , intImageIndex);
+							}, intImageIndex);
 				listView.Items.Add(lvi);
-				if(strErrorNr!="")
+				if (strErrorNr != "")
 					intNr++;
 			}
 		}
 
 		public bool SyntaxCheck(LSLEditorForm parent)
 		{
-			foreach (Form form in parent.Children)
-			{
+			foreach (Form form in parent.Children) {
 				EditForm editForm = form as EditForm;
 				if (editForm == null || editForm.IsDisposed)
 					continue;
