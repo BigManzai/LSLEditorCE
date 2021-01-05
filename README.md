@@ -16,4 +16,4 @@ Benutzung auf eigene gefahr, bitte speichern sie zwischendurch öfter ab.
 ## Kompilieren dieser Version
 Herunterladen und entpacken, Visual Studio Community 2019 (2017) herunterladen und installieren falls noch nicht geschehen, 
 
-src/lsleditor.sln öffnen, Debug oder Release starten.
+src/lsleditor.sln öffnen, Debuggen oder Release starten.

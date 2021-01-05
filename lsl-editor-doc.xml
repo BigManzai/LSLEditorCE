@@ -122,7 +122,7 @@
             <summary>
             When multiplied by compression parameter (1-9) gives the block size for compression
             9 gives the best compresssion but uses the most memory.
-            </summary>		
+            </summary>
         </member>
         <member name="F:LSLEditor.Decompressor.BZip2Constants.MAX_ALPHA_SIZE">
             <summary>
@@ -171,7 +171,7 @@
         </member>
         <member name="T:LSLEditor.Decompressor.BZip2InputStream">
             <summary>
-            An input stream that decompresses files in the BZip2 format 
+            An input stream that decompresses files in the BZip2 format
             </summary>
         </member>
         <member name="M:LSLEditor.Decompressor.BZip2InputStream.#ctor(System.IO.Stream)">
@@ -255,7 +255,7 @@
             <param name="offset">Offset in array to begin storing data</param>
             <param name="count">The maximum number of bytes to read</param>
             <returns>The total number of bytes read into the buffer. This might be less
-            than the number of bytes requested if that number of bytes are not 
+            than the number of bytes requested if that number of bytes are not
             currently available or zero if the end of the stream is reached.
             </returns>
         </member>
@@ -327,7 +327,7 @@
         <member name="M:LSLEditor.Decompressor.StrangeCRC.#ctor">
             <summary>
             Initialise a default instance of <see cref="T:LSLEditor.Decompressor.StrangeCRC"></see>
-            </summary>	
+            </summary>
         </member>
         <member name="M:LSLEditor.Decompressor.StrangeCRC.Reset">
             <summary>
@@ -348,7 +348,7 @@
         <member name="M:LSLEditor.Decompressor.StrangeCRC.Update(System.Byte[])">
             <summary>
             Update Crc based on a block of data
-            </summary>		
+            </summary>
         </member>
         <member name="M:LSLEditor.Decompressor.StrangeCRC.Update(System.Byte[],System.Int32,System.Int32)">
             <summary>
@@ -368,7 +368,7 @@
             Determines the color with which the client rectangle will be drawn.
             If you take this property instead of the BackColor it will not have any influence on the borders to the surrounding controls (DockPane).
             If you use BackColor the borders to the surrounding controls (DockPane) will also change there colors.
-            Alternatively you can use both of them (BackColor to draw the define the color of the borders and DockBackColor to define the color of the client rectangle). 
+            Alternatively you can use both of them (BackColor to draw the define the color of the borders and DockBackColor to define the color of the client rectangle).
             For Backgroundimages: Set your prefered Image, then set the DockBackColor and the BackColor to the same Color (Control)
             </summary>
         </member>
@@ -973,6 +973,7 @@
             It checks for each occurance of lineBefore (when it's an include statement) if it has a BEGIN after it.
             </summary>
             <param name="lineBefore"></param>
+            <param name="context"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.WriteAfterLine(System.Text.StringBuilder,System.String,System.String)">
@@ -1003,6 +1004,8 @@
             Returns the amount of tabs in front of an include statement
             </summary>
             <param name="includeLine"></param>
+            <param name="includeDepth"></param>
+            <param name="isDebug"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.GetSpacesForIndentedInclude(System.String,System.Int32,System.Boolean)">
@@ -1010,6 +1013,8 @@
             Returns the amount of spaces in front of an include statement
             </summary>
             <param name="includeLine"></param>
+            <param name="includeDepth"></param>
+            <param name="isDebug"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.GetTabsForIncludeScript(System.String,System.Int32,System.Boolean)">
@@ -1035,7 +1040,7 @@
             </summary>
             <param name="pathOfInclude"></param>
             <param name="sb"></param>
-            <param name="line"></param>
+            <param name="includeLine"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.WriteDebugScript(System.String,System.Text.StringBuilder,System.String)">
@@ -1044,7 +1049,7 @@
             </summary>
             <param name="pathOfInclude"></param>
             <param name="sb"></param>
-            <param name="line"></param>
+            <param name="includeLine"></param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.ImportScripts(System.String,System.String,System.Boolean)">
@@ -1053,6 +1058,7 @@
             </summary>
             <param name="strC">Sourcecode</param>
             <param name="pathOfScript">Path of the source code of the script</param>
+            <param name="ShowBeginEnd"></param>
             <returns>Sourcecode with imported scripts</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.RemoveScripts(System.String)">
@@ -1066,7 +1072,6 @@
             <summary>
             Call this to collapse LSL to LSLI
             </summary>
-            <param name="editform"></param>
             <returns>LSLI</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.CollapseToLSLIFromEditform(LSLEditor.EditForm)">
@@ -1080,7 +1085,6 @@
             <summary>
             Call this to collapse LSL to LSLI
             </summary>
-            <param name="editform"></param>
             <returns>LSLI</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIConverter.ExpandToLSL(LSLEditor.EditForm,System.Boolean)">
@@ -1088,6 +1092,7 @@
             Call this to expand LSLI to LSL
             </summary>
             <param name="editForm"></param>
+            <param name="ShowBeginEnd"></param>
             <returns>LSL</returns>
         </member>
         <member name="M:LSLEditor.Helpers.LSLIPathHelper.IsLSLI(System.String)">
@@ -1365,8 +1370,6 @@
             </summary>
             <param name="alignment">String alignment</param>
             <param name="flags">String format flags</param>
-            <param name="controlstyle">DataGridView style to apply (if available)</param>
-            <param name="overrideformat">True if user overrode alignment or flags</param>
             <returns></returns>
         </member>
         <member name="M:LSLEditor.Helpers.PrinterHelper.printDoc_PrintPage(System.Object,System.Drawing.Printing.PrintPageEventArgs)">
@@ -1389,7 +1392,6 @@
             <param name="color">Color to print in</param>
             <param name="alignment">Alignment - print to left, center or right</param>
             <param name="flags">String format flags</param>
-            <param name="useroverride">True if the user overrode the alignment or flags</param>
         </member>
         <member name="M:LSLEditor.Helpers.PrinterHelper.printfooter(System.Drawing.Graphics,System.Single@)">
             <summary>
@@ -2241,133 +2243,133 @@
         </member>
         <member name="T:LSLEditor.Properties.Resources">
             <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.ResourceManager">
             <summary>
-              Returns the cached ResourceManager instance used by this class.
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.Culture">
             <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.ADDITEM">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.COPY">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.CUT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.DEINDENT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.DELETE">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.END">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.export_file_32">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.FIND">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.ININDENT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.logo">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.NEWDOC">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.NEWPROJ">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.OPEN">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PASTE">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PRINT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PROJECT">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.PROPS">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.REDO">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.SAVE">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.SAVEALL">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.SAVEAS">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.START">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:LSLEditor.Properties.Resources.UNDO">
             <summary>
-              Looks up a localized resource of type System.Drawing.Bitmap.
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="T:LSLEditor.GroupboxEvent">
@@ -2376,18 +2378,18 @@
             </summary>
         </member>
         <member name="F:LSLEditor.GroupboxEvent.components">
-            <summary> 
+            <summary>
             Required designer variable.
             </summary>
         </member>
         <member name="M:LSLEditor.GroupboxEvent.Dispose(System.Boolean)">
-            <summary> 
+            <summary>
             Clean up any resources being used.
             </summary>
         </member>
         <member name="M:LSLEditor.GroupboxEvent.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
+            <summary>
+            Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
         </member>
@@ -2883,211 +2885,211 @@
             <param name="e"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.Http(System.String,LSLEditor.SecondLife.list,System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="strURL"></param>
-            <param name="lParameters"></param>
-            <param name="strBody"></param>
-            <returns></returns>
+             </summary>
+             <param name="strURL"></param>
+             <param name="lParameters"></param>
+             <param name="strBody"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.Email(System.String,System.String,System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="strRecipient"></param>
-            <param name="strSubject"></param>
-            <param name="strBody"></param>
+             </summary>
+             <param name="strRecipient"></param>
+             <param name="strSubject"></param>
+             <param name="strBody"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.VerboseMessage(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="strMessage"></param>
+             </summary>
+             <param name="strMessage"></param>
         </member>
         <member name="T:LSLEditor.SecondLifeHost.ShowDialogDelegate">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="host"></param>
-            <param name="objectName"></param>
-            <param name="k"></param>
-            <param name="name"></param>
-            <param name="message"></param>
-            <param name="buttons"></param>
-            <param name="channel"></param>
+             </summary>
+             <param name="host"></param>
+             <param name="objectName"></param>
+             <param name="k"></param>
+             <param name="name"></param>
+             <param name="message"></param>
+             <param name="buttons"></param>
+             <param name="channel"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.Dialog(LSLEditor.SecondLifeHost,LSLEditor.SecondLife.String,LSLEditor.SecondLife.key,LSLEditor.SecondLife.String,LSLEditor.SecondLife.String,LSLEditor.SecondLife.list,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="host"></param>
-            <param name="objectName"></param>
-            <param name="k"></param>
-            <param name="name"></param>
-            <param name="message"></param>
-            <param name="buttons"></param>
-            <param name="channel"></param>
+             </summary>
+             <param name="host"></param>
+             <param name="objectName"></param>
+             <param name="k"></param>
+             <param name="name"></param>
+             <param name="message"></param>
+             <param name="buttons"></param>
+             <param name="channel"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llDialog(LSLEditor.SecondLife.key,LSLEditor.SecondLife.String,LSLEditor.SecondLife.list,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="avatar"></param>
-            <param name="message"></param>
-            <param name="buttons"></param>
-            <param name="channel"></param>
+             </summary>
+             <param name="avatar"></param>
+             <param name="message"></param>
+             <param name="buttons"></param>
+             <param name="channel"></param>
         </member>
         <member name="T:LSLEditor.SecondLifeHost.ShowTextBoxDelegate">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="host"></param>
-            <param name="objectName"></param>
-            <param name="k"></param>
-            <param name="name"></param>
-            <param name="message"></param>
-            <param name="channel"></param>
+             </summary>
+             <param name="host"></param>
+             <param name="objectName"></param>
+             <param name="k"></param>
+             <param name="name"></param>
+             <param name="message"></param>
+             <param name="channel"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.TextBox(LSLEditor.SecondLifeHost,LSLEditor.SecondLife.String,LSLEditor.SecondLife.key,LSLEditor.SecondLife.String,LSLEditor.SecondLife.String,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="host"></param>
-            <param name="objectName"></param>
-            <param name="k"></param>
-            <param name="name"></param>
-            <param name="message"></param>
-            <param name="channel"></param>
+             </summary>
+             <param name="host"></param>
+             <param name="objectName"></param>
+             <param name="k"></param>
+             <param name="name"></param>
+             <param name="message"></param>
+             <param name="channel"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llTextBox(LSLEditor.SecondLife.key,LSLEditor.SecondLife.String,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="avatar"></param>
-            <param name="message"></param>
-            <param name="channel"></param>
+             </summary>
+             <param name="avatar"></param>
+             <param name="message"></param>
+             <param name="channel"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.SetPermissions(LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="intPermissions"></param>
+             </summary>
+             <param name="intPermissions"></param>
         </member>
         <member name="T:LSLEditor.SecondLifeHost.RequestPermissionsDelegate">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="host"></param>
-            <param name="objectName"></param>
-            <param name="k"></param>
-            <param name="name"></param>
-            <param name="agent"></param>
-            <param name="intPermissions"></param>
+             </summary>
+             <param name="host"></param>
+             <param name="objectName"></param>
+             <param name="k"></param>
+             <param name="name"></param>
+             <param name="agent"></param>
+             <param name="intPermissions"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.RequestPermissions(LSLEditor.SecondLifeHost,LSLEditor.SecondLife.String,LSLEditor.SecondLife.key,LSLEditor.SecondLife.String,LSLEditor.SecondLife.key,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="host"></param>
-            <param name="objectName"></param>
-            <param name="k"></param>
-            <param name="name"></param>
-            <param name="agent"></param>
-            <param name="intPermissions"></param>
+             </summary>
+             <param name="host"></param>
+             <param name="objectName"></param>
+             <param name="k"></param>
+             <param name="name"></param>
+             <param name="agent"></param>
+             <param name="intPermissions"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llRequestPermissions(LSLEditor.SecondLife.key,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="agent"></param>
-            <param name="intPermissions"></param>
+             </summary>
+             <param name="agent"></param>
+             <param name="intPermissions"></param>
         </member>
         <member name="F:LSLEditor.SecondLifeHost.intControls">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.SendControl(System.Windows.Forms.Keys)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="keys"></param>
+             </summary>
+             <param name="keys"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.TakeControls(System.Int32,System.Int32,System.Int32)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="intControls"></param>
-            <param name="accept"></param>
-            <param name="pass_on"></param>
+             </summary>
+             <param name="intControls"></param>
+             <param name="accept"></param>
+             <param name="pass_on"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.ReleaseControls">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetNotecardLineWorker(LSLEditor.SecondLife.key,System.String,System.Int32)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="k"></param>
-            <param name="strPath"></param>
-            <param name="line"></param>
+             </summary>
+             <param name="k"></param>
+             <param name="strPath"></param>
+             <param name="line"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetNotecardLine(System.String,System.Int32)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="name"></param>
-            <param name="line"></param>
-            <returns></returns>
+             </summary>
+             <param name="name"></param>
+             <param name="line"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetNumberOfNotecardLinesWorker(LSLEditor.SecondLife.key,System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="k"></param>
-            <param name="strPath"></param>
+             </summary>
+             <param name="k"></param>
+             <param name="strPath"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetNumberOfNotecardLines(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="name"></param>
-            <returns></returns>
+             </summary>
+             <param name="name"></param>
+             <returns></returns>
         </member>
         <member name="F:LSLEditor.SecondLifeHost.listXmlRpc">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llOpenRemoteDataChannel">
-            <summary>
+             <summary>
             
-            </summary>
+             </summary>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.xmlRpc_OnRequest(System.Object,LSLEditor.Helpers.XmlRpcRequestEventArgs)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
+             </summary>
+             <param name="sender"></param>
+             <param name="e"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llCloseRemoteDataChannel(LSLEditor.SecondLife.key)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="channel"></param>
+             </summary>
+             <param name="channel"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llRemoteDataReply(LSLEditor.SecondLife.key,LSLEditor.SecondLife.key,System.String,System.Int32)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="channel"></param>
-            <param name="message_id"></param>
-            <param name="sdata"></param>
-            <param name="idata"></param>
+             </summary>
+             <param name="channel"></param>
+             <param name="message_id"></param>
+             <param name="sdata"></param>
+             <param name="idata"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.llSendRemoteData(LSLEditor.SecondLife.key,System.String,System.Int32,System.String)">
             <summary>
@@ -3107,103 +3109,103 @@
             <param name="e"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetObjectName(System.Guid)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="guid"></param>
-            <returns></returns>
+             </summary>
+             <param name="guid"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetObjectName">
-            <summary>
+             <summary>
             
-            </summary>
-            <returns></returns>
+             </summary>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.SetObjectName(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="name"></param>
+             </summary>
+             <param name="name"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetObjectDescription(System.Guid)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="guid"></param>
-            <returns></returns>
+             </summary>
+             <param name="guid"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetObjectDescription">
-            <summary>
+             <summary>
             
-            </summary>
-            <returns></returns>
+             </summary>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.SetObjectDescription(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="description"></param>
+             </summary>
+             <param name="description"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetScriptName">
-            <summary>
+             <summary>
             
-            </summary>
-            <returns></returns>
+             </summary>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetKey">
-            <summary>
+             <summary>
             
-            </summary>
-            <returns></returns>
+             </summary>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetInventoryName(LSLEditor.SecondLife.integer,LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="type"></param>
-            <param name="number"></param>
-            <returns></returns>
+             </summary>
+             <param name="type"></param>
+             <param name="number"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetInventoryKey(LSLEditor.SecondLife.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="name"></param>
-            <returns></returns>
+             </summary>
+             <param name="name"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetInventoryNumber(LSLEditor.SecondLife.integer)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="type"></param>
-            <returns></returns>
+             </summary>
+             <param name="type"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetInventoryType(LSLEditor.SecondLife.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="name"></param>
-            <returns></returns>
+             </summary>
+             <param name="name"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.RemoveInventory(LSLEditor.SecondLife.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="name"></param>
+             </summary>
+             <param name="name"></param>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.GetSoundPlayer(System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="sound"></param>
-            <returns></returns>
+             </summary>
+             <param name="sound"></param>
+             <returns></returns>
         </member>
         <member name="M:LSLEditor.SecondLifeHost.sensor_timer_Elapsed(System.Object,System.Timers.ElapsedEventArgs)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
+             </summary>
+             <param name="sender"></param>
+             <param name="e"></param>
         </member>
         <member name="T:LSLEditor.SmtpClient">
             <summary>
@@ -3217,13 +3219,13 @@
             </summary>
         </member>
         <member name="M:LSLEditor.SyntaxRichTextBox.OnTextChanged(System.EventArgs)">
-             
+            
              OnTextChanged
             
         </member>
         <member name="M:LSLEditor.SyntaxRichTextBox.ColorLine(System.Int32,System.Int32)">
             
-            Color a line
+             Color a line
             
         </member>
         <member name="T:LSLEditor.CommunicationType">
