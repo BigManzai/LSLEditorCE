@@ -37,23 +37,22 @@
 //
 // </summary>
 
-using System;
+using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using System.CodeDom.Compiler;
+
 using Microsoft.CSharp;
 
 namespace LSLEditor.Helpers
 {
-	class CompilerHelper
+	internal class CompilerHelper
 	{
 		private static int FindDefaultLineNumber(string strCode)
 		{
 			StringReader sr = new StringReader(strCode);
 			int intI = 0;
-			while (true)
-			{
+			while (true) {
 				string strLine = sr.ReadLine();
 				if (strLine == null)
 					break;
@@ -73,7 +72,7 @@ namespace LSLEditor.Helpers
 			CompilerParameters cp = new CompilerParameters();
 
 			// Sept 15, 2007 -> 3, 30 oct 2007 -> 4
-			if(!Properties.Settings.Default.SkipWarnings)
+			if (!Properties.Settings.Default.SkipWarnings)
 				cp.WarningLevel = 4;
 
 			// Add common assemblies
@@ -104,11 +103,9 @@ namespace LSLEditor.Helpers
 
 			// Console.WriteLine(cr.Errors.HasWarnings.ToString());
 			// Check for compilation errors...
-			if (ListViewErrors != null && (cr.Errors.HasErrors || cr.Errors.HasWarnings))
-			{
+			if (ListViewErrors != null && (cr.Errors.HasErrors || cr.Errors.HasWarnings)) {
 				int intNr = 1;
-				foreach (CompilerError err in cr.Errors)
-				{
+				foreach (CompilerError err in cr.Errors) {
 					int intLine = err.Line;
 					if (intLine < intDefaultLineNumber)
 						intLine -= 4;
@@ -129,7 +126,7 @@ namespace LSLEditor.Helpers
 						editForm.FullPathName,	// 7
 						editForm.guid.ToString(),// 8
 						editForm.IsScript.ToString()// 9
-							} , intImageIndex);
+							}, intImageIndex);
 					ListViewErrors.Items.Add(lvi);
 					intNr++;
 				}

@@ -48,7 +48,7 @@ using System.Windows.Forms;
 
 namespace LSLEditor.Helpers
 {
-	class LSLIConverter
+	internal class LSLIConverter
 	{
 		private EditForm editForm;
 		private const string BEGIN = "//#BEGIN";
@@ -59,7 +59,7 @@ namespace LSLEditor.Helpers
 		public const string LSL_EXT = ".lsl";
 		public const string LSLI_EXT = ".lsli";
 		public static List<string> validExtensions = new List<string>() { LSLI_EXT, LSL_EXT };
-		
+
 		private const string INCLUDE_REGEX = "(\n|^)\\s*" + INCLUDE + "\\(\".*?\"\\).*";
 		private const string BEGIN_REGEX = "(\\s+|^)" + BEGIN;
 		private const string END_REGEX = "(\\s+|^)" + END;
@@ -73,7 +73,6 @@ namespace LSLEditor.Helpers
 
 		public LSLIConverter()
 		{
-
 		}
 
 		/// <summary>
@@ -86,38 +85,27 @@ namespace LSLEditor.Helpers
 			// Search in optional include directories
 			if (Properties.Settings.Default.IncludeDirectories == null)
 				Properties.Settings.Default.IncludeDirectories = new System.Collections.Specialized.StringCollection();
-			foreach (string directory in Properties.Settings.Default.IncludeDirectories)
-			{
+			foreach (string directory in Properties.Settings.Default.IncludeDirectories) {
 				string pFile;
-				if (file.ToLower().Contains(directory.ToLower()))
-				{
+				if (file.ToLower().Contains(directory.ToLower())) {
 					pFile = file;
-				}
-				else
-				{
+				} else {
 					pFile = directory + file;
 				}
 
-				if (File.Exists(pFile))
-				{
+				if (File.Exists(pFile)) {
 					return pFile;
 				}
 
-				if (Path.GetExtension(file) == "")
-				{
-					foreach (string extension in validExtensions)
-					{
-						if (file.Contains(directory))
-						{
+				if (Path.GetExtension(file) == "") {
+					foreach (string extension in validExtensions) {
+						if (file.Contains(directory)) {
 							pFile = file + extension;
-						}
-						else
-						{
+						} else {
 							pFile = directory + file + extension;
 						}
 
-						if (File.Exists(pFile))
-						{
+						if (File.Exists(pFile)) {
 							return pFile;
 						}
 					}
@@ -125,17 +113,14 @@ namespace LSLEditor.Helpers
 			}
 
 			// Search for file relative to the script
-			if (File.Exists(file))
-			{
+			if (File.Exists(file)) {
 				return file;
 			}
 
-			if (Path.GetExtension(file) == "")
-			{
+			if (Path.GetExtension(file) == "") {
 				string pFile = "";
 
-				foreach (string extension in validExtensions)
-				{
+				foreach (string extension in validExtensions) {
 					pFile = file + extension;
 
 					if (File.Exists(pFile)) {
@@ -161,19 +146,14 @@ namespace LSLEditor.Helpers
 			string pathOfIncludeOriginal = pathOfInclude;
 			pathOfInclude = SearchFile(pathOfInclude);
 
-			if (pathOfInclude == "")
-			{
+			if (pathOfInclude == "") {
 				// If path is relative and no includedirectories
-				if (!Path.IsPathRooted(pathOfIncludeOriginal))
-				{
+				if (!Path.IsPathRooted(pathOfIncludeOriginal)) {
 					pathOfInclude = LSLIPathHelper.GetRelativePath(pathOfScript, Environment.CurrentDirectory) + pathOfIncludeOriginal;
-				}
-				else if (this.implementedIncludes.Count > 0) // If there are already includes, the relative path is already correct
-				{
+				} else if (this.implementedIncludes.Count > 0) // If there are already includes, the relative path is already correct
+				  {
 					pathOfInclude = Path.GetDirectoryName(this.implementedIncludes.LastOrDefault()) + '\\' + pathOfIncludeOriginal;
-				}
-				else
-				{
+				} else {
 					pathOfInclude = pathOfIncludeOriginal;
 				}
 
@@ -192,11 +172,9 @@ namespace LSLEditor.Helpers
 		/// <returns></returns>
 		public static List<int> AllIndexesOf(string str, string value)
 		{
-			if (!String.IsNullOrEmpty(value))
-			{
+			if (!String.IsNullOrEmpty(value)) {
 				List<int> indexes = new List<int>();
-				for (int index = 0; ; index += value.Length)
-				{
+				for (int index = 0; ; index += value.Length) {
 					index = str.IndexOf(value, index);
 					if (index == -1)
 						return indexes;
@@ -244,8 +222,7 @@ namespace LSLEditor.Helpers
 				// Get all matches with this linebefore
 				List<int> allIndexes = AllIndexesOf(context, lineBefore);
 
-				foreach (int index in allIndexes)
-				{
+				foreach (int index in allIndexes) {
 					// Check wether there is already a begin statement
 					string targetText = context.Substring(index + lineBefore.Length); // This is the text after lineBefore
 					targetText = Regex.Replace(targetText, @"\s+", "");
@@ -253,12 +230,10 @@ namespace LSLEditor.Helpers
 					if (targetText.StartsWith(BEGIN)) // If the targetted text starts with BEGIN, then we should keep searching
 					{
 						continue;
-					} else
-					{
+					} else {
 						return index; // Found a free spot! Return the index
 					}
 				}
-
 			}
 			return context.LastIndexOf(lineBefore); // If the lineBefore is not an include statement, simply return the last index of it.
 		}
@@ -277,14 +252,12 @@ namespace LSLEditor.Helpers
 			int includeIndex = lastIndexOfLineBefore + lineBefore.Length;
 
 			string hasSeperator = lineBefore.Substring(lineBefore.Length - 1, 1);
-			if (hasSeperator != "\n")
-			{
+			if (hasSeperator != "\n") {
 				newLine = "\n" + newLine;
 			}
 
 			hasSeperator = newLine.Substring(newLine.Length - 1, 1);
-			if (hasSeperator != "\n")
-			{
+			if (hasSeperator != "\n") {
 				newLine += "\n";
 			}
 
@@ -298,8 +271,7 @@ namespace LSLEditor.Helpers
 		/// <param name="message"></param>
 		private void ShowError(string message)
 		{
-			if (!editForm.verboseQueue.Contains(message))
-			{
+			if (!editForm.verboseQueue.Contains(message)) {
 				MessageBox.Show(message, "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				editForm.verboseQueue.Add(message);
 			}
@@ -314,13 +286,11 @@ namespace LSLEditor.Helpers
 		private string GetTabsForIncludeDepth(int includeDepth, bool OneLess = false)
 		{
 			string tabs = "";
-			if(OneLess && includeDepth != 0)
-			{
+			if (OneLess && includeDepth != 0) {
 				includeDepth--;
 			}
 
-			for(int i = 0; i < includeDepth; i++)
-			{
+			for (int i = 0; i < includeDepth; i++) {
 				tabs += "\t";
 			}
 			return tabs;
@@ -335,14 +305,12 @@ namespace LSLEditor.Helpers
 		/// <returns></returns>
 		private string GetTabsForIndentedInclude(string includeLine, int includeDepth, bool isDebug = false)
 		{
-			if(includeLine.Contains('\t'))
-			{
+			if (includeLine.Contains('\t')) {
 				int includeIndex = Regex.Match(includeLine, INCLUDE).Index;
 
 				string beforeInclude = includeLine.Substring(0, includeIndex);
 
-				if(beforeInclude.Contains('\n'))
-				{
+				if (beforeInclude.Contains('\n')) {
 					// Last '\n' before includeIndex
 					int lastIndexNewLine = beforeInclude.LastIndexOf('\n');
 					beforeInclude = beforeInclude.Substring(lastIndexNewLine, beforeInclude.Length - lastIndexNewLine);
@@ -351,17 +319,14 @@ namespace LSLEditor.Helpers
 				int tabCount = 0;
 
 				// Count the tabs between the start of the line and the begin of the include.
-				if (isDebug)
-				{
+				if (isDebug) {
 					tabCount = beforeInclude.Count(f => f == '\t') - (includeDepth - 1); // The tabcount should be without the includeDepth, because this was already added.
-				} else
-				{
+				} else {
 					tabCount = beforeInclude.Count(f => f == '\t');
 				}
 
 				string tabs = "";
-				for (int i = 0; i < tabCount; i++)
-				{
+				for (int i = 0; i < tabCount; i++) {
 					tabs += "\t";
 				}
 				return tabs;
@@ -378,27 +343,22 @@ namespace LSLEditor.Helpers
 		/// <returns></returns>
 		private string GetSpacesForIndentedInclude(string includeLine, int includeDepth, bool isDebug = false)
 		{
-			if (includeLine.Contains(" "))
-			{
+			if (includeLine.Contains(" ")) {
 				int includeIndex = Regex.Match(includeLine, INCLUDE).Index;
 
 				string beforeInclude = includeLine.Substring(0, includeIndex);
 				int spaceCount = 0;
 
 				// Count the space between the start of the line and the begin of the include.
-				if (isDebug)
-				{
+				if (isDebug) {
 					// The spacecount should be without the includeDepth, because this was already added.
-					spaceCount = beforeInclude.Count(f => f == ' ') - (includeDepth - 1); 
-				}
-				else
-				{
+					spaceCount = beforeInclude.Count(f => f == ' ') - (includeDepth - 1);
+				} else {
 					spaceCount = beforeInclude.Count(f => f == ' ');
 				}
 
 				string spaces = "";
-				for (int i = 0; i < spaceCount; i++)
-				{
+				for (int i = 0; i < spaceCount; i++) {
 					spaces += " ";
 				}
 				return spaces;
@@ -418,10 +378,10 @@ namespace LSLEditor.Helpers
 			string includeDepthTabs = GetTabsForIncludeDepth(includeDepth, OneLess);
 			string indentedIncludeTabs = GetTabsForIndentedInclude(includeLine, includeDepth, true);
 			string spacesForIndentedInclude = GetSpacesForIndentedInclude(includeLine, includeDepth, true);
-			
+
 			return includeDepthTabs + indentedIncludeTabs + spacesForIndentedInclude;
 		}
-		
+
 		/// <summary>
 		/// Returns the line of the match within a context
 		/// </summary>
@@ -445,20 +405,16 @@ namespace LSLEditor.Helpers
 		private StringBuilder WriteExportScript(string pathOfInclude, StringBuilder sb, string includeLine)
 		{
 			string script = GetTabsForIndentedInclude(includeLine, includeDepth) + EMPTY_SCRIPT;
-			using (StreamReader sr = new StreamReader(pathOfInclude))
-			{
+			using (StreamReader sr = new StreamReader(pathOfInclude)) {
 				this.implementedIncludes.Add(Path.GetFullPath(pathOfInclude));
 				string scriptRaw = sr.ReadToEnd();
 				scriptRaw = GetTabsForIndentedInclude(includeLine, includeDepth) + scriptRaw.Replace("\n", "\n" + GetTabsForIndentedInclude(includeLine, includeDepth));
 
 				// If there are includes in the included script
-				if (Regex.IsMatch(scriptRaw, INCLUDE_REGEX))
-				{
+				if (Regex.IsMatch(scriptRaw, INCLUDE_REGEX)) {
 					// Then import these scripts too
 					script = ImportScripts(scriptRaw, pathOfInclude, false) + "\n";
-				}
-				else if (!Regex.IsMatch(scriptRaw, EMPTY_OR_WHITESPACE_REGEX))
-				{
+				} else if (!Regex.IsMatch(scriptRaw, EMPTY_OR_WHITESPACE_REGEX)) {
 					script = scriptRaw + "\n";
 				}
 			}
@@ -481,20 +437,17 @@ namespace LSLEditor.Helpers
 			// Insert included script
 			string script = GetTabsForIncludeScript(includeLine, includeDepth) + EMPTY_SCRIPT;
 
-			using (StreamReader sr = new StreamReader(pathOfInclude))
-			{
+			using (StreamReader sr = new StreamReader(pathOfInclude)) {
 				this.implementedIncludes.Add(Path.GetFullPath(pathOfInclude));
 				string scriptRaw = sr.ReadToEnd();
 				scriptRaw = GetTabsForIncludeScript(includeLine, includeDepth) + scriptRaw.Replace("\n", "\n" + GetTabsForIncludeScript(includeLine, includeDepth));
 
 				// If there are includes in the included script
-				if (Regex.IsMatch(scriptRaw, INCLUDE_REGEX))
-				{
+				if (Regex.IsMatch(scriptRaw, INCLUDE_REGEX)) {
 					// Then import these scripts too
 					script = "\n" + ImportScripts(scriptRaw, pathOfInclude) + "\n";
-				}
-				else if (!Regex.IsMatch(scriptRaw, EMPTY_OR_WHITESPACE_REGEX))// Check if its not empty or whitespace
-				{
+				} else if (!Regex.IsMatch(scriptRaw, EMPTY_OR_WHITESPACE_REGEX))// Check if its not empty or whitespace
+				  {
 					script = scriptRaw + "\n";
 				}
 			}
@@ -513,8 +466,7 @@ namespace LSLEditor.Helpers
 		/// <returns>Sourcecode with imported scripts</returns>
 		private string ImportScripts(string strC, string pathOfScript, bool ShowBeginEnd = true)
 		{
-			if(!LSLIPathHelper.IsLSLI(pathOfScript))
-			{
+			if (!LSLIPathHelper.IsLSLI(pathOfScript)) {
 				// If it's not an LSLI script, it can't import a script
 				return strC;
 			}
@@ -522,10 +474,8 @@ namespace LSLEditor.Helpers
 			StringBuilder sb = new StringBuilder(strC);
 			MatchCollection mIncludes = Regex.Matches(strC, INCLUDE_REGEX); // Find includes
 
-			foreach (Match m in mIncludes)
-			{
-				if (this.includeDepth == 0)
-				{
+			foreach (Match m in mIncludes) {
+				if (this.includeDepth == 0) {
 					this.implementedIncludes = new List<string>();
 				}
 				includeDepth++;
@@ -537,30 +487,22 @@ namespace LSLEditor.Helpers
 				string pathOfInclude = pathOfIncludeOriginal;
 				string ext = Path.GetExtension(pathOfInclude).ToLower();
 
-				if ((validExtensions.Contains(ext) || ext == "") && IsDifferentScript(pathOfInclude, pathOfScript))
-				{
+				if ((validExtensions.Contains(ext) || ext == "") && IsDifferentScript(pathOfInclude, pathOfScript)) {
 					pathOfInclude = GetFilePath(pathOfInclude, pathOfScript);
 
-					if (pathOfInclude != "" && !this.implementedIncludes.Contains(Path.GetFullPath(pathOfInclude)))
-					{
-						if (!ShowBeginEnd)
-						{
+					if (pathOfInclude != "" && !this.implementedIncludes.Contains(Path.GetFullPath(pathOfInclude))) {
+						if (!ShowBeginEnd) {
 							sb = WriteExportScript(pathOfInclude, sb, line);
-						}
-						else
-						{
+						} else {
 							sb = WriteDebugScript(pathOfInclude, sb, line);
 						}
-					}
-					else if (pathOfInclude != "" && this.implementedIncludes.Contains(Path.GetFullPath(pathOfInclude)))
-					{
+					} else if (pathOfInclude != "" && this.implementedIncludes.Contains(Path.GetFullPath(pathOfInclude))) {
 						string message = "Error: Recursive include loop detected: \"" + Path.GetFullPath(pathOfInclude) +
 							"\". In script \""
 							+ Path.GetFileName(pathOfScript) + "\". Line " + lineNumber + ".";
 
 						ShowError(message);
-					} else
-					{
+					} else {
 						string relativeToPathOfScript = LSLIPathHelper.GetRelativePath(pathOfScript, Environment.CurrentDirectory);
 						string correctPath = Path.GetFullPath(relativeToPathOfScript) + pathOfIncludeOriginal;
 						string message = "Error: Unable to find file \"" + correctPath +
@@ -570,8 +512,7 @@ namespace LSLEditor.Helpers
 					}
 				}
 				includeDepth--;
-				if(this.implementedIncludes.Count > 0)
-				{
+				if (this.implementedIncludes.Count > 0) {
 					this.implementedIncludes.Remove(this.implementedIncludes.Last());
 				}
 			}
@@ -587,22 +528,18 @@ namespace LSLEditor.Helpers
 		private static string RemoveScripts(string strC)
 		{
 			StringBuilder sb = new StringBuilder(strC);
-			
+
 			int indexOfFirstBeginStatement = -1;
 			uint depth = 0;
 			int readIndex = 0;
 
-			using (StringReader sr = new StringReader(strC))
-			{
+			using (StringReader sr = new StringReader(strC)) {
 				int amountOfLines = strC.Split('\n').Length;
-				for (int i = 1; i < amountOfLines; i++)
-				{
+				for (int i = 1; i < amountOfLines; i++) {
 					string line = sr.ReadLine();
 
-					if (Regex.IsMatch(line, BEGIN_REGEX))
-					{
-						if (depth == 0)
-						{
+					if (Regex.IsMatch(line, BEGIN_REGEX)) {
+						if (depth == 0) {
 							indexOfFirstBeginStatement = readIndex;
 						}
 						depth++;
@@ -610,12 +547,10 @@ namespace LSLEditor.Helpers
 
 					readIndex += line.Length + 1;
 
-					if (Regex.IsMatch(line, END_REGEX))
-					{
+					if (Regex.IsMatch(line, END_REGEX)) {
 						depth--;
 
-						if (depth == 0)
-						{
+						if (depth == 0) {
 							sb.Remove(indexOfFirstBeginStatement, (readIndex - indexOfFirstBeginStatement));
 							readIndex -= readIndex - indexOfFirstBeginStatement;
 							indexOfFirstBeginStatement = -1;
@@ -655,8 +590,7 @@ namespace LSLEditor.Helpers
 		public static string CollapseToLSLIFromPath(string path)
 		{
 			string sourceCode = "";
-			using(StreamReader sr = new StreamReader(path))
-			{
+			using (StreamReader sr = new StreamReader(path)) {
 				sourceCode = sr.ReadToEnd();
 			}
 
@@ -676,8 +610,7 @@ namespace LSLEditor.Helpers
 			string strC = editForm.SourceCode;
 			string fullPathName = editForm.FullPathName;
 
-			if (LSLIPathHelper.IsExpandedLSL(editForm.ScriptName))
-			{
+			if (LSLIPathHelper.IsExpandedLSL(editForm.ScriptName)) {
 				// Collapse first, to ensure it is expanded showing or not showing begin/end.
 				strC = CollapseToLSLI(strC);
 				// Mimic LSLI file

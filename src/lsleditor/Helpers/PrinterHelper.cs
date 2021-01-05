@@ -38,9 +38,6 @@
 // </summary>
 
 using System;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Globalization;
@@ -52,55 +49,63 @@ namespace LSLEditor.Helpers
 	/// Data Grid View Printer. Print functions for a datagridview, since MS
 	/// didn't see fit to do it.
 	/// </summary>
-	class PrinterHelper
+	internal class PrinterHelper
 	{
 		//---------------------------------------------------------------------
 		// global variables
 		//---------------------------------------------------------------------
+
 		#region global variables
 
 		// the data grid view we're printing
-		EditForm editForm = null;
-		int intCharFrom;
-		int intCharTo;
-		int intCharPrint;
+		private EditForm editForm = null;
+
+		private int intCharFrom;
+		private int intCharTo;
+		private int intCharPrint;
 
 		// print document
-		PrintDocument docToPrint = null;
+		private PrintDocument docToPrint = null;
 
 		// print dialogue
-		PrintDialog pd = null;
+		private PrintDialog pd = null;
 
 		// print status items
-		int fromPage = 0;
-		int toPage = -1;
+		private int fromPage = 0;
+
+		private int toPage = -1;
 
 		// page formatting options
-		int pageHeight = 0;
-		int pageWidth = 0;
-		int printWidth = 0;
-		int CurrentPage = 0;
-		PrintRange printRange;
+		private int pageHeight = 0;
+
+		private int pageWidth = 0;
+		private int printWidth = 0;
+		private int CurrentPage = 0;
+		private PrintRange printRange;
 
 		// calculated values
 		private float footerHeight = 0;
+
 		private float pagenumberHeight = 0;
-		#endregion
+
+		#endregion global variables
 
 		//---------------------------------------------------------------------
 		// properties - settable by user
 		//---------------------------------------------------------------------
+
 		#region properties
 
 		// Title
+
 		#region title properties
 
 		/// <summary>
 		/// Title for this report. Default is empty.
 		/// </summary>
 		private String title;
-		public String Title
-		{
+
+		public String Title {
 			get { return title; }
 			set { title = value; docToPrint.DocumentName = title; }
 		}
@@ -109,8 +114,8 @@ namespace LSLEditor.Helpers
 		/// Font for the title. Default is Tahoma, 18pt.
 		/// </summary>
 		private Font titlefont;
-		public Font TitleFont
-		{
+
+		public Font TitleFont {
 			get { return titlefont; }
 			set { titlefont = value; }
 		}
@@ -119,8 +124,8 @@ namespace LSLEditor.Helpers
 		/// Foreground color for the title. Default is Black
 		/// </summary>
 		private Color titlecolor;
-		public Color TitleColor
-		{
+
+		public Color TitleColor {
 			get { return titlecolor; }
 			set { titlecolor = value; }
 		}
@@ -130,8 +135,8 @@ namespace LSLEditor.Helpers
 		/// Alignment - Near;
 		/// </summary>
 		private StringAlignment titlealignment;
-		public StringAlignment TitleAlignment
-		{
+
+		public StringAlignment TitleAlignment {
 			get { return titlealignment; }
 			set { titlealignment = value; }
 		}
@@ -141,22 +146,24 @@ namespace LSLEditor.Helpers
 		/// are: FormatFlags - NoWrap, LineLimit, NoClip
 		/// </summary>
 		private StringFormatFlags titleformatflags;
-		public StringFormatFlags TitleFormatFlags
-		{
+
+		public StringFormatFlags TitleFormatFlags {
 			get { return titleformatflags; }
 			set { titleformatflags = value; }
 		}
-		#endregion
+
+		#endregion title properties
 
 		// SubTitle
+
 		#region subtitle properties
 
 		/// <summary>
 		/// SubTitle for this report. Default is empty.
 		/// </summary>
 		private String subtitle;
-		public String SubTitle
-		{
+
+		public String SubTitle {
 			get { return subtitle; }
 			set { subtitle = value; }
 		}
@@ -165,8 +172,8 @@ namespace LSLEditor.Helpers
 		/// Font for the subtitle. Default is Tahoma, 12pt.
 		/// </summary>
 		private Font subtitlefont;
-		public Font SubTitleFont
-		{
+
+		public Font SubTitleFont {
 			get { return subtitlefont; }
 			set { subtitlefont = value; }
 		}
@@ -175,8 +182,8 @@ namespace LSLEditor.Helpers
 		/// Foreground color for the subtitle. Default is Black
 		/// </summary>
 		private Color subtitlecolor;
-		public Color SubTitleColor
-		{
+
+		public Color SubTitleColor {
 			get { return subtitlecolor; }
 			set { subtitlecolor = value; }
 		}
@@ -186,8 +193,8 @@ namespace LSLEditor.Helpers
 		/// Alignment - Near;
 		/// </summary>
 		private StringAlignment subtitlealignment;
-		public StringAlignment SubTitleAlignment
-		{
+
+		public StringAlignment SubTitleAlignment {
 			get { return subtitlealignment; }
 			set { subtitlealignment = value; }
 		}
@@ -197,22 +204,24 @@ namespace LSLEditor.Helpers
 		/// are: FormatFlags - NoWrap, LineLimit, NoClip
 		/// </summary>
 		private StringFormatFlags subtitleformatflags;
-		public StringFormatFlags SubTitleFormatFlags
-		{
+
+		public StringFormatFlags SubTitleFormatFlags {
 			get { return subtitleformatflags; }
 			set { subtitleformatflags = value; }
 		}
-		#endregion
+
+		#endregion subtitle properties
 
 		// Footer
+
 		#region footer properties
 
 		/// <summary>
 		/// footer for this report. Default is empty.
 		/// </summary>
 		private String footer;
-		public String Footer
-		{
+
+		public String Footer {
 			get { return footer; }
 			set { footer = value; }
 		}
@@ -221,8 +230,8 @@ namespace LSLEditor.Helpers
 		/// Font for the footer. Default is Tahoma, 10pt.
 		/// </summary>
 		private Font footerfont;
-		public Font FooterFont
-		{
+
+		public Font FooterFont {
 			get { return footerfont; }
 			set { footerfont = value; }
 		}
@@ -231,8 +240,8 @@ namespace LSLEditor.Helpers
 		/// Foreground color for the footer. Default is Black
 		/// </summary>
 		private Color footercolor;
-		public Color FooterColor
-		{
+
+		public Color FooterColor {
 			get { return footercolor; }
 			set { footercolor = value; }
 		}
@@ -242,8 +251,8 @@ namespace LSLEditor.Helpers
 		/// Alignment - Center;
 		/// </summary>
 		private StringAlignment footeralignment;
-		public StringAlignment FooterAlignment
-		{
+
+		public StringAlignment FooterAlignment {
 			get { return footeralignment; }
 			set { footeralignment = value; }
 		}
@@ -253,29 +262,31 @@ namespace LSLEditor.Helpers
 		/// are: FormatFlags - NoWrap, LineLimit, NoClip
 		/// </summary>
 		private StringFormatFlags footerformatflags;
-		public StringFormatFlags FooterFormatFlags
-		{
+
+		public StringFormatFlags FooterFormatFlags {
 			get { return footerformatflags; }
 			set { footerformatflags = value; }
 		}
 
 		private float footerspacing;
-		public float FooterSpacing
-		{
+
+		public float FooterSpacing {
 			get { return footerspacing; }
 			set { footerspacing = value; }
 		}
-		#endregion
+
+		#endregion footer properties
 
 		// Page Numbering
+
 		#region page number properties
 
 		/// <summary>
 		/// Include page number in the printout. Default is true.
 		/// </summary>
 		private bool pageno = true;
-		public bool PageNumbers
-		{
+
+		public bool PageNumbers {
 			get { return pageno; }
 			set { pageno = value; }
 		}
@@ -284,8 +295,8 @@ namespace LSLEditor.Helpers
 		/// Font for the page number, Default is Tahoma, 8pt.
 		/// </summary>
 		private Font pagenofont;
-		public Font PageNumberFont
-		{
+
+		public Font PageNumberFont {
 			get { return pagenofont; }
 			set { pagenofont = value; }
 		}
@@ -294,8 +305,8 @@ namespace LSLEditor.Helpers
 		/// Text color (foreground) for the page number. Default is Black
 		/// </summary>
 		private Color pagenocolor;
-		public Color PageNumberColor
-		{
+
+		public Color PageNumberColor {
 			get { return pagenocolor; }
 			set { pagenocolor = value; }
 		}
@@ -305,8 +316,8 @@ namespace LSLEditor.Helpers
 		/// Alignment - Near;
 		/// </summary>
 		private StringAlignment pagenumberalignment;
-		public StringAlignment PaageNumberAlignment
-		{
+
+		public StringAlignment PaageNumberAlignment {
 			get { return pagenumberalignment; }
 			set { pagenumberalignment = value; }
 		}
@@ -316,8 +327,8 @@ namespace LSLEditor.Helpers
 		/// are: FormatFlags - NoWrap, LineLimit, NoClip
 		/// </summary>
 		private StringFormatFlags pagenumberformatflags;
-		public StringFormatFlags PageNumberFormatFlags
-		{
+
+		public StringFormatFlags PageNumberFormatFlags {
 			get { return pagenumberformatflags; }
 			set { pagenumberformatflags = value; }
 		}
@@ -327,8 +338,8 @@ namespace LSLEditor.Helpers
 		/// of the page. Default is false: page numbers on the bottom of the page
 		/// </summary>
 		private bool pagenumberontop = false;
-		public bool PageNumberInHeader
-		{
+
+		public bool PageNumberInHeader {
 			get { return pagenumberontop; }
 			set { pagenumberontop = value; }
 		}
@@ -338,31 +349,31 @@ namespace LSLEditor.Helpers
 		/// same line as the header / footer? Default is false;
 		/// </summary>
 		private bool pagenumberonseparateline = false;
-		public bool PaageNumberOnSeparateLine
-		{
+
+		public bool PaageNumberOnSeparateLine {
 			get { return pagenumberonseparateline; }
 			set { pagenumberonseparateline = value; }
 		}
 
-
-		#endregion
+		#endregion page number properties
 
 		// Page Level Properties
+
 		#region page level properties
 
 		/// <summary>
 		/// Page margins override. Default is (60, 60, 60, 60)
 		/// </summary>
 		private Margins printmargins;
-		public Margins PrintMargins
-		{
+
+		public Margins PrintMargins {
 			get { return printmargins; }
 			set { printmargins = value; }
 		}
 
-		#endregion
+		#endregion page level properties
 
-		#endregion
+		#endregion properties
 
 		/// <summary>
 		/// Constructor for PrinterHelper
@@ -418,12 +429,10 @@ namespace LSLEditor.Helpers
 			setupPrintDialogue();
 
 			// show print dialog
-			if (pd.ShowDialog() == DialogResult.OK)
-			{
+			if (pd.ShowDialog() == DialogResult.OK) {
 				SetupPrint(pd);
 				docToPrint.Print();
 			}
-
 		}
 
 		/// <summary>
@@ -437,8 +446,7 @@ namespace LSLEditor.Helpers
 			setupPrintDialogue();
 
 			// show print dialog
-			if (pd.ShowDialog() == DialogResult.OK)
-			{
+			if (pd.ShowDialog() == DialogResult.OK) {
 				SetupPrint(pd);
 				PrintPreviewDialog ppdialog = new PrintPreviewDialog();
 				ppdialog.Document = docToPrint;
@@ -452,21 +460,18 @@ namespace LSLEditor.Helpers
 		/// and columns that will be printed.
 		/// </summary>
 		/// <param name="pd">The print dialog the user just filled out</param>
-		void SetupPrint(PrintDialog pd)
+		private void SetupPrint(PrintDialog pd)
 		{
 			//-----------------------------------------------------------------
 			// save data from print dialog and document
 			//-----------------------------------------------------------------
 
 			// check to see if we're doing landscape printing
-			if (docToPrint.DefaultPageSettings.Landscape)
-			{
+			if (docToPrint.DefaultPageSettings.Landscape) {
 				// landscape: switch width and height
 				pageHeight = docToPrint.DefaultPageSettings.PaperSize.Width;
 				pageWidth = docToPrint.DefaultPageSettings.PaperSize.Height;
-			}
-			else
-			{
+			} else {
 				// portrait: keep width and height as expected
 				pageHeight = docToPrint.DefaultPageSettings.PaperSize.Height;
 				pageWidth = docToPrint.DefaultPageSettings.PaperSize.Width;
@@ -480,14 +485,11 @@ namespace LSLEditor.Helpers
 			printRange = pd.PrinterSettings.PrintRange;
 
 			// pages to print handles "some pages" option
-			if (PrintRange.SomePages == printRange)
-			{
+			if (PrintRange.SomePages == printRange) {
 				// set limits to only print some pages
 				fromPage = pd.PrinterSettings.FromPage;
 				toPage = pd.PrinterSettings.ToPage;
-			}
-			else
-			{
+			} else {
 				// set extremes so that we'll print all pages
 				fromPage = 0;
 				toPage = 2147483647;
@@ -498,18 +500,14 @@ namespace LSLEditor.Helpers
 			//-----------------------------------------------------------------
 
 			// pages (handles "selection" and "current page" options
-			if (PrintRange.Selection == printRange)
-			{
+			if (PrintRange.Selection == printRange) {
 				intCharPrint = this.editForm.TextBox.SelectionStart;
 				intCharFrom = intCharPrint;
 				intCharTo = intCharFrom + this.editForm.TextBox.SelectionLength;
+			} else if (PrintRange.CurrentPage == printRange) {
 			}
-			else if (PrintRange.CurrentPage == printRange)
-			{
-			}
-			// this is the default for print all
-			else
-			{
+			  // this is the default for print all
+			  else {
 				intCharPrint = 0;
 				intCharFrom = intCharPrint;
 				intCharTo = this.editForm.TextBox.Text.Length;
@@ -565,11 +563,9 @@ namespace LSLEditor.Helpers
 			float printpos = printmargins.Top;
 
 			// print page number if user selected it
-			if (pagenumberontop)
-			{
+			if (pagenumberontop) {
 				// if we have a page number to print
-				if (pageno)
-				{
+				if (pageno) {
 					// ... then print it
 					printsection(e.Graphics, ref printpos, "Page " + CurrentPage.ToString(CultureInfo.CurrentCulture),
 						pagenofont, pagenocolor, pagenumberalignment, pagenumberformatflags);
@@ -598,13 +594,11 @@ namespace LSLEditor.Helpers
 			// Check for more pages
 			if (intCharFrom < intCharTo)
 				e.HasMorePages = true;
-			else
-			{
+			else {
 				intCharFrom = intCharPrint; // reset
 				CurrentPage = 0;
 				e.HasMorePages = false;
 			}
-
 		}
 
 		/// <summary>
@@ -657,10 +651,8 @@ namespace LSLEditor.Helpers
 				footercolor, footeralignment, footerformatflags);
 
 			// print the page number if it's on the bottom.
-			if (!pagenumberontop)
-			{
-				if (pageno)
-				{
+			if (!pagenumberontop) {
+				if (pageno) {
 					pagenumberHeight = g.MeasureString("M", pagenofont).Height;
 					// if the pageno is not on a separate line, push the print location up by its height.
 					if (!pagenumberonseparateline)
@@ -669,7 +661,6 @@ namespace LSLEditor.Helpers
 					// print the page number
 					printsection(g, ref pos, "Page " + CurrentPage.ToString(CultureInfo.CurrentCulture),
 						pagenofont, pagenocolor, pagenumberalignment, pagenumberformatflags);
-
 				}
 			}
 		}

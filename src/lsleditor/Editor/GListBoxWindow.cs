@@ -39,135 +39,119 @@
 
 using System;
 using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace LSLEditor
 {
 	public partial class GListBoxWindow : Form
-	{
-		public GListBox GListBox
-		{
-			get
-			{
-				return this.gListBox1;
-			}
-		}
+    {
+        public GListBox GListBox {
+            get {
+                return this.gListBox1;
+            }
+        }
 
-		public GListBoxItem Selected
-		{
-			get
-			{
-				return (GListBoxItem)this.gListBox1.Items[this.gListBox1.SelectedIndex];
-			}
-		}
+        public GListBoxItem Selected {
+            get {
+                return (GListBoxItem)this.gListBox1.Items[this.gListBox1.SelectedIndex];
+            }
+        }
 
-		public GListBoxWindow(Form parent)
-		{
-			InitializeComponent();
+        public GListBoxWindow(Form parent)
+        {
+            InitializeComponent();
 
-			this.Owner = parent;
+            this.Owner = parent;
 
-			this.GListBox.Cursor = Cursors.Arrow;
-			this.GListBox.Sorted = true;
+            this.GListBox.Cursor = Cursors.Arrow;
+            this.GListBox.Sorted = true;
 
-			this.FontChanged += new EventHandler(GListBoxWindow_FontChanged);
-		}
+            this.FontChanged += new EventHandler(GListBoxWindow_FontChanged);
+        }
 
-		void GListBoxWindow_FontChanged(object sender, EventArgs e)
+		private void GListBoxWindow_FontChanged(object sender, EventArgs e)
 		{
 			this.GListBox.ItemHeight = 2 + (int)LSLEditor.Helpers.Measure.MeasureDisplayString(this.GListBox, "M", this.Font).Height;
 		}
 
 		public void KeyDownHandler(KeyEventArgs e)
-		{
-			if (!this.Visible)
-				return;
+        {
+            if (!this.Visible)
+                return;
 
-			if (e.KeyCode == Keys.Enter)
-			{
-				// cancel richttext enter if listbox shows
-				e.Handled = true;
-			}
-			if (e.KeyCode == Keys.Down)
-			{
-				this.gListBox1.SelectedIndex = Math.Min(this.gListBox1.Items.Count - 1, this.gListBox1.SelectedIndex + 1);
-				e.Handled = true;
-			}
+            if (e.KeyCode == Keys.Enter) {
+                // cancel richttext enter if listbox shows
+                e.Handled = true;
+            }
+            if (e.KeyCode == Keys.Down) {
+                this.gListBox1.SelectedIndex = Math.Min(this.gListBox1.Items.Count - 1, this.gListBox1.SelectedIndex + 1);
+                e.Handled = true;
+            }
 
-			if (e.KeyCode == Keys.Up)
-			{
-				this.gListBox1.SelectedIndex = Math.Max(0, this.gListBox1.SelectedIndex - 1);
-				e.Handled = true;
-			}
+            if (e.KeyCode == Keys.Up) {
+                this.gListBox1.SelectedIndex = Math.Max(0, this.gListBox1.SelectedIndex - 1);
+                e.Handled = true;
+            }
 
-			if (e.KeyCode == Keys.PageUp)
-			{
-				this.gListBox1.SelectedIndex = Math.Max(0,this.gListBox1.SelectedIndex - 10);
-				e.Handled = true;
-			}
+            if (e.KeyCode == Keys.PageUp) {
+                this.gListBox1.SelectedIndex = Math.Max(0, this.gListBox1.SelectedIndex - 10);
+                e.Handled = true;
+            }
 
-			if (e.KeyCode == Keys.PageDown)
-			{
-				this.gListBox1.SelectedIndex = Math.Min(this.gListBox1.Items.Count - 1, this.gListBox1.SelectedIndex + 10);
-				e.Handled = true;
-			}
-		}
+            if (e.KeyCode == Keys.PageDown) {
+                this.gListBox1.SelectedIndex = Math.Min(this.gListBox1.Items.Count - 1, this.gListBox1.SelectedIndex + 10);
+                e.Handled = true;
+            }
+        }
 
-		public void SetPosition(Rectangle rect,RichTextBox RichTextBox)
-		{
-			//Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-			Point p = RichTextBox.GetPositionFromCharIndex(RichTextBox.SelectionStart);
+        public void SetPosition(Rectangle rect, RichTextBox RichTextBox)
+        {
+            //Rectangle rect = Screen.PrimaryScreen.WorkingArea;
+            Point p = RichTextBox.GetPositionFromCharIndex(RichTextBox.SelectionStart);
 
-			p = new Point(p.X - 20, p.Y + this.gListBox1.ItemHeight); // ItemHeight = exact line height
+            p = new Point(p.X - 20, p.Y + this.gListBox1.ItemHeight); // ItemHeight = exact line height
 
-			Rectangle client = RichTextBox.ClientRectangle;
-			if (p.X < (client.Left-20) || p.Y < client.Top || p.X > client.Width || p.Y > client.Height)
-			{
-				this.Visible = false;
-				return;
-			}
+            Rectangle client = RichTextBox.ClientRectangle;
+            if (p.X < (client.Left - 20) || p.Y < client.Top || p.X > client.Width || p.Y > client.Height) {
+                this.Visible = false;
+                return;
+            }
 
-			Point screen = RichTextBox.PointToScreen(p);
+            Point screen = RichTextBox.PointToScreen(p);
 
-			//if ((screen.Y + this.Height) > rect.Height)
-			//	screen = RichTextBox.PointToScreen(new Point(p.X - 20 + this.XOffset, p.Y - this.Height));
+            //if ((screen.Y + this.Height) > rect.Height)
+            //	screen = RichTextBox.PointToScreen(new Point(p.X - 20 + this.XOffset, p.Y - this.Height));
 
-			if (screen.Y > rect.Bottom)
-			{
-				this.Visible = false;
-				return;
-				//screen.Y = rect.Bottom;
-			}
+            if (screen.Y > rect.Bottom) {
+                this.Visible = false;
+                return;
+                //screen.Y = rect.Bottom;
+            }
 
-			if (screen.X > rect.Right)
-			{
-				this.Visible = false;
-				return;
-				//screen.X = rect.Right;
-			}
+            if (screen.X > rect.Right) {
+                this.Visible = false;
+                return;
+                //screen.X = rect.Right;
+            }
 
-			if (screen.X < rect.Left)
-			{
-				this.Visible = false;
-				return;
-				//screen.X = rect.Left;
-			}
+            if (screen.X < rect.Left) {
+                this.Visible = false;
+                return;
+                //screen.X = rect.Left;
+            }
 
-			if ((screen.Y) < rect.Top)
-			{
-				this.Visible = false;
-				return;
-				//screen.Y = rect.Top;
-			}
-			
-			this.Location = screen;
-		}
+            if ((screen.Y) < rect.Top) {
+                this.Visible = false;
+                return;
+                //screen.Y = rect.Top;
+            }
 
-		private void gListBox1_Resize(object sender, EventArgs e)
-		{
-			this.Size = this.gListBox1.Size;
-		}
+            this.Location = screen;
+        }
 
-	}
+        private void gListBox1_Resize(object sender, EventArgs e)
+        {
+            this.Size = this.gListBox1.Size;
+        }
+    }
 }

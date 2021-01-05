@@ -45,12 +45,13 @@ using System.Text;
 
 namespace LSLEditor
 {
-	class HTTPRequest
+	internal class HTTPRequest
 	{
 		private class UserState
 		{
 			public SecondLife secondlife;
 			public SecondLife.key httpkey;
+
 			public UserState(SecondLife.key httpkey, SecondLife secondlife)
 			{
 				this.secondlife = secondlife;
@@ -63,26 +64,28 @@ namespace LSLEditor
 			string strMethod = "GET";
 			string strContentType = "text/plain; charset=utf-8";
 
-			for (int intI = 0; intI < parameters.Count; intI += 2)
-			{
+			for (int intI = 0; intI < parameters.Count; intI += 2) {
 				int intKey;
 				if (!int.TryParse(parameters[intI].ToString(), out intKey))
 					continue;
-				switch (intKey)
-				{
+				switch (intKey) {
 					case 0:
 						// get, post, put, delete
 						strMethod = parameters[intI + 1].ToString().ToUpper();
 						break;
+
 					case 1:
 						strContentType = parameters[intI + 1].ToString();
 						break;
+
 					case 2:
 						// HTTP_BODY_MAXLENGTH
 						break;
+
 					case 3:
 						// HTTP_VERIFY_CERT
 						break;
+
 					default:
 						break;
 				}
@@ -116,30 +119,24 @@ namespace LSLEditor
 				wc.Proxy = proxy;
 
 			Uri uri = new Uri(strUrl);
-			
+
 			// Basic Authentication scheme, added 28 mrt 2008
-			if (uri.UserInfo != "")
-			{
+			if (uri.UserInfo != "") {
 				string[] UserInfo = uri.UserInfo.Split(':');
-				if (UserInfo.Length == 2)
-				{
+				if (UserInfo.Length == 2) {
 					CredentialCache mycache = new CredentialCache();
 					mycache.Add(uri, "Basic",
 								new NetworkCredential(UserInfo[0], UserInfo[1]));
 					wc.Credentials = mycache;
 				}
 			}
-			
 
 			UserState userState = new UserState(key, secondlife);
 
-			if (strMethod == "POST" || strMethod == "PUT")
-			{
+			if (strMethod == "POST" || strMethod == "PUT") {
 				wc.UploadDataCompleted += new UploadDataCompletedEventHandler(wc_UploadDataCompleted);
 				wc.UploadDataAsync(uri, strMethod, Encoding.UTF8.GetBytes(postData), userState);
-			}
-			else
-			{
+			} else {
 				wc.DownloadDataCompleted += new DownloadDataCompletedEventHandler(wc_DownloadDataCompleted);
 				wc.DownloadDataAsync(uri, userState);
 			}
@@ -151,26 +148,19 @@ namespace LSLEditor
 			UserState userState = (UserState)e.UserState;
 			string strResult = "";
 
-			if (e.Error != null)
-			{
+			if (e.Error != null) {
 				WebException webException = e.Error as WebException;
 				HttpWebResponse webResponse = webException.Response as HttpWebResponse;
-				if (webResponse == null)
-				{
+				if (webResponse == null) {
 					intStatusCode = 0;
 					strResult = webException.Message;
-				}
-				else
-				{
+				} else {
 					intStatusCode = (int)webResponse.StatusCode;
 					System.IO.StreamReader sr = new System.IO.StreamReader(webResponse.GetResponseStream());
 					strResult = sr.ReadToEnd();
 				}
-			}
-			else
-			{
-				if (e.Result != null)
-				{
+			} else {
+				if (e.Result != null) {
 					strResult = Encoding.UTF8.GetString(e.Result);
 				}
 			}
@@ -183,28 +173,21 @@ namespace LSLEditor
 			UserState userState = (UserState)e.UserState;
 			string strResult = "";
 
-			if (e.Error != null)
-			{
+			if (e.Error != null) {
 				WebException webException = e.Error as WebException;
 				HttpWebResponse webResponse = webException.Response as HttpWebResponse;
 				intStatusCode = (int)webResponse.StatusCode;
 				System.IO.StreamReader sr = new System.IO.StreamReader(webResponse.GetResponseStream());
 				strResult = sr.ReadToEnd();
-			}
-			else
-			{
-				if (e.Result != null)
-				{
+			} else {
+				if (e.Result != null) {
 					string strEncoding = ((System.Net.WebClient)sender).ResponseHeaders["Content-Encoding"];
-					if (strEncoding == "gzip")
-					{
+					if (strEncoding == "gzip") {
 						GZipStream tempE = new GZipStream(new System.IO.MemoryStream(e.Result), CompressionMode.Decompress);
 
 						var sr = new StreamReader(tempE);
 						strResult = sr.ReadToEnd();
-					}
-					else
-					{
+					} else {
 						strResult = Encoding.UTF8.GetString(e.Result);
 					}
 				}

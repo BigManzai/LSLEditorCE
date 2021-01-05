@@ -37,14 +37,13 @@
 //
 // </summary>
 
-using System;
-using System.IO;
-using System.Drawing;
-using System.Xml;
-using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace LSLEditor
 {
@@ -57,7 +56,7 @@ namespace LSLEditor
 		Class = 4,
 		Vars = 5,
 		Properties = 6,
-        States = 7
+		States = 7
 	}
 
 	public struct KeyWordInfo
@@ -65,6 +64,7 @@ namespace LSLEditor
 		public KeyWordTypeEnum type;
 		public string name;
 		public Color color;
+
 		public KeyWordInfo(KeyWordTypeEnum type, string name, Color color)
 		{
 			this.type = type;
@@ -73,7 +73,7 @@ namespace LSLEditor
 		}
 	}
 
-	class KeyWords
+	internal class KeyWords
 	{
 		private ArrayList m_RegexColorList;
 		private Regex m_regexSplitter;
@@ -93,6 +93,7 @@ namespace LSLEditor
 		{
 			public Regex regex;
 			public Color color;
+
 			public RegexColor(string strRegex, Color color)
 			{
 				this.regex = new Regex(strRegex,
@@ -111,54 +112,58 @@ namespace LSLEditor
 
 			string strRegexSplitter = "";
 
-			foreach (XmlNode words in xml.SelectNodes("//Words"))
-			{
+			foreach (XmlNode words in xml.SelectNodes("//Words")) {
 				Color color = Color.FromArgb(int.Parse(words.Attributes[ColorScheme].InnerText.Replace("#", ""), System.Globalization.NumberStyles.HexNumber));
 				KeyWordTypeEnum type = KeyWordTypeEnum.Unknown;
-				if (words.Attributes["icon"] != null)
-				{
-					switch (words.Attributes["icon"].InnerText)
-					{
+				if (words.Attributes["icon"] != null) {
+					switch (words.Attributes["icon"].InnerText) {
 						case "Functions":
 							type = KeyWordTypeEnum.Functions;
 							break;
+
 						case "Events":
 							type = KeyWordTypeEnum.Events;
 							break;
+
 						case "Constants":
 							type = KeyWordTypeEnum.Constants;
 							break;
+
 						case "Class":
 							type = KeyWordTypeEnum.Class;
 							break;
+
 						case "Vars":
 							type = KeyWordTypeEnum.Vars;
 							break;
-                        case "States":
-                            type = KeyWordTypeEnum.States;
-                            break;
+
+						case "States":
+							type = KeyWordTypeEnum.States;
+							break;
+
 						case "Enum":
-							if (!Properties.Settings.Default.CodeCompletionAnimation)
+							if (!Properties.Settings.Default.CodeCompletionAnimation) {
 								continue;
+							}
+
 							type = KeyWordTypeEnum.Properties;
 							break;
+
 						default:
 							type = KeyWordTypeEnum.Unknown;
 							break;
 					}
 				}
-				foreach (XmlNode word in words.SelectNodes(".//Word"))
-				{
-					if (word.Attributes["name"].InnerText == "regex")
-					{
+				foreach (XmlNode word in words.SelectNodes(".//Word")) {
+					if (word.Attributes["name"].InnerText == "regex") {
 						string strRegex = word.InnerText;
 						AddRegex(strRegex, color);
-						if (strRegexSplitter != "")
+						if (strRegexSplitter != "") {
 							strRegexSplitter += "|";
+						}
+
 						strRegexSplitter += strRegex;
-					}
-					else
-					{
+					} else {
 						AddKeyword(type, word.Attributes["name"].InnerText, color);
 					}
 				}
@@ -180,14 +185,14 @@ namespace LSLEditor
 		{
 			// specials
 			Color color = Color.Black;
-			foreach (RegexColor regexColor in m_RegexColorList)
-			{
+			foreach (RegexColor regexColor in m_RegexColorList) {
 				Match mm = regexColor.regex.Match(strKeyWord);
-				if (mm.Success)
-				{
+				if (mm.Success) {
 					// must be exact match
-					if (mm.Index != 0)
+					if (mm.Index != 0) {
 						continue;
+					}
+
 					color = regexColor.color;
 					break;
 				}
@@ -207,9 +212,9 @@ namespace LSLEditor
 
 		public Color GetColorFromKeyWordList(string strKeyWord)
 		{
-			if (ContainsKeyWord(strKeyWord))
+			if (ContainsKeyWord(strKeyWord)) {
 				return GetKeyWordInfo(strKeyWord).color;
-			else
+			} else
 				return Color.Black;
 		}
 
@@ -223,19 +228,19 @@ namespace LSLEditor
 			List<KeyWordInfo> list = new List<KeyWordInfo>();
 			string strLowerCaseKeyWord = strKeyWord.ToLower();
 			int intLen = strLowerCaseKeyWord.Length;
-			foreach (string strKey in m_KeyWordColorList.Keys)
-			{
-				if (IsRegularExpression)
-				{
-					if(new Regex("^"+strKeyWord+"$").Match(strKey).Success)
+			foreach (string strKey in m_KeyWordColorList.Keys) {
+				if (IsRegularExpression) {
+					if (new Regex("^" + strKeyWord + "$").Match(strKey).Success) {
 						list.Add(GetKeyWordInfo(strKey));
-				}
-				else
-				{
-					if (strKey.Length < intLen)
+					}
+				} else {
+					if (strKey.Length < intLen) {
 						continue;
-					if (strKey.Substring(0, intLen).ToLower() == strLowerCaseKeyWord)
+					}
+
+					if (strKey.Substring(0, intLen).ToLower() == strLowerCaseKeyWord) {
 						list.Add(GetKeyWordInfo(strKey));
+					}
 				}
 			}
 			return list;
@@ -243,28 +248,30 @@ namespace LSLEditor
 
 		public string GetDescription(string strKeyWord)
 		{
-			if(ContainsKeyWord(strKeyWord))
-			{
-				XmlNode xmlNode = xml.SelectSingleNode("//Word[@name='"+strKeyWord+"']");
-				if(xmlNode!=null)
-				{
-					if (xmlNode.ChildNodes.Count == 0)
+			if (ContainsKeyWord(strKeyWord)) {
+				XmlNode xmlNode = xml.SelectSingleNode("//Word[@name='" + strKeyWord + "']");
+				if (xmlNode != null) {
+					if (xmlNode.ChildNodes.Count == 0) {
 						return "";
+					}
+
 					string strText = xmlNode.InnerXml;
-					if (strText == "")
+					if (strText == "") {
 						return strKeyWord;
-					else
-					{
+					} else {
 						int intArgument = strText.IndexOf("<Argument");
-						if (intArgument > 0)
+						if (intArgument > 0) {
 							strText = strText.Substring(0, intArgument);
+						}
+
 						StringBuilder sb = new StringBuilder();
 						StringReader sr = new StringReader(strText);
-						while (true)
-						{
+						while (true) {
 							string strLine = sr.ReadLine();
-							if (strLine == null)
+							if (strLine == null) {
 								break;
+							}
+
 							sb.AppendLine(strLine.Trim());
 						}
 						return sb.ToString();
@@ -279,25 +286,21 @@ namespace LSLEditor
 			Regex regex = new Regex(
 @"(?<prefix>[^(]* \( )
   (?:
-      (?<argument> [^,\)]*)  (?"
+	  (?<argument> [^,\)]*)  (?"
 	+ @"<seperator>[\,\)])+
   )*
-(?<postfix>.*) 
+(?<postfix>.*)
 ",
 	RegexOptions.IgnorePatternWhitespace);
 			Match match = regex.Match(strText);
 			StringBuilder sb = new StringBuilder();
 			sb.Append(match.Groups["prefix"].Value);
-			for (int intI = 0; intI < match.Groups["argument"].Captures.Count; intI++)
-			{
-				if (intI == intArgument)
-				{
+			for (int intI = 0; intI < match.Groups["argument"].Captures.Count; intI++) {
+				if (intI == intArgument) {
 					sb.Append(@"<b><font color=""red"">");
 					sb.Append(match.Groups["argument"].Captures[intI].Value);
 					sb.Append("</font></b>");
-				}
-				else
-				{
+				} else {
 					sb.Append(match.Groups["argument"].Captures[intI].Value);
 				}
 				sb.Append(match.Groups["seperator"].Captures[intI].Value);
@@ -311,24 +314,29 @@ namespace LSLEditor
 		{
 			xmlNode = null;
 
-			if (!ContainsKeyWord(strWord))
+			if (!ContainsKeyWord(strWord)) {
 				return "";
+			}
 
 			xmlNode = xml.SelectSingleNode("//Word[@name='" + strWord + "']");
-			if (xmlNode == null)
+			if (xmlNode == null) {
 				return "";
+			}
 
-			if (xmlNode.ChildNodes.Count == 0)
+			if (xmlNode.ChildNodes.Count == 0) {
 				return "";
+			}
 
 			string strText = xmlNode.ChildNodes[0].InnerText;
-			if (strText == "")
+			if (strText == "") {
 				return "";
+			}
 
 			strText = strText.TrimStart();
 			int intI = strText.IndexOf("\r");
-			if (intI > 0)
+			if (intI > 0) {
 				strText = strText.Substring(0, intI);
+			}
 
 			return strText;
 		}
@@ -338,28 +346,31 @@ namespace LSLEditor
 			XmlNode xmlNode;
 			string strFirstLine = GetFirstLineOfKeyWord(strWord, out xmlNode);
 
-			if (strFirstLine == "")
+			if (strFirstLine == "") {
 				return -1;
+			}
 
 			Regex regex = new Regex(
 @"(?<prefix>[^(]* \( )
   (?:
-      (?<argument> [^,\)]*)  (?"
+	  (?<argument> [^,\)]*)  (?"
 	+ @"<seperator>[\,\)])+
   )*
-(?<postfix>.*) 
+(?<postfix>.*)
 ",
 				RegexOptions.IgnorePatternWhitespace);
 			Match match = regex.Match(strFirstLine);
 
 			// nr not 1, return nr
 			int intNr = match.Groups["argument"].Captures.Count;
-			if(intNr != 1)
+			if (intNr != 1) {
 				return intNr;
+			}
 
 			// nr = 1 can be void, returns also 0
-			if(match.Groups["argument"].Captures[0].Value == "void")
+			if (match.Groups["argument"].Captures[0].Value == "void") {
 				return 0;
+			}
 
 			// not void, return 1
 			return 1;
@@ -368,24 +379,27 @@ namespace LSLEditor
 		public string GetFunctionAndHiglightArgument(string strWord, int intArgument, out string strWild)
 		{
 			XmlNode xmlNode;
-			string strFirstLine = GetFirstLineOfKeyWord(strWord,out xmlNode);
+			string strFirstLine = GetFirstLineOfKeyWord(strWord, out xmlNode);
 
 			strWild = "";
 
-			if (strFirstLine == "")
+			if (strFirstLine == "") {
 				return "";
+			}
 
 			string strRichText = MakeArgumentBold(strFirstLine, intArgument);
 
-			if (xmlNode == null)
+			if (xmlNode == null) {
 				return strRichText;
+			}
 
 			XmlNodeList nodeList = xmlNode.SelectNodes("./Argument");
-			if (intArgument < nodeList.Count)
-			{
+			if (intArgument < nodeList.Count) {
 				XmlNode xmlNodeArgument = nodeList[intArgument];
-				if(xmlNodeArgument.Attributes["wild"]!=null)
+				if (xmlNodeArgument.Attributes["wild"] != null) {
 					strWild = xmlNodeArgument.Attributes["wild"].Value;
+				}
+
 				string strName = xmlNodeArgument.Attributes["name"].Value;
 				string strDescription = "\n" + @"<b><font color=""red"">" + strName + ":</font></b>";
 				strRichText += strDescription + " " + xmlNodeArgument.InnerText + "\n";
@@ -400,11 +414,11 @@ namespace LSLEditor
 			XmlNode xmlNode;
 			string strFirstLine = GetFirstLineOfKeyWord(strEventName, out xmlNode);
 
-			if (strFirstLine == "")
+			if (strFirstLine == "") {
 				return strReturn;
+			}
 
 			return strFirstLine.Replace(";", "").Replace("void", "");
 		}
-
 	}
 }

@@ -37,112 +37,107 @@
 //
 // </summary>
 
-using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel;
 
 namespace LSLEditor
 {
 	public partial class GListBox : ListBox
-	{
-		public ImageList ImageList;
+    {
+        public ImageList ImageList;
 
-		public GListBox(IContainer container)
+        public GListBox(IContainer container)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+
+            // Set owner draw mode
+            this.DrawMode = DrawMode.OwnerDrawFixed;
+            this.ImageList = new ImageList();
+        }
+
+        public GListBox()
+        {
+            InitializeComponent();
+
+            // Set owner draw mode
+            this.DrawMode = DrawMode.OwnerDrawFixed;
+            this.ImageList = new ImageList();
+        }
+
+        protected override void OnDrawItem(DrawItemEventArgs e)
+        {
+            try {
+                GListBoxItem item;
+                Rectangle bounds = new Rectangle(e.Bounds.X + e.Bounds.Height, e.Bounds.Y, e.Bounds.Width - e.Bounds.Height - 1, e.Bounds.Height);
+                item = (GListBoxItem)Items[e.Index];
+                if (item.ImageIndex != -1) {
+                    e.Graphics.FillRectangle(new SolidBrush(this.BackColor), bounds);
+                    if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
+                        e.Graphics.FillRectangle(SystemBrushes.Highlight, bounds);
+
+                    e.Graphics.DrawImage(ImageList.Images[item.ImageIndex], bounds.Left - bounds.Height, bounds.Top, bounds.Height, bounds.Height);
+                    e.Graphics.DrawString(item.Text, e.Font, new SolidBrush(e.ForeColor),
+                        bounds.Left, bounds.Top);
+                } else {
+                    e.Graphics.DrawString(item.Text, e.Font, new SolidBrush(e.ForeColor),
+                        bounds.Left, bounds.Top);
+                }
+            } catch {
+                e.DrawBackground();
+                e.DrawFocusRectangle();
+                if (e.Index != -1) {
+                    try {
+                        e.Graphics.DrawString(Items[e.Index].ToString(), e.Font,
+                            new SolidBrush(e.ForeColor), e.Bounds.Left, e.Bounds.Top);
+                    } catch {
+                    }
+                } else {
+                    e.Graphics.DrawString(Text, e.Font, new SolidBrush(e.ForeColor),
+                        e.Bounds.Left, e.Bounds.Top);
+                }
+            }
+            base.OnDrawItem(e);
+        }
+    }//End of GListBox class
+
+    // GListBoxItem class
+    public class GListBoxItem
+    {
+        private string _myText;
+        private int _myImageIndex;
+
+        // properties
+        public string Text {
+            get { return _myText; }
+            set { _myText = value; }
+        }
+
+        public int ImageIndex {
+            get { return _myImageIndex; }
+            set { _myImageIndex = value; }
+        }
+
+        //constructor
+        public GListBoxItem(string text, int index)
+        {
+            _myText = text;
+            _myImageIndex = index;
+        }
+
+		public GListBoxItem(string text) : this(text, -1)
 		{
-			container.Add(this);
-
-			InitializeComponent();
-
-			// Set owner draw mode
-			this.DrawMode = DrawMode.OwnerDrawFixed;
-			this.ImageList = new ImageList();
 		}
 
-		public GListBox()
+		public GListBoxItem() : this("")
 		{
-			InitializeComponent();
-
-			// Set owner draw mode
-			this.DrawMode = DrawMode.OwnerDrawFixed;
-			this.ImageList = new ImageList();
 		}
 
-		protected override void OnDrawItem(DrawItemEventArgs e)
-		{
-			try
-			{
-				GListBoxItem item;
-				Rectangle bounds = new Rectangle(e.Bounds.X + e.Bounds.Height, e.Bounds.Y, e.Bounds.Width - e.Bounds.Height - 1, e.Bounds.Height);
-				item = (GListBoxItem)Items[e.Index];
-				if (item.ImageIndex != -1)
-				{
-					e.Graphics.FillRectangle(new SolidBrush(this.BackColor), bounds);
-					if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
-						e.Graphics.FillRectangle(SystemBrushes.Highlight, bounds);
-
-					e.Graphics.DrawImage(ImageList.Images[item.ImageIndex], bounds.Left - bounds.Height, bounds.Top, bounds.Height, bounds.Height);
-					e.Graphics.DrawString(item.Text, e.Font, new SolidBrush(e.ForeColor),
-						bounds.Left, bounds.Top);
-				}
-				else
-				{
-					e.Graphics.DrawString(item.Text, e.Font, new SolidBrush(e.ForeColor),
-						bounds.Left, bounds.Top);
-				}
-			}
-			catch
-			{
-				e.DrawBackground();
-				e.DrawFocusRectangle();
-				if (e.Index != -1)
-				{
-					try
-					{
-						e.Graphics.DrawString(Items[e.Index].ToString(), e.Font,
-							new SolidBrush(e.ForeColor), e.Bounds.Left, e.Bounds.Top);
-					}
-					catch
-					{
-					}
-				}
-				else
-				{
-					e.Graphics.DrawString(Text, e.Font, new SolidBrush(e.ForeColor),
-						e.Bounds.Left, e.Bounds.Top);
-				}
-			}
-			base.OnDrawItem(e);
-		}
-	}//End of GListBox class
-
-	// GListBoxItem class 
-	public class GListBoxItem
-	{
-		private string _myText;
-		private int _myImageIndex;
-		// properties 
-		public string Text
-		{
-			get { return _myText; }
-			set { _myText = value; }
-		}
-		public int ImageIndex
-		{
-			get { return _myImageIndex; }
-			set { _myImageIndex = value; }
-		}
-		//constructor
-		public GListBoxItem(string text, int index)
-		{
-			_myText = text;
-			_myImageIndex = index;
-		}
-		public GListBoxItem(string text) : this(text, -1) { }
-		public GListBoxItem() : this("") { }
 		public override string ToString()
-		{
-			return _myText;
-		}
-	}//End of GListBoxItem class
+        {
+            return _myText;
+        }
+    }//End of GListBoxItem class
 }

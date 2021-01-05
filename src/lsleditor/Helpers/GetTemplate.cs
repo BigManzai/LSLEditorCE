@@ -38,28 +38,24 @@
 // </summary>
 
 using System;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 
 namespace LSLEditor.Helpers
 {
-	class GetTemplate
+	internal class GetTemplate
 	{
 		public static string Source()
 		{
-			try
-			{
+			try {
 				string strTemplate = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Properties.Settings.Default.ExampleTemplate);
-				if (File.Exists(strTemplate))
-				{
+				if (File.Exists(strTemplate)) {
 					StreamReader sr = new StreamReader(strTemplate);
 					string strCode = sr.ReadToEnd();
 					sr.Close();
 					return strCode;
 				}
-			}
-			catch
-			{
+			} catch {
 			}
 			return Properties.Settings.Default.Example.Trim() + Environment.NewLine;
 		}

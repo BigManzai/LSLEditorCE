@@ -37,16 +37,14 @@
 //
 // </summary>
 
-using System;
-using System.Xml;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace LSLEditor
 {
-	class LSL2CSharp
+	internal class LSL2CSharp
 	{
 		public List<string> States;
 		private XmlDocument xml;
@@ -68,16 +66,15 @@ namespace LSLEditor
 			// because the vars must keep their values between state changes
 
 			// 22 june 2007, added
-			Regex regex = new Regex(@"\w*", RegexOptions.IgnorePatternWhitespace );
-			int intCount=0;
-			for (Match pm = regex.Match(strPublic); pm.Success; pm = pm.NextMatch())
-			{
+			Regex regex = new Regex(@"\w*", RegexOptions.IgnorePatternWhitespace);
+			int intCount = 0;
+			for (Match pm = regex.Match(strPublic); pm.Success; pm = pm.NextMatch()) {
 				if (pm.Value.Length > 0)
 					intCount++;
 				if (intCount > 1)
 					break;
 			}
-			if(intCount==1)
+			if (intCount == 1)
 				return strPrefix + "public void " + strPublic + strPostfix;
 			else
 				return strPrefix + "public " + strPublic + strPostfix;
@@ -97,7 +94,7 @@ namespace LSLEditor
  \(  [^{]*  \)  \s*
  \{
     (?>
-        [^{}]+ 
+        [^{}]+
         |    \{ (?<number>)
         |    \} (?<-number>)
     )*
@@ -111,11 +108,9 @@ namespace LSLEditor
 
 		private string RemoveComments(string strC)
 		{
-			if (Properties.Settings.Default.CommentCStyle)
-			{
+			if (Properties.Settings.Default.CommentCStyle) {
 				int intI = strC.IndexOf("/*");
-				while (intI > 0)
-				{
+				while (intI > 0) {
 					int intJ = strC.IndexOf("*" + "/", intI);
 					if (intJ < 0)
 						break;
@@ -126,14 +121,14 @@ namespace LSLEditor
 			return AutoFormatter.RemoveCommentsFromLines(strC);
 		}
 
-		private string CorrectStates(string strC,string strGlobalClass)
+		private string CorrectStates(string strC, string strGlobalClass)
 		{
 			Regex regex;
 
 			// Default state
 			regex = new Regex(@"^\s*(default)(\W)",
 				RegexOptions.Multiline
-				|  RegexOptions.IgnorePatternWhitespace
+				| RegexOptions.IgnorePatternWhitespace
 				| RegexOptions.Compiled);
 			strC = regex.Replace(strC, @"class State_$1 : " + strGlobalClass + "$2");
 
@@ -145,8 +140,7 @@ namespace LSLEditor
 				| RegexOptions.Compiled
 				);
 			Match m = regex.Match(strC);
-			while (m.Success)
-			{
+			while (m.Success) {
 				string strStateName = m.Groups[1].ToString();
 				this.States.Add(strStateName);
 				m = m.NextMatch();
@@ -155,15 +149,11 @@ namespace LSLEditor
 
 			string strGlobal = "";
 
-			if (Properties.Settings.Default.StatesInGlobalFunctions)
-			{
+			if (Properties.Settings.Default.StatesInGlobalFunctions) {
 				// do nothing!
-			}
-			else
-			{
+			} else {
 				int intDefault = strC.IndexOf("class State_default");
-				if (intDefault >= 0)
-				{
+				if (intDefault >= 0) {
 					strGlobal = strC.Substring(0, intDefault);
 					strC = strC.Substring(intDefault);
 				}
@@ -181,6 +171,7 @@ namespace LSLEditor
 		private string PreCorrectReservedWords(string strC)
 		{
 			#region All PreCorrect reserved C# words
+
 			Regex regex = new Regex(@"(\b)(public
 |		class
 |		override
@@ -197,13 +188,16 @@ namespace LSLEditor
 			 RegexOptions.IgnorePatternWhitespace
 				| RegexOptions.Compiled
 				);
-			#endregion
+
+			#endregion All PreCorrect reserved C# words
+
 			return regex.Replace(strC, "$1_$2$3");
 		}
 
 		private string CorrectReservedWords(string strC)
 		{
 			#region All reserved C# words
+
 			Regex regex = new Regex(@"(\b)(new
 |		abstract
 |		as
@@ -247,7 +241,7 @@ namespace LSLEditor
 |		readonly
 |		ref
 |		sbyte
-|		sealed 
+|		sealed
 |		short
 |		sizeof
 |		stackalloc
@@ -255,12 +249,12 @@ namespace LSLEditor
 |		switch
 |		this
 |		throw
-|		true 
+|		true
 |		try
 |		typeof
 |		uint
 |		ulong
-|		unchecked 
+|		unchecked
 |		unsafe
 |		ushort
 |		using
@@ -270,7 +264,9 @@ namespace LSLEditor
 			 RegexOptions.IgnorePatternWhitespace
 				| RegexOptions.Compiled
 				);
-			#endregion
+
+			#endregion All reserved C# words
+
 			return regex.Replace(strC, "$1_$2$3");
 		}
 
@@ -287,8 +283,7 @@ namespace LSLEditor
 		private string CorrectEvents(string strC)
 		{
 			XmlNode words = xml.SelectSingleNode("//Words[@name='Appendix B. Events']");
-			foreach (XmlNode xmlNode in words.SelectNodes(".//Word"))
-			{
+			foreach (XmlNode xmlNode in words.SelectNodes(".//Word")) {
 				string strName = xmlNode.Attributes["name"].InnerText;
 				strC = CorrectEvent(strC, strName);
 			}
@@ -413,7 +408,7 @@ namespace LSLEditor
 				@"
 \[
     (?>
-        [^\[\]]+ 
+        [^\[\]]+
         |    \[ (?<number>)
         |    \] (?<-number>)
     )*
@@ -446,19 +441,15 @@ namespace LSLEditor
 			return regex.Replace(strC, "_$1:;");
 		}
 
-
 		private string RemoveQuotedStrings(string strC, out List<string> h)
 		{
 			h = new List<string>();
 			StringBuilder sb = new StringBuilder();
 			StringBuilder QuotedString = null;
-			for (int intI = 0; intI < strC.Length; intI++)
-			{
+			for (int intI = 0; intI < strC.Length; intI++) {
 				char chrC = strC[intI];
-				if (chrC == '"')
-				{
-					if (QuotedString != null)
-					{
+				if (chrC == '"') {
+					if (QuotedString != null) {
 						// end of a quoted string
 						sb.Append('"');
 						sb.Append(h.Count.ToString());
@@ -466,11 +457,8 @@ namespace LSLEditor
 						h.Add(QuotedString.ToString());
 						QuotedString = null;
 						continue;
-					}
-					else
-					{
-						if (chrC == '"')
-						{
+					} else {
+						if (chrC == '"') {
 							// start of a new quoted string
 							QuotedString = new StringBuilder();
 							continue;
@@ -481,27 +469,22 @@ namespace LSLEditor
 
 				if (QuotedString == null)
 					sb.Append(chrC);
-				else
-				{
-					if (chrC == '\n')
-					{
+				else {
+					if (chrC == '\n') {
 						QuotedString.Append('\\');
 						chrC = 'n';
 					}
-					if (chrC != '\\')
-					{
+					if (chrC != '\\') {
 						QuotedString.Append(chrC);
-					}
-					else // it is a backslash
-					{
+					} else // it is a backslash
+					  {
 						intI++;
 						chrC = strC[intI];
 						if (chrC == 't') // tabs are 4 spaces in SL world!!
 						{
 							QuotedString.Append("    ");
-						}
-						else // nope, it is no tab, just output it all
-						{
+						} else // nope, it is no tab, just output it all
+						  {
 							QuotedString.Append('\\');
 							QuotedString.Append(chrC);
 						}
@@ -515,17 +498,12 @@ namespace LSLEditor
 		{
 			StringBuilder sb = new StringBuilder();
 			StringBuilder QuotedString = null;
-			for (int intI = 0; intI < strC.Length; intI++)
-			{
+			for (int intI = 0; intI < strC.Length; intI++) {
 				char chrC = strC[intI];
-				if (chrC == '"')
-				{
-					if (QuotedString == null)
-					{
+				if (chrC == '"') {
+					if (QuotedString == null) {
 						QuotedString = new StringBuilder();
-					}
-					else
-					{
+					} else {
 						sb.Append('"');
 						int intNumber;
 						// State("default") is not a number, result of 'CorrectStates'
@@ -558,14 +536,11 @@ namespace LSLEditor
 
 			string strGlobal;
 			int intDefaultIndex;
-			if (matchDefault.Groups.Count == 2)
-			{
+			if (matchDefault.Groups.Count == 2) {
 				States.Add("default");
 				intDefaultIndex = matchDefault.Groups[1].Index;
 				strGlobal = CorrectGlobal(strC.Substring(0, intDefaultIndex));
-			}
-			else
-			{
+			} else {
 				intDefaultIndex = 0;
 				strGlobal = "";
 			}
@@ -574,12 +549,12 @@ namespace LSLEditor
 
 		private string Capitalize(string strC, string strName)
 		{
-			Regex regex = new Regex(@"(\W)"+strName+@"(\W)",
+			Regex regex = new Regex(@"(\W)" + strName + @"(\W)",
 				RegexOptions.IgnorePatternWhitespace
 				| RegexOptions.Multiline
 				| RegexOptions.Compiled);
 			string strCap = strName[0].ToString().ToUpper() + strName.Substring(1);
-			return regex.Replace(strC, "$1"+strCap+"$2");
+			return regex.Replace(strC, "$1" + strCap + "$2");
 		}
 
 		private string RemoveSingleQuotes(string strC)
@@ -629,10 +604,8 @@ namespace LSLEditor
 			strC = CorrectLists(strC);
 
 			strC = InsertQuotedStrings(strC, quotedStrings);
-			
+
 			return strC;
 		}
 	}
-
-
 }

@@ -37,15 +37,13 @@
 //
 // </summary>
 
-using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-using System.Collections.Generic;
-
 namespace LSLEditor
 {
-	class AutoFormatter
+	internal class AutoFormatter
 	{
 		public static string GetTab()
 		{
@@ -57,23 +55,20 @@ namespace LSLEditor
 
 		private static int CountParenthesis(string strLine)
 		{
-			int intParenthesis=0;
+			int intParenthesis = 0;
 			bool blnWithinString = false;
-			for (int intI = 0; intI < strLine.Length; intI++)
-			{
+			for (int intI = 0; intI < strLine.Length; intI++) {
 				if (strLine[intI] == '"')
 					blnWithinString = !blnWithinString;
-				if (blnWithinString)
-				{
+				if (blnWithinString) {
 					if (strLine[intI] == '\\')
 						intI++;
 					continue;
 				}
-				if (strLine[intI] == '/')
-				{
-					if(intI<(strLine.Length-1))
-					if (strLine[intI + 1] == '/')
-						break;
+				if (strLine[intI] == '/') {
+					if (intI < (strLine.Length - 1))
+						if (strLine[intI + 1] == '/')
+							break;
 				}
 				if (strLine[intI] == '{')
 					intParenthesis++;
@@ -86,9 +81,8 @@ namespace LSLEditor
 		private static int GetTabCountFromWhiteSpace(string strWhiteSpace)
 		{
 			int intSpaces = 0;
-			for (int intI = 0; intI < strWhiteSpace.Length; intI++)
-			{
-				if(strWhiteSpace[intI]==' ')
+			for (int intI = 0; intI < strWhiteSpace.Length; intI++) {
+				if (strWhiteSpace[intI] == ' ')
 					intSpaces++;
 				if (strWhiteSpace[intI] == '\t')
 					intSpaces = (int)(6 * (intSpaces / 6)) + 6 - (intSpaces % 6);
@@ -102,8 +96,7 @@ namespace LSLEditor
 		public static string GetWhiteSpaceFromLine(string strLine)
 		{
 			StringBuilder sb = new StringBuilder();
-			for (int intI = 0; intI < strLine.Length; intI++)
-			{
+			for (int intI = 0; intI < strLine.Length; intI++) {
 				if (strLine[intI] > ' ')
 					break;
 				sb.Append(strLine[intI]);
@@ -115,10 +108,9 @@ namespace LSLEditor
 		{
 			StringBuilder sb = new StringBuilder();
 			int intCountParenthesis = CountParenthesis(strLine);
-			if(intCountParenthesis<0)
+			if (intCountParenthesis < 0)
 				intCountParenthesis = 0;
-			for (int intI = 0; intI < strLine.Length; intI++)
-			{
+			for (int intI = 0; intI < strLine.Length; intI++) {
 				if (strLine[intI] > ' ')
 					break;
 				sb.Append(strLine[intI]);
@@ -129,8 +121,7 @@ namespace LSLEditor
 			strLine = TrimCommentTrim(strLine);
 
 			int intLength = strLine.Length;
-			if (intLength > 0)
-			{
+			if (intLength > 0) {
 				char chrLastChar = strLine[intLength - 1];
 				if (strLine[0] == '{' || chrLastChar == ';' || chrLastChar == '{' || chrLastChar == '}')
 					intOnce = 0;
@@ -146,38 +137,34 @@ namespace LSLEditor
 
 		public static string RemoveComment(string strLine)
 		{
-            bool blnWithinString = false;
-            for (int intI = 0; intI < (strLine.Length - 1); intI++)
-            {
-                char chrC = strLine[intI];
-                if (chrC == '"')
-                    blnWithinString = !blnWithinString;
-                if (blnWithinString)
-                {
-                    if (chrC == '\\')
-                        intI++;
-                    continue;
-                }
-                if (chrC != '/')
-                    continue;
-                if (strLine[intI + 1] == '/')
-                {
-                    //if(strLine.IndexOf("@include") != intI + 2)
-                    //{
-                        strLine = strLine.Substring(0, intI);
-                    //}
-                    break;
-                }
-            }
-            return strLine;
+			bool blnWithinString = false;
+			for (int intI = 0; intI < (strLine.Length - 1); intI++) {
+				char chrC = strLine[intI];
+				if (chrC == '"')
+					blnWithinString = !blnWithinString;
+				if (blnWithinString) {
+					if (chrC == '\\')
+						intI++;
+					continue;
+				}
+				if (chrC != '/')
+					continue;
+				if (strLine[intI + 1] == '/') {
+					//if(strLine.IndexOf("@include") != intI + 2)
+					//{
+					strLine = strLine.Substring(0, intI);
+					//}
+					break;
+				}
+			}
+			return strLine;
 		}
 
 		public static string RemoveCommentsFromLines(string strLines)
 		{
 			StringBuilder sb = new StringBuilder();
 			StringReader sr = new StringReader(strLines);
-			while (true)
-			{
+			while (true) {
 				string strLine = sr.ReadLine();
 				if (strLine == null)
 					break;
@@ -198,25 +185,20 @@ namespace LSLEditor
 			string strLine = "";
 			StringBuilder sb = new StringBuilder();
 
-			while (intIndex>=0 && intIndex<lines.Length)
-			{
+			while (intIndex >= 0 && intIndex < lines.Length) {
 				strLine = lines[intIndex];
-				if (TrimCommentTrim(strLine).Length > 0)
-				{
+				if (TrimCommentTrim(strLine).Length > 0) {
 					intTab = GetTabCountFromLine(strLine, out intOnce);
 					break;
 				}
 				intIndex--;
 			}
 
-			if (TrimCommentTrim(strLine) != "{")
-			{
+			if (TrimCommentTrim(strLine) != "{") {
 				intIndex--;
-				while (intIndex >= 0 && intIndex < lines.Length)
-				{
+				while (intIndex >= 0 && intIndex < lines.Length) {
 					strLine = lines[intIndex];
-					if (TrimCommentTrim(strLine).Length > 0)
-					{
+					if (TrimCommentTrim(strLine).Length > 0) {
 						GetTabCountFromLine(strLine, out intOnce);
 						break;
 					}
@@ -239,8 +221,7 @@ namespace LSLEditor
 			stack.Push(intTab);
 
 			int intTemp = 0;
-			while (true)
-			{
+			while (true) {
 				string strLine = sr.ReadLine();
 				if (strLine == null)
 					break;
@@ -249,8 +230,7 @@ namespace LSLEditor
 				strLine = strLine.Trim();
 
 				// empty lines do not contain tabs
-				if (strLine.Length == 0)
-				{
+				if (strLine.Length == 0) {
 					sb.Append('\n');
 					continue;
 				}
@@ -264,33 +244,25 @@ namespace LSLEditor
 				sb.Append(strLine);
 				sb.Append('\n');
 
-
 				// calculate next indent level
 				strLine = TrimCommentTrim(strLine);
 
 				int intParenthesis = CountParenthesis(strLine);
 
-				if (intParenthesis > 0)
-				{
-					for (int intP = 0; intP < intParenthesis; intP++)
-					{
+				if (intParenthesis > 0) {
+					for (int intP = 0; intP < intParenthesis; intP++) {
 						stack.Push(intTab);
 						if (strLine != "{")
 							intTab++;
 					}
 					intTab += intTemp;
 					intTemp = 0;
-				}
-				else if (intParenthesis < 0)
-				{
+				} else if (intParenthesis < 0) {
 					if (stack.Count > 0)
 						intTab = stack.Pop();
 					intTemp = 0;
-				}
-				else
-				{
-					if (strLine.Length > 0)
-					{
+				} else {
+					if (strLine.Length > 0) {
 						char chrFirstChar = strLine[0];
 						char chrLastChar = strLine[strLine.Length - 1];
 						intTemp++;
@@ -320,17 +292,13 @@ namespace LSLEditor
 			string strPrefix = GetTab();
 			StringBuilder sb = new StringBuilder();
 			StringReader sr = new StringReader(strText);
-			while (true)
-			{
+			while (true) {
 				string strLine = sr.ReadLine();
 				if (strLine == null)
 					break;
-				if (blnAdd)
-				{
+				if (blnAdd) {
 					sb.Append(strPrefix);
-				}
-				else
-				{
+				} else {
 					if (strLine.StartsWith(strPrefix))
 						strLine = strLine.Substring(strPrefix.Length);
 				}
@@ -340,24 +308,19 @@ namespace LSLEditor
 			return sb.ToString();
 		}
 
-
 		public static string MultiLineComment(bool blnAdd, int intTab, string strText)
 		{
 			string strPrefix = "//";
 			StringBuilder sb = new StringBuilder();
 			StringReader sr = new StringReader(strText);
-			while (true)
-			{
+			while (true) {
 				string strLine = sr.ReadLine();
 				if (strLine == null)
 					break;
 
-				if (blnAdd)
-				{
+				if (blnAdd) {
 					sb.Append(strPrefix);
-				}
-				else
-				{
+				} else {
 					strLine = strLine.Trim();
 					if (strLine.StartsWith(strPrefix))
 						strLine = strLine.Substring(strPrefix.Length);
@@ -365,8 +328,7 @@ namespace LSLEditor
 				sb.Append(strLine);
 				sb.Append('\n');
 			}
-			return ApplyFormatting(intTab,sb.ToString());
+			return ApplyFormatting(intTab, sb.ToString());
 		}
-
 	}
 }

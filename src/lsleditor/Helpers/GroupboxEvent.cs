@@ -38,8 +38,6 @@
 // </summary>
 
 using System;
-using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -49,138 +47,136 @@ namespace LSLEditor
 	/// Summary description for GroupboxTextbox.
 	/// </summary>
 	public class GroupboxEvent : System.Windows.Forms.GroupBox
-	{
-		/// <summary> 
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.Container components = null;
 
-		public GroupboxEvent(Point pt,string strName,string strArgs,System.EventHandler eventHandler)
-		{
-			// This call is required by the Windows.Forms Form Designer.
-			InitializeComponent();
-			this.Location = pt;
+        public GroupboxEvent(Point pt, string strName, string strArgs, System.EventHandler eventHandler)
+        {
+            // This call is required by the Windows.Forms Form Designer.
+            InitializeComponent();
+            this.Location = pt;
 
-			string[] args = strArgs.Trim().Split(new char[] {','});
-			int intX=5;
-			int intY=5;
+            string[] args = strArgs.Trim().Split(new char[] { ',' });
+            int intX = 5;
+            int intY = 5;
 
-			if(args.Length>0)
-				intY += 5;
-			for(int intArgumentNumber=0;intArgumentNumber<args.Length;intArgumentNumber++)
-			{
-				string[] argument = args[intArgumentNumber].Trim().Split(new char[] {' '});
-				if(argument.Length==2)
-				{
-					string strArgumentName = argument[1];
-					string strArgumentType = argument[0];
-					string strArgumentValue = "";
-					switch(strArgumentType)
-					{
-						case "System.double":
-						case "LSLEditor.SecondLife+Float":
-							strArgumentValue = "1.0";
-							break;
-						case "LSLEditor.integer":
-						case "LSLEditor.SecondLife+integer":
-						case "System.Int32":
-							strArgumentValue = "1";
-							break;
-						case "LSLEditor.SecondLife+String":
-						case "System.String":
-							strArgumentValue = "hello";
-							break;
-						case "LSLEditor.SecondLife+key":
-							strArgumentValue = Guid.NewGuid().ToString();
-							break;
-						case "LSLEditor.SecondLife+rotation":
-							strArgumentValue = "<0,0,0,1>";
-							break;
-						case "LSLEditor.SecondLife+vector":
-							strArgumentValue = "<0,0,0>";
-							break;
-						case "LSLEditor.SecondLife+list":
-							strArgumentValue = "";
-							break;
-						default:
-							MessageBox.Show("GroupboxEvent->["+strArgumentType+"]["+strArgumentName+"]");
-							strArgumentValue = "unknown";
-							break;
-					}
+            if (args.Length > 0)
+                intY += 5;
+            for (int intArgumentNumber = 0; intArgumentNumber < args.Length; intArgumentNumber++) {
+                string[] argument = args[intArgumentNumber].Trim().Split(new char[] { ' ' });
+                if (argument.Length == 2) {
+                    string strArgumentName = argument[1];
+                    string strArgumentType = argument[0];
+                    string strArgumentValue = "";
+                    switch (strArgumentType) {
+                        case "System.double":
+                        case "LSLEditor.SecondLife+Float":
+                            strArgumentValue = "1.0";
+                            break;
 
-					GroupBox groupbox = new GroupBox();
-					groupbox.Name = strName+"_"+intArgumentNumber;
-					groupbox.Text = strArgumentName;
-					groupbox.Location = new Point(5,intY);
-					groupbox.Width = this.Width - 10;
+                        case "LSLEditor.integer":
+                        case "LSLEditor.SecondLife+integer":
+                        case "System.Int32":
+                            strArgumentValue = "1";
+                            break;
 
-					Control control = null;
-					if (strName == "listen" && intArgumentNumber==0)
-					{
-						ComboBox comboBox = new ComboBox();
-						comboBox.Text = "";
-						control = comboBox;
-					}
-					else
-					{
-						TextBox textBox = new TextBox();
-						textBox.Text = strArgumentValue;
-						control = textBox;
-					}
-					control.Name = "textBox_" + strName + "_" + intArgumentNumber;
-					control.Location = new Point(5, 15);
-					groupbox.Controls.Add(control);
-					groupbox.Height = 20 + control.Height;
-					this.Controls.Add(groupbox);
-					intY += groupbox.Height;
-				}
-				else
-				{
-					if(strArgs!="")
-						MessageBox.Show("Argument must be 'type name' ["+strArgs+"]");
-				}
-			}
+                        case "LSLEditor.SecondLife+String":
+                        case "System.String":
+                            strArgumentValue = "hello";
+                            break;
 
-			intY += 5;
+                        case "LSLEditor.SecondLife+key":
+                            strArgumentValue = Guid.NewGuid().ToString();
+                            break;
 
-			Button button = new Button();
-			button.Text = strName;
-			button.Width = 130;
-			button.Location = new Point(intX,intY);
-			button.Click += eventHandler;
-			this.Controls.Add(button);
-			this.Height = intY + button.Height + 5;
-		}
+                        case "LSLEditor.SecondLife+rotation":
+                            strArgumentValue = "<0,0,0,1>";
+                            break;
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+                        case "LSLEditor.SecondLife+vector":
+                            strArgumentValue = "<0,0,0>";
+                            break;
 
-		#region Component Designer generated code
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			// 
-			// GroupboxTextbox
-			// 
-			this.Name = "GroupboxTextbox";
-			this.Size = new System.Drawing.Size(152, 96);
+                        case "LSLEditor.SecondLife+list":
+                            strArgumentValue = "";
+                            break;
 
-		}
-		#endregion
-	}
+                        default:
+                            MessageBox.Show("GroupboxEvent->[" + strArgumentType + "][" + strArgumentName + "]");
+                            strArgumentValue = "unknown";
+                            break;
+                    }
+
+                    GroupBox groupbox = new GroupBox();
+                    groupbox.Name = strName + "_" + intArgumentNumber;
+                    groupbox.Text = strArgumentName;
+                    groupbox.Location = new Point(5, intY);
+                    groupbox.Width = this.Width - 10;
+
+                    Control control = null;
+                    if (strName == "listen" && intArgumentNumber == 0) {
+                        ComboBox comboBox = new ComboBox();
+                        comboBox.Text = "";
+                        control = comboBox;
+                    } else {
+                        TextBox textBox = new TextBox();
+                        textBox.Text = strArgumentValue;
+                        control = textBox;
+                    }
+                    control.Name = "textBox_" + strName + "_" + intArgumentNumber;
+                    control.Location = new Point(5, 15);
+                    groupbox.Controls.Add(control);
+                    groupbox.Height = 20 + control.Height;
+                    this.Controls.Add(groupbox);
+                    intY += groupbox.Height;
+                } else {
+                    if (strArgs != "")
+                        MessageBox.Show("Argument must be 'type name' [" + strArgs + "]");
+                }
+            }
+
+            intY += 5;
+
+            Button button = new Button();
+            button.Text = strName;
+            button.Width = 130;
+            button.Location = new Point(intX, intY);
+            button.Click += eventHandler;
+            this.Controls.Add(button);
+            this.Height = intY + button.Height + 5;
+        }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Component Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            //
+            // GroupboxTextbox
+            //
+            this.Name = "GroupboxTextbox";
+            this.Size = new System.Drawing.Size(152, 96);
+        }
+
+        #endregion Component Designer generated code
+    }
 }

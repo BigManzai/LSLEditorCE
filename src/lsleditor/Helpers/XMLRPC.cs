@@ -38,13 +38,13 @@
 // </summary>
 
 using System;
-using System.Xml;
 using System.Net;
 using System.Threading;
+using System.Xml;
 
 namespace LSLEditor.Helpers
 {
-	class XmlRpcRequestEventArgs : EventArgs
+	internal class XmlRpcRequestEventArgs : EventArgs
 	{
 		public SecondLife.key channel;
 		public SecondLife.key message_id;
@@ -53,7 +53,7 @@ namespace LSLEditor.Helpers
 		public SecondLife.String sender;
 	}
 
-	class XMLRPC
+	internal class XMLRPC
 	{
 		private HttpListener listener;
 		private Thread thread;
@@ -62,11 +62,15 @@ namespace LSLEditor.Helpers
 
 		public SecondLife.key guid;
 		public HttpListenerContext context;
+
 		public delegate void RequestEventHandler(object sender, XmlRpcRequestEventArgs e);
+
 		public event RequestEventHandler OnReply;
+
 		public event RequestEventHandler OnRequest;
 
 		public string Prefix;
+
 		public XMLRPC()
 		{
 			this.guid = SecondLife.NULL_KEY;
@@ -79,7 +83,6 @@ namespace LSLEditor.Helpers
 
 			// Yes, it works
 			this.guid = new SecondLife.key(Guid.NewGuid());
-
 
 			// Create a listener.
 			listener = new HttpListener();
@@ -145,23 +148,24 @@ namespace LSLEditor.Helpers
 			if (methodName.InnerText != "llRemoteData")
 				return e;
 
-			foreach (XmlNode xmlMember in methodCall.SelectNodes("./params/param/value/struct/member"))
-			{
+			foreach (XmlNode xmlMember in methodCall.SelectNodes("./params/param/value/struct/member")) {
 				string strName = xmlMember.SelectSingleNode("./name").InnerText;
 				string strValue = xmlMember.SelectSingleNode("./value").InnerText;
-				switch (strName)
-				{
+				switch (strName) {
 					case "Channel":
 						e.channel = new SecondLife.key(strValue);
 						break;
+
 					case "StringValue":
 						e.sData = strValue;
 						break;
+
 					case "IntValue":
 						int iData;
 						int.TryParse(strValue, out iData);
 						e.iData = iData;
 						break;
+
 					default:
 						break;
 				}
@@ -172,25 +176,17 @@ namespace LSLEditor.Helpers
 		private void Worker()
 		{
 			XmlRpcRequestEventArgs e;
-			while (blnRunning)
-			{
-				// Note: The GetContext method blocks while waiting for a request. 
-				try
-				{
+			while (blnRunning) {
+				// Note: The GetContext method blocks while waiting for a request.
+				try {
 					context = listener.GetContext();
 					e = DecodeRequest(context.Request.InputStream);
 
 					if (OnRequest != null)
 						OnRequest(this, e);
-				}
-				catch (HttpListenerException)
-				{
-				}
-				catch (ThreadAbortException)
-				{
-				}
-				catch (Exception exception)
-				{
+				} catch (HttpListenerException) {
+				} catch (ThreadAbortException) {
+				} catch (Exception exception) {
 					System.Windows.Forms.MessageBox.Show("RPC Error:" + exception.Message, "Oops...");
 				}
 			}
@@ -224,7 +220,7 @@ namespace LSLEditor.Helpers
              </value>
          </param>
      </params>
- </methodResponse>", channel.ToString(),sData,iData);
+ </methodResponse>", channel.ToString(), sData, iData);
 			byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 
 			// Get a response stream and write the response to it.
@@ -240,15 +236,14 @@ namespace LSLEditor.Helpers
 		public void CloseChannel()
 		{
 			blnRunning = false;
-			if(listener!=null)
+			if (listener != null)
 				listener.Stop();
-			if (thread != null)
-			{
+			if (thread != null) {
 				thread.Abort();
 				bool succes = thread.Join(1000);
 			}
 			thread = null;
-			listener = null;			
+			listener = null;
 		}
 
 		public SecondLife.key SendRemoteData(SecondLife.key channel, string dest, int iData, string sData)

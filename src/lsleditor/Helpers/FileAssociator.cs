@@ -37,52 +37,40 @@
 //
 // </summary>
 
-using System;
-using System.Text;
 using Microsoft.Win32;
-
 
 namespace LSLEditor.Helpers
 {
-	class FileAssociator
+	internal class FileAssociator
 	{
 		// Associate file extension with progID, description, icon and application
-		public static bool Associate(string strExtension, string strFileNameType, string strDescription, string strApplication,int intIconNr)
+		public static bool Associate(string strExtension, string strFileNameType, string strDescription, string strApplication, int intIconNr)
 		{
-			try
-			{
+			try {
 				Registry.ClassesRoot.CreateSubKey(strExtension).SetValue("", strFileNameType);
-				if (strFileNameType != null && strFileNameType.Length > 0)
-				{
-					using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(strFileNameType))
-					{
+				if (strFileNameType != null && strFileNameType.Length > 0) {
+					using (RegistryKey key = Registry.ClassesRoot.CreateSubKey(strFileNameType)) {
 						if (strDescription != null)
 							key.SetValue("", strDescription);
-						if (strApplication != null)
-						{
+						if (strApplication != null) {
 							key.CreateSubKey("DefaultIcon").SetValue("", strApplication + "," + intIconNr);
 							key.CreateSubKey(@"Shell\Open\Command").SetValue("", "\"" + strApplication + "\" \"%1\"");
 						}
 					}
 				}
 				return true;
-			}
-			catch
-			{
+			} catch {
 				return false;
 			}
 		}
 
 		public static bool DeAssociate(string strExtension, string strFileNameType)
 		{
-			try
-			{
+			try {
 				Registry.ClassesRoot.DeleteSubKey(strExtension);
 				Registry.ClassesRoot.DeleteSubKeyTree(strFileNameType);
 				return true;
-			}
-			catch
-			{
+			} catch {
 				return false;
 			}
 		}
@@ -90,12 +78,9 @@ namespace LSLEditor.Helpers
 		// Return true if extension already associated in registry
 		public static bool IsAssociated(string strExtension)
 		{
-			try
-			{
+			try {
 				return (Registry.ClassesRoot.OpenSubKey(strExtension, false) != null);
-			}
-			catch
-			{
+			} catch {
 				return false;
 			}
 		}
@@ -106,6 +91,5 @@ namespace LSLEditor.Helpers
 				Associate(".lsl", "LSLEditorScript", "SecondLife lsl File for LSLEditor", System.Reflection.Assembly.GetExecutingAssembly().Location, 0);
 			DeAssociate(".lsl", "LSLEditorScript");
 		}
-
 	}
 }

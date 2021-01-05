@@ -37,13 +37,9 @@
 //
 // </summary>
 
-using System;
-using System.IO;
-using System.Text;
-
 namespace LSLEditor
 {
-	class OopsFormatter
+	internal class OopsFormatter
 	{
 		public static string ApplyFormatting(string strInput)
 		{
@@ -56,8 +52,8 @@ namespace LSLEditor
 			strInput = strInput.Replace("Float", "float");
 
 			//TODO: there was something here for removing the path (is it needed?)
-            //Properties.Settings.Default.OopsRemove = @"C:\Documents and Settings\Alphons\Visual Studio 2005\Projects";
-            //strInput = strInput.Replace(Properties.Settings.Default.OopsRemove, "");
+			//Properties.Settings.Default.OopsRemove = @"C:\Documents and Settings\Alphons\Visual Studio 2005\Projects";
+			//strInput = strInput.Replace(Properties.Settings.Default.OopsRemove, "");
 
 			return strInput;
 		}

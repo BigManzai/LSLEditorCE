@@ -38,45 +38,46 @@
 // </summary>
 
 using System;
-using System.Collections;
-using System.Net;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
 
 namespace LSLEditor
 {
 	public class RequestState
-	{
-		// This class stores the state of the request.
-		public SecondLife secondlife;
-		public SecondLife.key httpkey;
-		public byte[] postData;
-		const int BUFFER_SIZE = 1024;
-		public StringBuilder requestData;
-		public byte[] bufferRead;
-		public WebRequest request;
-		public WebResponse response;
-		public Stream responseStream;
-		public RequestState()
-		{
-			bufferRead = new byte[BUFFER_SIZE];
-			requestData = new StringBuilder("");
-			request = null;
-			responseStream = null;
-			postData = null;
-		}
-	}
+    {
+        // This class stores the state of the request.
+        public SecondLife secondlife;
 
-	class WebRequestClass
+        public SecondLife.key httpkey;
+        public byte[] postData;
+		private const int BUFFER_SIZE = 1024;
+		public StringBuilder requestData;
+        public byte[] bufferRead;
+        public WebRequest request;
+        public WebResponse response;
+        public Stream responseStream;
+
+        public RequestState()
+        {
+            bufferRead = new byte[BUFFER_SIZE];
+            requestData = new StringBuilder("");
+            request = null;
+            responseStream = null;
+            postData = null;
+        }
+    }
+
+	internal class WebRequestClass
 	{
-		public static ManualResetEvent allDone= new ManualResetEvent(false);
-		const int BUFFER_SIZE = 1024;
+		public static ManualResetEvent allDone = new ManualResetEvent(false);
+		private const int BUFFER_SIZE = 1024;
+
 		public WebRequestClass(WebProxy proxy, SecondLife secondlife, string strUrl, SecondLife.list parameters, string postData, SecondLife.key key)
 		{
-			try
-			{
-				// Create a new webrequest to the mentioned URL.   
+			try {
+				// Create a new webrequest to the mentioned URL.
 				WebRequest myWebRequest = WebRequest.Create(strUrl);
 
 				myWebRequest.Headers.Add("Cache-Control", "max-age=259200");
@@ -98,7 +99,7 @@ namespace LSLEditor
 				myWebRequest.Headers.Add("X-SecondLife-Object-Name", secondlife.host.GetObjectName());
 				myWebRequest.Headers.Add("X-SecondLife-Object-Key", secondlife.host.GetKey().ToString());
 				myWebRequest.Headers.Add("X-SecondLife-Region", Properties.Settings.Default.RegionName + " (" + (int)RegionCorner.x + ", " + (int)RegionCorner.y + ")");
-				myWebRequest.Headers.Add("X-SecondLife-Local-Position", "("+pos.x+", "+pos.y+", "+pos.z+")");
+				myWebRequest.Headers.Add("X-SecondLife-Local-Position", "(" + pos.x + ", " + pos.y + ", " + pos.z + ")");
 				myWebRequest.Headers.Add("X-SecondLife-Local-Rotation", "(0.000000, 0.000000, 0.000000, 1.000000)");
 				myWebRequest.Headers.Add("X-SecondLife-Local-Velocity", "(0.000000, 0.000000, 0.000000)");
 				myWebRequest.Headers.Add("X-SecondLife-Owner-Name", Properties.Settings.Default.AvatarName);
@@ -106,19 +107,20 @@ namespace LSLEditor
 				myWebRequest.Headers.Add("X-Forwarded-For", "127.0.0.1");
 
 				// Setting up paramters
-				for (int intI = 0; intI < parameters.Count; intI += 2)
-				{
-					switch (int.Parse(parameters[intI].ToString()))
-					{
+				for (int intI = 0; intI < parameters.Count; intI += 2) {
+					switch (int.Parse(parameters[intI].ToString())) {
 						case 0:
 							myWebRequest.Method = parameters[intI + 1].ToString();
 							break;
+
 						case 1:
 							myWebRequest.ContentType = parameters[intI + 1].ToString();
 							break;
+
 						case 2:
 							// HTTP_BODY_MAXLENGTH
 							break;
+
 						default:
 							break;
 					}
@@ -146,14 +148,10 @@ namespace LSLEditor
 					asyncResult = (IAsyncResult)myWebRequest.BeginGetRequestStream(new AsyncCallback(RespCallback), myRequestState);
 				else
 					asyncResult = (IAsyncResult)myWebRequest.BeginGetResponse(new AsyncCallback(RespCallback), myRequestState);
-			}
-			catch (WebException e)
-			{
+			} catch (WebException e) {
 				secondlife.host.VerboseMessage(e.Message);
 				secondlife.host.VerboseMessage(e.Status.ToString());
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				Console.WriteLine("Exception raised!");
 				Console.WriteLine("Source : " + e.Source);
 				Console.WriteLine("Message : " + e.Message);
@@ -162,10 +160,9 @@ namespace LSLEditor
 		}
 
 		private static void RespCallback(IAsyncResult asynchronousResult)
-		{  
-			RequestState myRequestState=(RequestState) asynchronousResult.AsyncState;
-			try
-			{
+		{
+			RequestState myRequestState = (RequestState)asynchronousResult.AsyncState;
+			try {
 				// Set the State of request to asynchronous.
 				WebRequest request = myRequestState.request;
 
@@ -178,9 +175,7 @@ namespace LSLEditor
 					postStream.Close();
 
 					myRequestState.response = (HttpWebResponse)request.GetResponse();
-				}
-				else
-				{
+				} else {
 					// End the Asynchronous response.
 					myRequestState.response = request.EndGetResponse(asynchronousResult);
 				}
@@ -190,14 +185,10 @@ namespace LSLEditor
 				myRequestState.responseStream = responseStream;
 				// Begin the reading of the response
 				IAsyncResult asynchronousResultRead = responseStream.BeginRead(myRequestState.bufferRead, 0, BUFFER_SIZE, new AsyncCallback(ReadCallBack), myRequestState);
-			}
-			catch (WebException e)
-			{
+			} catch (WebException e) {
 				myRequestState.secondlife.host.VerboseMessage(e.Message);
 				myRequestState.secondlife.host.VerboseMessage(e.Status.ToString());
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				Console.WriteLine("Exception raised!");
 				Console.WriteLine("Source : " + e.Source);
 				Console.WriteLine("Message : " + e.Message);
@@ -208,40 +199,29 @@ namespace LSLEditor
 		private static void ReadCallBack(IAsyncResult asyncResult)
 		{
 			RequestState myRequestState = (RequestState)asyncResult.AsyncState;
-			try
-			{
+			try {
 				// Result state is set to AsyncState.
 				Stream responseStream = myRequestState.responseStream;
-				int read = responseStream.EndRead( asyncResult );
+				int read = responseStream.EndRead(asyncResult);
 				// Read the contents of the HTML page and then print to the console.
-				if (read > 0)
-				{
+				if (read > 0) {
 					myRequestState.requestData.Append(Encoding.ASCII.GetString(myRequestState.bufferRead, 0, read));
-					IAsyncResult asynchronousResult = responseStream.BeginRead( myRequestState.bufferRead, 0, BUFFER_SIZE, new AsyncCallback(ReadCallBack), myRequestState);
-				}
-				else
-				{
+					IAsyncResult asynchronousResult = responseStream.BeginRead(myRequestState.bufferRead, 0, BUFFER_SIZE, new AsyncCallback(ReadCallBack), myRequestState);
+				} else {
 					responseStream.Close();
-					if(myRequestState.requestData.Length>1)
-					{
-						myRequestState.secondlife.host.ExecuteSecondLife("http_response",myRequestState.httpkey, (SecondLife.integer)200, new SecondLife.list(), (SecondLife.String)myRequestState.requestData.ToString());
+					if (myRequestState.requestData.Length > 1) {
+						myRequestState.secondlife.host.ExecuteSecondLife("http_response", myRequestState.httpkey, (SecondLife.integer)200, new SecondLife.list(), (SecondLife.String)myRequestState.requestData.ToString());
 					}
 				}
-			}
-			catch(WebException e)
-			{
+			} catch (WebException e) {
 				myRequestState.secondlife.host.VerboseMessage(e.Message);
 				myRequestState.secondlife.host.VerboseMessage(e.Status.ToString());
-			} 
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				Console.WriteLine("Exception raised!");
-				Console.WriteLine("Source : {0}" , e.Source);
-				Console.WriteLine("Message : {0}" , e.Message);
+				Console.WriteLine("Source : {0}", e.Source);
+				Console.WriteLine("Message : {0}", e.Message);
 				myRequestState.secondlife.host.VerboseMessage(e.Message);
 			}
-
 		}
 	}
 }
-

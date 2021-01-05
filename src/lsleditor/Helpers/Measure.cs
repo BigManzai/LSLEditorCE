@@ -37,12 +37,11 @@
 //
 // </summary>
 
-using System;
 using System.Drawing;
 
 namespace LSLEditor.Helpers
 {
-	class Measure
+	internal class Measure
 	{
 		public static RectangleF MeasureDisplayString(System.Windows.Forms.Control control, string text, Font font)
 		{

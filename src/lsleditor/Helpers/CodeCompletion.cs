@@ -43,9 +43,9 @@ using System.Text.RegularExpressions;
 
 namespace LSLEditor.Helpers
 {
-	class CodeCompletion
+	internal class CodeCompletion
 	{
-		Regex regex;
+		private Regex regex;
 
 		public CodeCompletion()
 		{
@@ -53,8 +53,8 @@ namespace LSLEditor.Helpers
 				@"
 \b(?<type>integer|float|string|vector|rotation|state|key|list)\s
 (?>
-  \s* (?<name>[\w]*) \s*  
-  (?>\= \s* 
+  \s* (?<name>[\w]*) \s*
+  (?>\= \s*
     (?:
       (?>
               [^(),;]+
@@ -76,16 +76,12 @@ namespace LSLEditor.Helpers
 				return;
 			string strText = strTextIn.Substring(0, intStart);
 			string strLowerCaseKeyWord = strKeyWord.ToLower();
-			foreach (Match m in regex.Matches(strText))
-			{
-				if (m.Groups.Count == 4)
-				{
+			foreach (Match m in regex.Matches(strText)) {
+				if (m.Groups.Count == 4) {
 					string strType = m.Groups[1].ToString();
-					foreach (Capture cap in m.Groups[2].Captures)
-					{
+					foreach (Capture cap in m.Groups[2].Captures) {
 						string strName = cap.ToString();
-						if (strName.ToLower().StartsWith(strLowerCaseKeyWord))
-						{
+						if (strName.ToLower().StartsWith(strLowerCaseKeyWord)) {
 							KeyWordInfo ki = new KeyWordInfo(KeyWordTypeEnum.Vars, strName, Color.Red);
 							if (!list.Contains(ki))
 								list.Add(ki);

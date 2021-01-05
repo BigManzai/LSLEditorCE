@@ -39,120 +39,109 @@
 
 using System;
 using System.Drawing;
-using System.ComponentModel;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
 
 namespace LSLEditor
 {
 	public partial class TooltipWindow : Form
-	{
-		public string Wild;
-		public int XOffset = 0;
-		public override string Text
-		{
-			get
-			{
-				return base.Text;
-			}
-			set
-			{
-				base.Text = value;
-				this.richLabel1.Text = value;
-			}
-		}
+    {
+        public string Wild;
+        public int XOffset = 0;
 
-		public TooltipWindow(Form parent)
-		{
-			InitializeComponent();
+        public override string Text {
+            get {
+                return base.Text;
+            }
+            set {
+                base.Text = value;
+                this.richLabel1.Text = value;
+            }
+        }
 
-			this.Wild = "";
+        public TooltipWindow(Form parent)
+        {
+            InitializeComponent();
 
-			this.Owner = parent;
-			this.richLabel1.BorderStyle = BorderStyle.FixedSingle;
-			//this.richLabel1.BackColor = Color.LightGoldenrodYellow;
+            this.Wild = "";
 
-			this.BackColor = Color.LightGoldenrodYellow;
-			//this.richLabel1.BorderStyle = BorderStyle.None;
+            this.Owner = parent;
+            this.richLabel1.BorderStyle = BorderStyle.FixedSingle;
+            //this.richLabel1.BackColor = Color.LightGoldenrodYellow;
 
-			this.richLabel1.Tag = "";
-			this.richLabel1.Text = "";
-		}
+            this.BackColor = Color.LightGoldenrodYellow;
+            //this.richLabel1.BorderStyle = BorderStyle.None;
 
-		public void SetPosition(Rectangle rect, SyntaxRichTextBox syntaxRichTextBox)
-		{
-			//Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-			Point p = syntaxRichTextBox.GetPositionFromCharIndex(syntaxRichTextBox.SelectionStart);
+            this.richLabel1.Tag = "";
+            this.richLabel1.Text = "";
+        }
 
-			p = new Point(p.X - 20 + this.XOffset + 2 , p.Y + 2 + syntaxRichTextBox.LineHeight);
+        public void SetPosition(Rectangle rect, SyntaxRichTextBox syntaxRichTextBox)
+        {
+            //Rectangle rect = Screen.PrimaryScreen.WorkingArea;
+            Point p = syntaxRichTextBox.GetPositionFromCharIndex(syntaxRichTextBox.SelectionStart);
 
-			Rectangle client = Screen.PrimaryScreen.WorkingArea; //  syntaxRichTextBox.ClientRectangle;
-			if (p.X < client.Left || p.Y < client.Top || p.X > client.Width || p.Y > client.Height)
-			{
-				this.Visible = false;
-				return;
-			}
+            p = new Point(p.X - 20 + this.XOffset + 2, p.Y + 2 + syntaxRichTextBox.LineHeight);
 
-			Point screen = syntaxRichTextBox.PointToScreen(p);
+            Rectangle client = Screen.PrimaryScreen.WorkingArea; //  syntaxRichTextBox.ClientRectangle;
+            if (p.X < client.Left || p.Y < client.Top || p.X > client.Width || p.Y > client.Height) {
+                this.Visible = false;
+                return;
+            }
 
-			//if ((screen.Y + this.Height) > rect.Height)
-			//	screen = RichTextBox.PointToScreen(new Point(p.X - 20 + this.XOffset, p.Y - this.Height));
+            Point screen = syntaxRichTextBox.PointToScreen(p);
 
-			if (screen.Y > rect.Bottom)
-			{
-				this.Visible = false;
-				return;
-				//screen.Y = rect.Bottom;
-			}
+            //if ((screen.Y + this.Height) > rect.Height)
+            //	screen = RichTextBox.PointToScreen(new Point(p.X - 20 + this.XOffset, p.Y - this.Height));
 
-			if (screen.X > rect.Right)
-			{
-				this.Visible = false;
-				return;
-				//screen.X = rect.Right;
-			}
+            if (screen.Y > rect.Bottom) {
+                this.Visible = false;
+                return;
+                //screen.Y = rect.Bottom;
+            }
 
-			if (screen.X < rect.Left)
-			{
-				this.Visible = false;
-				return;
-				//screen.X = rect.Left;
-			}
+            if (screen.X > rect.Right) {
+                this.Visible = false;
+                return;
+                //screen.X = rect.Right;
+            }
 
-			if ((screen.Y) < rect.Top)
-			{
-				this.Visible = false;
-				return;
-				//screen.Y = rect.Top;
-			} 
-			
-			this.Location = screen;
-		}
+            if (screen.X < rect.Left) {
+                this.Visible = false;
+                return;
+                //screen.X = rect.Left;
+            }
 
-		public void SetPosition(SyntaxRichTextBox syntaxRichTextBox, Point p)
-		{
-			Rectangle rect = Screen.PrimaryScreen.WorkingArea;
-			Point screen = syntaxRichTextBox.PointToScreen(new Point(p.X - 20 , p.Y + syntaxRichTextBox.LineHeight));
-			if ((screen.Y + this.Height) > rect.Height)
-				screen = syntaxRichTextBox.PointToScreen(new Point(p.X - 20, p.Y - this.Height));
+            if ((screen.Y) < rect.Top) {
+                this.Visible = false;
+                return;
+                //screen.Y = rect.Top;
+            }
 
-			if ((screen.X + this.Width) > rect.Width)
-				screen.X = rect.Width - this.Width;
+            this.Location = screen;
+        }
 
-			if (screen.X < rect.Left)
-				screen.X = rect.Left;
+        public void SetPosition(SyntaxRichTextBox syntaxRichTextBox, Point p)
+        {
+            Rectangle rect = Screen.PrimaryScreen.WorkingArea;
+            Point screen = syntaxRichTextBox.PointToScreen(new Point(p.X - 20, p.Y + syntaxRichTextBox.LineHeight));
+            if ((screen.Y + this.Height) > rect.Height)
+                screen = syntaxRichTextBox.PointToScreen(new Point(p.X - 20, p.Y - this.Height));
 
-			if (screen.Y < rect.Top)
-				screen.Y = rect.Top;
+            if ((screen.X + this.Width) > rect.Width)
+                screen.X = rect.Width - this.Width;
 
-			this.Location = screen;
-		}
+            if (screen.X < rect.Left)
+                screen.X = rect.Left;
 
-		private void richLabel1_Resize(object sender, EventArgs e)
-		{
-			this.Size = this.richLabel1.Size;
+            if (screen.Y < rect.Top)
+                screen.Y = rect.Top;
 
-		}
+            this.Location = screen;
+        }
 
-	}
+        private void richLabel1_Resize(object sender, EventArgs e)
+        {
+            this.Size = this.richLabel1.Size;
+        }
+    }
 }

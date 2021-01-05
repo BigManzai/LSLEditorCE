@@ -38,48 +38,44 @@
 // </summary>
 
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace NumberedTextBox
 {
 	public partial class NumberedTextBoxUC : UserControl
-	{
-		public NumberedTextBoxUC()
-		{
-			InitializeComponent();
-
-			this.numbered1.richTextBox1 = this.syntaxRichTextBox1;
-			this.syntaxRichTextBox1.OnPaintNumbers += new EventHandler(syntaxRichTextBox1_OnPaintNumbers);
-			this.FontChanged += new EventHandler(NumberedTextBoxUC_FontChanged);
-            this.syntaxRichTextBox1.OnCursorPositionChanged += new LSLEditor.SyntaxRichTextBox.CursorPositionChangedHandler(syntaxRichTextBox1_OnCursorPositionChanged);
-		}
-
-        void syntaxRichTextBox1_OnCursorPositionChanged(object sender, LSLEditor.SyntaxRichTextBox.CursorPositionEventArgs e)
+    {
+        public NumberedTextBoxUC()
         {
-            this.numbered1.Invalidate();
+            InitializeComponent();
+
+            this.numbered1.richTextBox1 = this.syntaxRichTextBox1;
+            this.syntaxRichTextBox1.OnPaintNumbers += new EventHandler(syntaxRichTextBox1_OnPaintNumbers);
+            this.FontChanged += new EventHandler(NumberedTextBoxUC_FontChanged);
+            this.syntaxRichTextBox1.OnCursorPositionChanged += new LSLEditor.SyntaxRichTextBox.CursorPositionChangedHandler(syntaxRichTextBox1_OnCursorPositionChanged);
         }
 
-		void NumberedTextBoxUC_FontChanged(object sender, EventArgs e)
+		private void syntaxRichTextBox1_OnCursorPositionChanged(object sender, LSLEditor.SyntaxRichTextBox.CursorPositionEventArgs e)
+		{
+			this.numbered1.Invalidate();
+		}
+
+		private void NumberedTextBoxUC_FontChanged(object sender, EventArgs e)
 		{
 			this.numbered1.LineHeight = 0.0F; // reset!!
 			RectangleF rect = LSLEditor.Helpers.Measure.MeasureDisplayString(this.syntaxRichTextBox1, "M", this.Font);
 			this.splitContainer1.SplitterDistance = (int)(4 * rect.Width + 5.0);
 		}
 
-		void syntaxRichTextBox1_OnPaintNumbers(object sender, EventArgs e)
+		private void syntaxRichTextBox1_OnPaintNumbers(object sender, EventArgs e)
 		{
 			this.numbered1.Invalidate();
 		}
 
-		public LSLEditor.SyntaxRichTextBox TextBox
-		{
-			get
-			{
-				return this.syntaxRichTextBox1;
-			}
-		}
-
-	}
+		public LSLEditor.SyntaxRichTextBox TextBox {
+            get {
+                return this.syntaxRichTextBox1;
+            }
+        }
+    }
 }
