@@ -13,7 +13,7 @@ Diese Version wird auf den neusten stand gebracht und ist noch nicht fertig.
 Benutzung auf eigene gefahr, bitte speichern sie zwischendurch öfter ab.
 
 ## English
-If you prefer the English version, you have to insert the *.resx files from the original, 
+If you prefer the English version, you have to insert the form *.resx files from the original, 
 
 these are available here:  https://github.com/LSLEditor/LSLEditorCE/tree/master/src/lsleditor
 
