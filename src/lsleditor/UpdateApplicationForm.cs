@@ -38,123 +38,121 @@
 // </summary>
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Reflection;
-using System.ComponentModel;
 using System.Windows.Forms;
-
-using LSLEditor.Decompressor;
 
 namespace LSLEditor
 {
 	public partial class UpdateApplicationForm : Form
-	{
-		private WebClient manifest;
-		private WebClient client;
+    {
+        private WebClient manifest;
+        private WebClient client;
 
-		private string strHashWeb;
-		private string strDownloadUrl;
+        private string strHashWeb;
+        private string strDownloadUrl;
 
-		private string strHelpHashWeb;
-		private string strHelpUrl;
-		private string strHelpReferer;
+        private string strHelpHashWeb;
+        private string strHelpUrl;
+        private string strHelpReferer;
 
-		private bool blnOnlyHelpFile;
+        private bool blnOnlyHelpFile;
 
-		private struct versionInfo
-		{
-			public Version version;
-			public string hash;
-			public string uri;
+        private struct versionInfo
+        {
+            public Version version;
+            public string hash;
+            public string uri;
 
-			public versionInfo(string ver)
-			{
-				version = new Version(ver);
-				hash = "";
-				uri = "";
-			}
+            public versionInfo(string ver)
+            {
+                version = new Version(ver);
+                hash = "";
+                uri = "";
+            }
 
-			public versionInfo(string ver, string md5)
-			{
-				version = new Version(ver);
-				hash = md5;
-				uri = "";
-			}
+            public versionInfo(string ver, string md5)
+            {
+                version = new Version(ver);
+                hash = md5;
+                uri = "";
+            }
 
-			public versionInfo(string ver, string md5, string URI)
-			{
-				version = new Version(ver);
-				hash = md5;
-				uri = URI;
-			}
-		}
+            public versionInfo(string ver, string md5, string URI)
+            {
+                version = new Version(ver);
+                hash = md5;
+                uri = URI;
+            }
+        }
 
-		public UpdateApplicationForm()
-		{
-			InitializeComponent();
-			this.strHashWeb = "";
-			this.strHelpHashWeb = "";
-			this.strDownloadUrl = null;
-			this.strHelpUrl = null;
-			this.strHelpReferer = null;
-			this.buttonUpdate.Enabled = false;
-			this.blnOnlyHelpFile = false;
-		}
+        public UpdateApplicationForm()
+        {
+            InitializeComponent();
+            this.strHashWeb = "";
+            this.strHelpHashWeb = "";
+            this.strDownloadUrl = null;
+            this.strHelpUrl = null;
+            this.strHelpReferer = null;
+            this.buttonUpdate.Enabled = false;
+            this.blnOnlyHelpFile = false;
+        }
 
-		public event EventHandler OnUpdateAvailable;
+        public event EventHandler OnUpdateAvailable;
 
-		private void StartDownloadinManifest()
-		{
-			Uri url;
-			string strVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-			if (Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location).Contains("beta")) {
-				url = new Uri(Properties.Settings.Default.UpdateManifest + "?beta-" + strVersion);
-			} else {
-				url = new Uri(Properties.Settings.Default.UpdateManifest + "?" + strVersion);
-			}
+        private void StartDownloadinManifest()
+        {
+            Uri url;
+            string strVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            if (Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location).Contains("beta")) {
+                url = new Uri(Properties.Settings.Default.UpdateManifest + "?beta-" + strVersion);
+            } else {
+                url = new Uri(Properties.Settings.Default.UpdateManifest + "?" + strVersion);
+            }
 
-			manifest = new WebClient();
-			manifest.DownloadStringCompleted += new DownloadStringCompletedEventHandler(manifest_DownloadCompleted);
-			manifest.DownloadStringAsync(url);
-		}
+            manifest = new WebClient();
+            manifest.DownloadStringCompleted += new DownloadStringCompletedEventHandler(manifest_DownloadCompleted);
+            manifest.DownloadStringAsync(url);
+        }
 
-		public void CheckForHelpFile()
-		{
-			this.blnOnlyHelpFile = true;
-			StartDownloadinManifest();
-		}
+        public void CheckForHelpFile()
+        {
+            this.blnOnlyHelpFile = true;
+            StartDownloadinManifest();
+        }
 
-		public void CheckForUpdate(bool blnForce)
-		{
-			if (!blnForce) {
-				if (Properties.Settings.Default.DeleteOldFiles) {
-					DeleteOldFile();
-				}
+        public void CheckForUpdate(bool blnForce)
+        {
+            if (!blnForce) {
+                if (Properties.Settings.Default.DeleteOldFiles) {
+                    DeleteOldFile();
+                }
 
-				DateTime dateTime = Properties.Settings.Default.CheckDate;
-				if (Properties.Settings.Default.CheckEveryDay) {
-					TimeSpan lastUpdate = DateTime.Now - dateTime;
-					if (lastUpdate.TotalDays >= 1.0) {
-						blnForce = true;
-					}
-				} else if (Properties.Settings.Default.CheckEveryWeek) {
-					TimeSpan lastUpdate = DateTime.Now - dateTime;
-					if (lastUpdate.TotalDays >= 7.0) {
-						blnForce = true;
-					}
-				}
-			}
+                DateTime dateTime = Properties.Settings.Default.CheckDate;
+                if (Properties.Settings.Default.CheckEveryDay) {
+                    TimeSpan lastUpdate = DateTime.Now - dateTime;
+                    if (lastUpdate.TotalDays >= 1.0) {
+                        blnForce = true;
+                    }
+                } else if (Properties.Settings.Default.CheckEveryWeek) {
+                    TimeSpan lastUpdate = DateTime.Now - dateTime;
+                    if (lastUpdate.TotalDays >= 7.0) {
+                        blnForce = true;
+                    }
+                }
+            }
 
-			if (blnForce) {
-				Properties.Settings.Default.CheckDate = DateTime.Now;
-				Properties.Settings.Default.Save(); // save also all settings
+            if (blnForce) {
+                Properties.Settings.Default.CheckDate = DateTime.Now;
+                Properties.Settings.Default.Save(); // save also all settings
 
-				StartDownloadinManifest();
-			}
-		}
+                StartDownloadinManifest();
+            }
+        }
 
-		void manifest_DownloadCompleted(object sender, DownloadStringCompletedEventArgs e)
+		private void manifest_DownloadCompleted(object sender, DownloadStringCompletedEventArgs e)
 		{
 			if (e.Error != null)
 				return;
@@ -205,41 +203,53 @@ namespace LSLEditor
 					case "BZipVersion":
 						bzip = new versionInfo(strValue);
 						break;
+
 					case "Hash":
 					case "BZipHash":
 						bzip.hash = strValue;
 						break;
+
 					case "Url":
 					case "BZipUrl":
 						bzip.uri = strValue;
 						break;
+
 					case "GZipVersion":
 						gzip = new versionInfo(strValue);
 						break;
+
 					case "GZipHash":
 						gzip.hash = strValue;
 						break;
+
 					case "GZipUrl":
 						gzip.uri = strValue;
 						break;
+
 					case "ZipVersion":
 						wzip = new versionInfo(strValue);
 						break;
+
 					case "ZipHash":
 						wzip.hash = strValue;
 						break;
+
 					case "ZipUrl":
 						wzip.uri = strValue;
 						break;
+
 					case "HelpHash":
 						strHelpHashWeb = strValue;
 						break;
+
 					case "HelpUrl2":
 						strHelpUrl = strValue;
 						break;
+
 					case "HelpReferer":
 						strHelpReferer = strValue;
 						break;
+
 					default:
 						break;
 				}
@@ -251,7 +261,6 @@ namespace LSLEditor
 			{
 				web = gzip;
 			}
-
 
 			if (!String.IsNullOrEmpty(wzip.uri) && (wzip.compare(web) == 1))
 			{
@@ -300,52 +309,52 @@ namespace LSLEditor
 		}
 
 		private void buttonCancel_Click(object sender, EventArgs e)
-		{
-			this.Close();
-		}
+        {
+            this.Close();
+        }
 
-		private void buttonUpdate_Click(object sender, EventArgs e)
-		{
-			this.buttonUpdate.Enabled = false;
-			Download();
-		}
+        private void buttonUpdate_Click(object sender, EventArgs e)
+        {
+            this.buttonUpdate.Enabled = false;
+            Download();
+        }
 
-		private void Download()
-		{
-			if (strHelpUrl != null) {
-				DownloadHelpFile(); // starts also DownloadProgram when finished
-			} else {
-				DownloadProgram();
-			}
-		}
+        private void Download()
+        {
+            if (strHelpUrl != null) {
+                DownloadHelpFile(); // starts also DownloadProgram when finished
+            } else {
+                DownloadProgram();
+            }
+        }
 
-		private void DownloadHelpFile()
-		{
-			if (strHelpUrl != null) {
-				Uri url = new Uri(strHelpUrl);
+        private void DownloadHelpFile()
+        {
+            if (strHelpUrl != null) {
+                Uri url = new Uri(strHelpUrl);
 
-				client = new WebClient();
+                client = new WebClient();
 
-				if (this.strHelpReferer != null) {
-					client.Headers.Add("Referer", strHelpReferer);
-				}
+                if (this.strHelpReferer != null) {
+                    client.Headers.Add("Referer", strHelpReferer);
+                }
 
-				client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadHelpFileCompleted);
-				client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadHelpFileCompleted);
+                client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
 
-				string strCurrentFile = Assembly.GetExecutingAssembly().Location;
-				string strDirectory = Path.GetDirectoryName(strCurrentFile);
-				string strNewFile = Path.Combine(strDirectory, Properties.Settings.Default.HelpOfflineFile);
+                string strCurrentFile = Assembly.GetExecutingAssembly().Location;
+                string strDirectory = Path.GetDirectoryName(strCurrentFile);
+                string strNewFile = Path.Combine(strDirectory, Properties.Settings.Default.HelpOfflineFile);
 
-				if (File.Exists(strNewFile)) {
-					File.Delete(strNewFile);
-				}
+                if (File.Exists(strNewFile)) {
+                    File.Delete(strNewFile);
+                }
 
-				client.DownloadFileAsync(url, strNewFile);
-			}
-		}
+                client.DownloadFileAsync(url, strNewFile);
+            }
+        }
 
-		void client_DownloadHelpFileCompleted(object sender, AsyncCompletedEventArgs e)
+		private void client_DownloadHelpFileCompleted(object sender, AsyncCompletedEventArgs e)
 		{
 			try {
 				if (e.Error != null) {
@@ -372,33 +381,33 @@ namespace LSLEditor
 		}
 
 		private void DownloadProgram()
-		{
-			if (strDownloadUrl != null) {
-				Uri url = new Uri(strDownloadUrl);
+        {
+            if (strDownloadUrl != null) {
+                Uri url = new Uri(strDownloadUrl);
 
-				client = new WebClient();
-				client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
-				client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+                client = new WebClient();
+                client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+                client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
 
-				string strCurrentFile = Assembly.GetExecutingAssembly().Location;
-				string strDirectory = Path.GetDirectoryName(strCurrentFile);
-				string strNewFileName = Path.GetFileName(strDownloadUrl);
-				string strNewFile = Path.Combine(strDirectory, strNewFileName);
+                string strCurrentFile = Assembly.GetExecutingAssembly().Location;
+                string strDirectory = Path.GetDirectoryName(strCurrentFile);
+                string strNewFileName = Path.GetFileName(strDownloadUrl);
+                string strNewFile = Path.Combine(strDirectory, strNewFileName);
 
-				if (File.Exists(strNewFile)) {
-					File.Delete(strNewFile);
-				}
+                if (File.Exists(strNewFile)) {
+                    File.Delete(strNewFile);
+                }
 
-				client.DownloadFileAsync(url, strNewFile, strNewFileName);
-			}
-		}
+                client.DownloadFileAsync(url, strNewFile, strNewFileName);
+            }
+        }
 
-		void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+		private void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
 		{
 			this.progressBar1.Value = e.ProgressPercentage;
 		}
 
-		void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+		private void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
 		{
 			try {
 				if (e.Error != null) {
@@ -419,13 +428,16 @@ namespace LSLEditor
 					case ".bz2":
 						Decompressor.BZip2.Decompress(File.OpenRead(strZipFile), File.Create(strNewFile));
 						break;
+
 					case ".gz":
 					case ".gzip":
 						Decompressor.Gzip.Decompress(File.OpenRead(strZipFile), File.Create(strNewFile));
 						break;
+
 					case ".zip":
 						Decompressor.Zip.Decompress(File.OpenRead(strZipFile), File.Create(strNewFile));
 						break;
+
 					default:
 						break;
 				}
@@ -457,32 +469,31 @@ namespace LSLEditor
 		}
 
 		private void UpdateApplicationForm_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			if (client != null) {
-				if (client.IsBusy) {
-					client.CancelAsync();
-				}
-				client.Dispose();
-			}
-			client = null;
-			if (manifest != null) {
-				if (manifest.IsBusy) {
-					manifest.CancelAsync();
-				}
-				manifest.Dispose();
-			}
-			manifest = null;
-		}
+        {
+            if (client != null) {
+                if (client.IsBusy) {
+                    client.CancelAsync();
+                }
+                client.Dispose();
+            }
+            client = null;
+            if (manifest != null) {
+                if (manifest.IsBusy) {
+                    manifest.CancelAsync();
+                }
+                manifest.Dispose();
+            }
+            manifest = null;
+        }
 
-		private void DeleteOldFile()
-		{
-			string strCurrentFile = Assembly.GetExecutingAssembly().Location;
-			string strDirectory = Path.GetDirectoryName(strCurrentFile);
-			string strOldFile = Path.Combine(strDirectory, "_LSLEditor.exe");
-			if (File.Exists(strOldFile)) {
-				File.Delete(strOldFile);
-			}
-		}
-
-	}
+        private void DeleteOldFile()
+        {
+            string strCurrentFile = Assembly.GetExecutingAssembly().Location;
+            string strDirectory = Path.GetDirectoryName(strCurrentFile);
+            string strOldFile = Path.Combine(strDirectory, "_LSLEditor.exe");
+            if (File.Exists(strOldFile)) {
+                File.Delete(strOldFile);
+            }
+        }
+    }
 }

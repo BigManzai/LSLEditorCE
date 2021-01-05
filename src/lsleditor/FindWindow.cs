@@ -45,245 +45,241 @@ using System.Windows.Forms;
 namespace LSLEditor
 {
 	public partial class FindWindow : Form
-	{
-		private LSLEditorForm lslEditForm;
-		private int intStart;
-		private int intEnd;
+    {
+        private LSLEditorForm lslEditForm;
+        private int intStart;
+        private int intEnd;
 
-		private bool m_ReplaceAlso;
+        private bool m_ReplaceAlso;
 
-		public FindWindow(LSLEditorForm lslEditForm)
-		{
-			InitializeComponent();
-			this.lslEditForm = lslEditForm;
-			this.intStart = 0;
-			this.intEnd = 0;
-		}
+        public FindWindow(LSLEditorForm lslEditForm)
+        {
+            InitializeComponent();
+            this.lslEditForm = lslEditForm;
+            this.intStart = 0;
+            this.intEnd = 0;
+        }
 
-		public bool ReplaceAlso
-		{
-			get
-			{
-				return m_ReplaceAlso;
-			}
-			set
-			{
-				m_ReplaceAlso = value;
-				this.groupBox2.Enabled = m_ReplaceAlso;
-				this.Replace.Enabled = m_ReplaceAlso;
-				this.ReplaceAll.Enabled = m_ReplaceAlso;
+        public bool ReplaceAlso {
+            get {
+                return m_ReplaceAlso;
+            }
+            set {
+                m_ReplaceAlso = value;
+                this.groupBox2.Enabled = m_ReplaceAlso;
+                this.Replace.Enabled = m_ReplaceAlso;
+                this.ReplaceAll.Enabled = m_ReplaceAlso;
 
-				if (m_ReplaceAlso)
-					this.Text = "Find and Replace";
-				else
-					this.Text = "Find";
-			}
-		}
+                if (m_ReplaceAlso)
+                    this.Text = "Find and Replace";
+                else
+                    this.Text = "Find";
+            }
+        }
 
-		public string KeyWord
-		{
-			set
-			{
-				this.label1.Text = ""; // clear out message
-				if (value != "") {
-					this.comboBoxFind.Text = value;
-				} else {
-					if (this.comboBoxFind.Items.Count > 0) {
-						this.comboBoxFind.SelectedIndex = this.comboBoxFind.Items.Count - 1;
-					}
-				}
-			}
-		}
+        public string KeyWord {
+            set {
+                this.label1.Text = ""; // clear out message
+                if (value != "") {
+                    this.comboBoxFind.Text = value;
+                } else {
+                    if (this.comboBoxFind.Items.Count > 0) {
+                        this.comboBoxFind.SelectedIndex = this.comboBoxFind.Items.Count - 1;
+                    }
+                }
+            }
+        }
 
-		private bool UpdateComboBox(ComboBox comboBox)
-		{
-			string strText = comboBox.Text;
-			bool Found = false;
+        private bool UpdateComboBox(ComboBox comboBox)
+        {
+            string strText = comboBox.Text;
+            bool Found = false;
 
-			foreach (string strC in comboBox.Items) {
-				if (strC == strText) {
-					Found = true;
-					break;
-				}
-			}
+            foreach (string strC in comboBox.Items) {
+                if (strC == strText) {
+                    Found = true;
+                    break;
+                }
+            }
 
-			if (!Found) {
-				comboBox.Items.Add(strText);
-			}
-			return Found;
-		}
+            if (!Found) {
+                comboBox.Items.Add(strText);
+            }
+            return Found;
+        }
 
-		public void Find()
-		{
-			this.label1.Text = "";
-			EditForm editForm = this.lslEditForm.ActiveMdiForm as EditForm;
-			if (editForm != null) {
-				if (!UpdateComboBox(this.comboBoxFind)) {
-					editForm.TextBox.SelectionLength = 0;
-					editForm.TextBox.SelectionStart = 0;
-				}
+        public void Find()
+        {
+            this.label1.Text = "";
+            EditForm editForm = this.lslEditForm.ActiveMdiForm as EditForm;
+            if (editForm != null) {
+                if (!UpdateComboBox(this.comboBoxFind)) {
+                    editForm.TextBox.SelectionLength = 0;
+                    editForm.TextBox.SelectionStart = 0;
+                }
 
-				RichTextBoxFinds options = RichTextBoxFinds.None;
+                RichTextBoxFinds options = RichTextBoxFinds.None;
 
-				if (this.checkBoxMatchCase.Checked) options |= RichTextBoxFinds.MatchCase;
-				if (this.checkBoxReverse.Checked) options |= RichTextBoxFinds.Reverse;
-				if (this.checkBoxWholeWord.Checked) options |= RichTextBoxFinds.WholeWord;
+                if (this.checkBoxMatchCase.Checked) options |= RichTextBoxFinds.MatchCase;
+                if (this.checkBoxReverse.Checked) options |= RichTextBoxFinds.Reverse;
+                if (this.checkBoxWholeWord.Checked) options |= RichTextBoxFinds.WholeWord;
 
-				if (this.checkBoxReverse.Checked) {
-					intStart = 0; // start cant change ;-)
-					intEnd = editForm.TextBox.SelectionStart;
-				} else {
-					intStart = editForm.TextBox.SelectionStart + editForm.TextBox.SelectionLength;
-					if (intStart == editForm.TextBox.Text.Length) {
-						intStart = 0;
-					}
-					intEnd = editForm.TextBox.Text.Length - 1; // length can change!!
-				}
+                if (this.checkBoxReverse.Checked) {
+                    intStart = 0; // start cant change ;-)
+                    intEnd = editForm.TextBox.SelectionStart;
+                } else {
+                    intStart = editForm.TextBox.SelectionStart + editForm.TextBox.SelectionLength;
+                    if (intStart == editForm.TextBox.Text.Length) {
+                        intStart = 0;
+                    }
+                    intEnd = editForm.TextBox.Text.Length - 1; // length can change!!
+                }
 
-				string strFind = this.comboBoxFind.Text;
-				int intIndex = editForm.Find(strFind, intStart, intEnd, options);
-				if (intIndex < 0) {
-					this.label1.Text = "Not found...";
-					return;
-				}
-			}
-		}
+                string strFind = this.comboBoxFind.Text;
+                int intIndex = editForm.Find(strFind, intStart, intEnd, options);
+                if (intIndex < 0) {
+                    this.label1.Text = "Not found...";
+                    return;
+                }
+            }
+        }
 
-		private void FindNext_Click(object sender, EventArgs e)
-		{
-			Find();
-			this.Focus();
-		}
+        private void FindNext_Click(object sender, EventArgs e)
+        {
+            Find();
+            this.Focus();
+        }
 
-		private void comboBoxFind_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Return) {
-				if (this.Replace.Enabled) {
-					this.comboBoxReplace.Focus();
-					e.SuppressKeyPress = true;
-				} else {
-					Find();
-					e.SuppressKeyPress = true;
-				}
-			}
-		}
+        private void comboBoxFind_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Return) {
+                if (this.Replace.Enabled) {
+                    this.comboBoxReplace.Focus();
+                    e.SuppressKeyPress = true;
+                } else {
+                    Find();
+                    e.SuppressKeyPress = true;
+                }
+            }
+        }
 
-		private void Replace_Click(object sender, EventArgs e)
-		{
-			EditForm editForm = this.lslEditForm.ActiveMdiForm as EditForm;
-			if (editForm != null && !editForm.IsDisposed) {
-				UpdateComboBox(this.comboBoxReplace);
+        private void Replace_Click(object sender, EventArgs e)
+        {
+            EditForm editForm = this.lslEditForm.ActiveMdiForm as EditForm;
+            if (editForm != null && !editForm.IsDisposed) {
+                UpdateComboBox(this.comboBoxReplace);
 
-				if (editForm.TextBox.SelectionLength > 0) {
-					string strReplacement = this.comboBoxReplace.Text;
-					editForm.TextBox.ReplaceSelectedText(strReplacement);
-				}
+                if (editForm.TextBox.SelectionLength > 0) {
+                    string strReplacement = this.comboBoxReplace.Text;
+                    editForm.TextBox.ReplaceSelectedText(strReplacement);
+                }
 
-				Find();
-				this.Focus();
-			}
-		}
+                Find();
+                this.Focus();
+            }
+        }
 
-		// WildCardToRegex not used!!
-		private string WildCardToRegex(string strWildCard)
-		{
-			StringBuilder sb = new StringBuilder(strWildCard.Length + 8);
-			for (int intI = 0; intI < strWildCard.Length; intI++) {
-				char chrC = strWildCard[intI];
-				switch (chrC) {
-					case '*':
-						sb.Append(".*");
-						break;
-					case '?':
-						sb.Append(".");
-						break;
-					case '\\':
-						intI++;
-						if (intI < strWildCard.Length)
-							sb.Append(Regex.Escape(strWildCard[intI].ToString()));
-						break;
-					default:
-						sb.Append(Regex.Escape(chrC.ToString()));
-						break;
-				}
-			}
-			return sb.ToString();
-		}
+        // WildCardToRegex not used!!
+        private string WildCardToRegex(string strWildCard)
+        {
+            StringBuilder sb = new StringBuilder(strWildCard.Length + 8);
+            for (int intI = 0; intI < strWildCard.Length; intI++) {
+                char chrC = strWildCard[intI];
+                switch (chrC) {
+                    case '*':
+                        sb.Append(".*");
+                        break;
 
-		private void ReplaceAll_Click(object sender, EventArgs e)
-		{
-			EditForm editForm = this.lslEditForm.ActiveMdiForm as EditForm;
-			if (editForm != null && !editForm.IsDisposed) {
-				UpdateComboBox(this.comboBoxReplace);
+                    case '?':
+                        sb.Append(".");
+                        break;
 
-				string strPattern;
-				string strFind = Regex.Escape(this.comboBoxFind.Text);
-				string strReplacement = this.comboBoxReplace.Text;
-				string strSourceCode = editForm.SourceCode;
+                    case '\\':
+                        intI++;
+                        if (intI < strWildCard.Length)
+                            sb.Append(Regex.Escape(strWildCard[intI].ToString()));
+                        break;
 
-				RegexOptions regexOptions = RegexOptions.Compiled;
-				if (!this.checkBoxMatchCase.Checked) {
-					regexOptions |= RegexOptions.IgnoreCase;
-				}
-				if (this.checkBoxWholeWord.Checked) {
-					strPattern = @"\b" + strFind + @"\b";
-				} else {
-					strPattern = strFind;
-				}
+                    default:
+                        sb.Append(Regex.Escape(chrC.ToString()));
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
 
-				Regex regex = new Regex(strPattern, regexOptions);
+        private void ReplaceAll_Click(object sender, EventArgs e)
+        {
+            EditForm editForm = this.lslEditForm.ActiveMdiForm as EditForm;
+            if (editForm != null && !editForm.IsDisposed) {
+                UpdateComboBox(this.comboBoxReplace);
 
-				int intCount = 0;
-				foreach (Match m in regex.Matches(strSourceCode)) {
-					if (m.Value.Length > 0) {
-						intCount++;
-					}
-				}
-				if (intCount == 0) {
-					MessageBox.Show("No matches found");
-				} else {
-					if (MessageBox.Show("There are " + intCount + " occurences, replace them all?", "Find and Replace", MessageBoxButtons.YesNoCancel) == DialogResult.Yes) {
-						editForm.SourceCode = regex.Replace(strSourceCode, strReplacement);
-					}
-				}
-				this.Focus();
-			}
-		}
+                string strPattern;
+                string strFind = Regex.Escape(this.comboBoxFind.Text);
+                string strReplacement = this.comboBoxReplace.Text;
+                string strSourceCode = editForm.SourceCode;
 
-		private void FindWindow_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			lslEditForm.TopMost = true; // 15 nove 2007
-			this.Visible = false;
-			e.Cancel = true;
-			lslEditForm.TopMost = false;// 15 nove 2007
-		}
+                RegexOptions regexOptions = RegexOptions.Compiled;
+                if (!this.checkBoxMatchCase.Checked) {
+                    regexOptions |= RegexOptions.IgnoreCase;
+                }
+                if (this.checkBoxWholeWord.Checked) {
+                    strPattern = @"\b" + strFind + @"\b";
+                } else {
+                    strPattern = strFind;
+                }
 
-		private void FindWindow_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyData == Keys.Escape) {
-				this.Visible = false;
-				e.SuppressKeyPress = true;
-				e.Handled = true;
-			}
+                Regex regex = new Regex(strPattern, regexOptions);
 
-			if (e.KeyCode == Keys.Return) {
-				Find();
-				e.SuppressKeyPress = true;
-				this.Focus();
-			}
+                int intCount = 0;
+                foreach (Match m in regex.Matches(strSourceCode)) {
+                    if (m.Value.Length > 0) {
+                        intCount++;
+                    }
+                }
+                if (intCount == 0) {
+                    MessageBox.Show("No matches found");
+                } else {
+                    if (MessageBox.Show("There are " + intCount + " occurences, replace them all?", "Find and Replace", MessageBoxButtons.YesNoCancel) == DialogResult.Yes) {
+                        editForm.SourceCode = regex.Replace(strSourceCode, strReplacement);
+                    }
+                }
+                this.Focus();
+            }
+        }
 
-			if (e.KeyCode == Keys.F3) {
-				Find();
-				e.SuppressKeyPress = true;
-				this.Focus();
-			}
+        private void FindWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            lslEditForm.TopMost = true; // 15 nove 2007
+            this.Visible = false;
+            e.Cancel = true;
+            lslEditForm.TopMost = false;// 15 nove 2007
+        }
 
+        private void FindWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Escape) {
+                this.Visible = false;
+                e.SuppressKeyPress = true;
+                e.Handled = true;
+            }
 
-		}
+            if (e.KeyCode == Keys.Return) {
+                Find();
+                e.SuppressKeyPress = true;
+                this.Focus();
+            }
 
-		public void FindFocus()
-		{
-			this.comboBoxFind.Focus();
-		}
-	}
+            if (e.KeyCode == Keys.F3) {
+                Find();
+                e.SuppressKeyPress = true;
+                this.Focus();
+            }
+        }
+
+        public void FindFocus()
+        {
+            this.comboBoxFind.Focus();
+        }
+    }
 }

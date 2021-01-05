@@ -38,371 +38,376 @@
 // </summary>
 
 using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+
 using LSLEditor.Docking;
 
 namespace LSLEditor
 {
 	public partial class SimulatorConsole : DockContent
-	{
-		public event SecondLifeHost.SecondLifeHostChatHandler OnChat;
-		public event EventHandler OnControl;
+    {
+        public event SecondLifeHost.SecondLifeHostChatHandler OnChat;
 
-		private List<string> History;
-		private int intHistory;
+        public event EventHandler OnControl;
 
-		private Form[] Children;
-		private Solution.SolutionExplorer solutionExplorer;
+        private List<string> History;
+        private int intHistory;
 
-		public SimulatorConsole(Solution.SolutionExplorer solutionExplorer, Form[] Children)
-		{
-			InitializeComponent();
-			this.solutionExplorer = solutionExplorer;
-			this.Children = Children;
+        private Form[] Children;
+        private Solution.SolutionExplorer solutionExplorer;
 
-			this.textBox1.Focus();
-			this.Dock = DockStyle.Fill;
-			this.History = new List<string>();
-			this.intHistory = 0;
+        public SimulatorConsole(Solution.SolutionExplorer solutionExplorer, Form[] Children)
+        {
+            InitializeComponent();
+            this.solutionExplorer = solutionExplorer;
+            this.Children = Children;
 
-			if (Properties.Settings.Default.SimulatorLocation != Point.Empty) {
-				this.Location = Properties.Settings.Default.SimulatorLocation;
-			}
-			if (Properties.Settings.Default.SimulatorSize != Size.Empty) {
-				this.Size = Properties.Settings.Default.SimulatorSize;
-			}
+            this.textBox1.Focus();
+            this.Dock = DockStyle.Fill;
+            this.History = new List<string>();
+            this.intHistory = 0;
 
-			this.Clear();
+            if (Properties.Settings.Default.SimulatorLocation != Point.Empty) {
+                this.Location = Properties.Settings.Default.SimulatorLocation;
+            }
+            if (Properties.Settings.Default.SimulatorSize != Size.Empty) {
+                this.Size = Properties.Settings.Default.SimulatorSize;
+            }
 
-			SecondLifeHost.SecondLifeHostChatHandler chathandler = new SecondLifeHost.SecondLifeHostChatHandler(SecondLifeHost_OnChat);
-			SecondLifeHost.SecondLifeHostMessageLinkedHandler messagelinkedhandler = new SecondLifeHost.SecondLifeHostMessageLinkedHandler(SecondLifeHost_OnMessageLinked);
+            this.Clear();
 
-			this.OnChat += chathandler;
-			this.OnControl += new EventHandler(SimulatorConsole_OnControl);
+            SecondLifeHost.SecondLifeHostChatHandler chathandler = new SecondLifeHost.SecondLifeHostChatHandler(SecondLifeHost_OnChat);
+            SecondLifeHost.SecondLifeHostMessageLinkedHandler messagelinkedhandler = new SecondLifeHost.SecondLifeHostMessageLinkedHandler(SecondLifeHost_OnMessageLinked);
 
-			this.LocationChanged += new EventHandler(SimulatorConsole_LocationChanged);
+            this.OnChat += chathandler;
+            this.OnControl += new EventHandler(SimulatorConsole_OnControl);
 
-			foreach (Form form in this.Children) {
-				EditForm editForm = form as EditForm;
-				if (editForm == null || editForm.IsDisposed) {
-					continue;
-				}
-				editForm.ChatHandler = chathandler;
-				editForm.MessageLinkedHandler = messagelinkedhandler;
-				editForm.StartCompiler();
-			}
-		}
+            this.LocationChanged += new EventHandler(SimulatorConsole_LocationChanged);
 
-		public void Stop()
-		{
-			foreach (Form form in this.Children) {
-				EditForm editForm = form as EditForm;
-				if (editForm == null || editForm.IsDisposed) {
-					continue;
-				}
-				editForm.StopCompiler();
-			}
-		}
+            foreach (Form form in this.Children) {
+                EditForm editForm = form as EditForm;
+                if (editForm == null || editForm.IsDisposed) {
+                    continue;
+                }
+                editForm.ChatHandler = chathandler;
+                editForm.MessageLinkedHandler = messagelinkedhandler;
+                editForm.StartCompiler();
+            }
+        }
 
-		private void SimulatorConsole_LocationChanged(object sender, EventArgs e)
-		{
-			Properties.Settings.Default.SimulatorLocation = this.Location;
-		}
+        public void Stop()
+        {
+            foreach (Form form in this.Children) {
+                EditForm editForm = form as EditForm;
+                if (editForm == null || editForm.IsDisposed) {
+                    continue;
+                }
+                editForm.StopCompiler();
+            }
+        }
 
-		private void SecondLifeHost_OnChat(object sender, SecondLifeHostChatEventArgs e)
-		{
-			this.Listen(e);
+        private void SimulatorConsole_LocationChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.SimulatorLocation = this.Location;
+        }
 
-			// talk only to the owner
-			if (e.How != CommunicationType.OwnerSay) {
-				foreach (Form form in this.Children) {
-					EditForm editForm = form as EditForm;
-					if (editForm == null || editForm.IsDisposed) {
-						continue;
-					}
+        private void SecondLifeHost_OnChat(object sender, SecondLifeHostChatEventArgs e)
+        {
+            this.Listen(e);
 
-					if (editForm.runtime == null) {
-						continue;
-					}
+            // talk only to the owner
+            if (e.How != CommunicationType.OwnerSay) {
+                foreach (Form form in this.Children) {
+                    EditForm editForm = form as EditForm;
+                    if (editForm == null || editForm.IsDisposed) {
+                        continue;
+                    }
 
-					if (editForm.runtime.SecondLifeHost == null) {
-						continue;
-					}
+                    if (editForm.runtime == null) {
+                        continue;
+                    }
 
-					// prevent loops loops loops loops, dont talk to myself
-					if (sender != editForm.runtime.SecondLifeHost) {
-						editForm.runtime.SecondLifeHost.Listen(e);
-					}
-				}
-			}
-		}
+                    if (editForm.runtime.SecondLifeHost == null) {
+                        continue;
+                    }
 
-		private void SecondLifeHost_OnMessageLinked(object sender, SecondLifeHostMessageLinkedEventArgs e)
-		{
-			SecondLifeHost secondLifeHostSender = sender as SecondLifeHost;
+                    // prevent loops loops loops loops, dont talk to myself
+                    if (sender != editForm.runtime.SecondLifeHost) {
+                        editForm.runtime.SecondLifeHost.Listen(e);
+                    }
+                }
+            }
+        }
 
-			Guid ObjectGuid = this.solutionExplorer.GetParentGuid(secondLifeHostSender.GUID);
-			Guid RootObjectGuid = this.solutionExplorer.GetParentGuid(ObjectGuid);
+        private void SecondLifeHost_OnMessageLinked(object sender, SecondLifeHostMessageLinkedEventArgs e)
+        {
+            SecondLifeHost secondLifeHostSender = sender as SecondLifeHost;
 
-			List<Guid> list;
+            Guid ObjectGuid = this.solutionExplorer.GetParentGuid(secondLifeHostSender.GUID);
+            Guid RootObjectGuid = this.solutionExplorer.GetParentGuid(ObjectGuid);
 
-			int intLinkNum = e.LinkIndex;
-			switch (intLinkNum) {
-				case 1: // LINK_ROOT  , root prim in linked set (but not in a single prim, which is 0)
-					list = this.solutionExplorer.GetScripts(RootObjectGuid, false);
-					break;
-				case -1: // LINK_SET  , all prims in object
-					list = this.solutionExplorer.GetScripts(RootObjectGuid, true);
-					break;
-				case -2: // LINK_ALL_OTHERS  ,  all other prims in object besides prim function is in
-					list = this.solutionExplorer.GetScripts(RootObjectGuid, true);
-					// remove scripts in prim itself, and below
-					foreach (Guid guid in this.solutionExplorer.GetScripts(ObjectGuid, true)) {
-						if (list.Contains(guid))
-							list.Remove(guid);
-					}
-					break;
-				case -3: // LINK_ALL_CHILDREN  , all child prims in object
-					list = this.solutionExplorer.GetScripts(RootObjectGuid, true);
-					// remove root itself
-					foreach (Guid guid in this.solutionExplorer.GetScripts(RootObjectGuid, false)) {
-						if (list.Contains(guid))
-							list.Remove(guid);
-					}
-					break;
-				case -4: // LINK_THIS
-					/*
+            List<Guid> list;
+
+            int intLinkNum = e.LinkIndex;
+            switch (intLinkNum) {
+                case 1: // LINK_ROOT  , root prim in linked set (but not in a single prim, which is 0)
+                    list = this.solutionExplorer.GetScripts(RootObjectGuid, false);
+                    break;
+
+                case -1: // LINK_SET  , all prims in object
+                    list = this.solutionExplorer.GetScripts(RootObjectGuid, true);
+                    break;
+
+                case -2: // LINK_ALL_OTHERS  ,  all other prims in object besides prim function is in
+                    list = this.solutionExplorer.GetScripts(RootObjectGuid, true);
+                    // remove scripts in prim itself, and below
+                    foreach (Guid guid in this.solutionExplorer.GetScripts(ObjectGuid, true)) {
+                        if (list.Contains(guid))
+                            list.Remove(guid);
+                    }
+                    break;
+
+                case -3: // LINK_ALL_CHILDREN  , all child prims in object
+                    list = this.solutionExplorer.GetScripts(RootObjectGuid, true);
+                    // remove root itself
+                    foreach (Guid guid in this.solutionExplorer.GetScripts(RootObjectGuid, false)) {
+                        if (list.Contains(guid))
+                            list.Remove(guid);
+                    }
+                    break;
+
+                case -4: // LINK_THIS
+                    /*
 					 * From SL Wiki: "Causes the script to act only upon the prim the prim the script is in."
 					 * This means LINK_THIS, links to every script in the prim, not just the caller.
 					 * @author = MrSoundless
 					 * @date = 28 April 2011
 					 */
-					list = new List<Guid>();
-					//list.Add(secondLifeHostSender.guid); // 4 feb 2008
-					list = this.solutionExplorer.GetScripts(ObjectGuid, true); // 28 april 2011
-					break;
-				default: // Link number
-					Guid ObjectNrGuid = this.solutionExplorer.GetGuidFromObjectNr(ObjectGuid, intLinkNum);
-					list = this.solutionExplorer.GetScripts(ObjectNrGuid, true);
-					break;
-			}
+                    list = new List<Guid>();
+                    //list.Add(secondLifeHostSender.guid); // 4 feb 2008
+                    list = this.solutionExplorer.GetScripts(ObjectGuid, true); // 28 april 2011
+                    break;
 
-			// only send message to running scripts in list
-			foreach (Form form in this.Children) {
-				EditForm editForm = form as EditForm;
-				if (editForm == null || editForm.IsDisposed) {
-					continue;
-				}
+                default: // Link number
+                    Guid ObjectNrGuid = this.solutionExplorer.GetGuidFromObjectNr(ObjectGuid, intLinkNum);
+                    list = this.solutionExplorer.GetScripts(ObjectNrGuid, true);
+                    break;
+            }
 
-				if (editForm.runtime == null) {
-					continue;
-				}
+            // only send message to running scripts in list
+            foreach (Form form in this.Children) {
+                EditForm editForm = form as EditForm;
+                if (editForm == null || editForm.IsDisposed) {
+                    continue;
+                }
 
-				if (editForm.runtime.SecondLifeHost == null) {
-					continue;
-				}
+                if (editForm.runtime == null) {
+                    continue;
+                }
 
-				if (list.Contains(editForm.guid)) {
-					editForm.runtime.SecondLifeHost.LinkMessage(e);
-				}
-			}
-		}
+                if (editForm.runtime.SecondLifeHost == null) {
+                    continue;
+                }
 
-		private void SimulatorConsole_OnControl(object sender, EventArgs e)
-		{
-			foreach (Form form in this.Children) {
-				EditForm editForm = form as EditForm;
-				if (editForm == null || editForm.IsDisposed) {
-					continue;
-				}
+                if (list.Contains(editForm.guid)) {
+                    editForm.runtime.SecondLifeHost.LinkMessage(e);
+                }
+            }
+        }
 
-				if (editForm.runtime == null) {
-					continue;
-				}
+        private void SimulatorConsole_OnControl(object sender, EventArgs e)
+        {
+            foreach (Form form in this.Children) {
+                EditForm editForm = form as EditForm;
+                if (editForm == null || editForm.IsDisposed) {
+                    continue;
+                }
 
-				if (editForm.runtime.SecondLifeHost == null) {
-					continue;
-				}
+                if (editForm.runtime == null) {
+                    continue;
+                }
 
-				editForm.runtime.SecondLifeHost.SendControl((Keys)sender);
-			}
-		}
+                if (editForm.runtime.SecondLifeHost == null) {
+                    continue;
+                }
 
-		private delegate void AppendTextDelegate(string strLine);
-		public void TalkToSimulatorConsole(string strLine)
-		{
-			if (this.textBox2.InvokeRequired) {
-				this.textBox2.Invoke(new AppendTextDelegate(TalkToSimulatorConsole), new object[] { strLine });
-			} else {
-				this.textBox2.AppendText(strLine.Replace("\n", "\r\n") + "\r\n");
-			}
-		}
+                editForm.runtime.SecondLifeHost.SendControl((Keys)sender);
+            }
+        }
 
-		private void Chat(int channel, string name, SecondLife.key id, string message, CommunicationType how)
-		{
-			if (OnChat != null) {
-				OnChat(this, new SecondLifeHostChatEventArgs(channel, name, id, message, how));
-			}
-		}
+        private delegate void AppendTextDelegate(string strLine);
 
-		public void Listen(SecondLifeHostChatEventArgs e)
-		{
-			// Translate the incomming messages a bit so it looks like SL.
-			string strHow = ": ";
-			if (e.How == CommunicationType.Shout) {
-				strHow = " shout: ";
-			}
+        public void TalkToSimulatorConsole(string strLine)
+        {
+            if (this.textBox2.InvokeRequired) {
+                this.textBox2.Invoke(new AppendTextDelegate(TalkToSimulatorConsole), new object[] { strLine });
+            } else {
+                this.textBox2.AppendText(strLine.Replace("\n", "\r\n") + "\r\n");
+            }
+        }
 
-			if (e.How == CommunicationType.Whisper) {
-				strHow = " whispers: ";
-			}
+        private void Chat(int channel, string name, SecondLife.key id, string message, CommunicationType how)
+        {
+            if (OnChat != null) {
+                OnChat(this, new SecondLifeHostChatEventArgs(channel, name, id, message, how));
+            }
+        }
 
-			string strWho = e.Name;
-			string strMessage = e.Message;
+        public void Listen(SecondLifeHostChatEventArgs e)
+        {
+            // Translate the incomming messages a bit so it looks like SL.
+            string strHow = ": ";
+            if (e.How == CommunicationType.Shout) {
+                strHow = " shout: ";
+            }
 
-			if (e.Name == Properties.Settings.Default.AvatarName) {
-				strWho = "You";
-			}
+            if (e.How == CommunicationType.Whisper) {
+                strHow = " whispers: ";
+            }
 
-			if (e.Message.ToString().StartsWith("/me")) {
-				strWho = e.Name;
-				strHow = " ";
-				strMessage = e.Message.ToString().Substring(3).Trim();
-			}
+            string strWho = e.Name;
+            string strMessage = e.Message;
 
-			if (e.Channel == 0) {
-				TalkToSimulatorConsole(strWho + strHow + strMessage);
-			}
-		}
+            if (e.Name == Properties.Settings.Default.AvatarName) {
+                strWho = "You";
+            }
 
-		private void Speak(CommunicationType how)
-		{
-			int intChannel = 0;
-			string strMessage = this.textBox1.Text.Trim();
+            if (e.Message.ToString().StartsWith("/me")) {
+                strWho = e.Name;
+                strHow = " ";
+                strMessage = e.Message.ToString().Substring(3).Trim();
+            }
 
-			History.Add(strMessage);
-			intHistory = History.Count;
+            if (e.Channel == 0) {
+                TalkToSimulatorConsole(strWho + strHow + strMessage);
+            }
+        }
 
+        private void Speak(CommunicationType how)
+        {
+            int intChannel = 0;
+            string strMessage = this.textBox1.Text.Trim();
 
-			if (strMessage != ""){
-				if (strMessage[0] == '/') {
-					if (strMessage.StartsWith("/me")) {
-						// do nothing
-					} else {
-						string strChannel = "";
-						for (int intI = 1; intI < strMessage.Length; intI++) {
-							if (strMessage[intI] >= '0' && strMessage[intI] <= '9') {
-								strChannel += strMessage[intI];
-								if (intI < 10) {
-									continue;
-								}
-							}
-							try {
-								intChannel = Convert.ToInt32(strChannel);
-								strMessage = strMessage.Substring(intI).Trim();
-							} catch {
-							}
-							break;
-						}
-					}
-				}
-			}
+            History.Add(strMessage);
+            intHistory = History.Count;
 
-			SecondLife.key id = new SecondLife.key(Properties.Settings.Default.AvatarKey);
+            if (strMessage != "") {
+                if (strMessage[0] == '/') {
+                    if (strMessage.StartsWith("/me")) {
+                        // do nothing
+                    } else {
+                        string strChannel = "";
+                        for (int intI = 1; intI < strMessage.Length; intI++) {
+                            if (strMessage[intI] >= '0' && strMessage[intI] <= '9') {
+                                strChannel += strMessage[intI];
+                                if (intI < 10) {
+                                    continue;
+                                }
+                            }
+                            try {
+                                intChannel = Convert.ToInt32(strChannel);
+                                strMessage = strMessage.Substring(intI).Trim();
+                            } catch {
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
 
-			Chat(intChannel, Properties.Settings.Default.AvatarName, id, strMessage, how);
+            SecondLife.key id = new SecondLife.key(Properties.Settings.Default.AvatarKey);
 
-			this.textBox1.Clear();
+            Chat(intChannel, Properties.Settings.Default.AvatarName, id, strMessage, how);
 
-			this.buttonSay.Enabled = false;
-			this.buttonShout.Enabled = false;
-		}
+            this.textBox1.Clear();
 
-		private void buttonShout_Click(object sender, EventArgs e)
-		{
-			Speak(CommunicationType.Shout);
-			this.textBox1.Focus();
-		}
+            this.buttonSay.Enabled = false;
+            this.buttonShout.Enabled = false;
+        }
 
+        private void buttonShout_Click(object sender, EventArgs e)
+        {
+            Speak(CommunicationType.Shout);
+            this.textBox1.Focus();
+        }
 
-		private void ScrollChat(KeyEventArgs e)
-		{
-			e.SuppressKeyPress = true;
-			if (e.KeyCode == Keys.Up) {
-				intHistory = Math.Max(0, intHistory - 1);
-			}
-			if (e.KeyCode == Keys.Down) {
-				intHistory = Math.Min(History.Count, intHistory + 1);
-			}
-			this.textBox1.Clear();
-			if (intHistory != History.Count) {
-				this.textBox1.AppendText(History[intHistory]);
-			}
-		}
+        private void ScrollChat(KeyEventArgs e)
+        {
+            e.SuppressKeyPress = true;
+            if (e.KeyCode == Keys.Up) {
+                intHistory = Math.Max(0, intHistory - 1);
+            }
+            if (e.KeyCode == Keys.Down) {
+                intHistory = Math.Min(History.Count, intHistory + 1);
+            }
+            this.textBox1.Clear();
+            if (intHistory != History.Count) {
+                this.textBox1.AppendText(History[intHistory]);
+            }
+        }
 
-		private void textBox1_KeyDown(object sender, KeyEventArgs e)
-		{
-			this.buttonSay.Enabled = true;
-			this.buttonShout.Enabled = true;
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            this.buttonSay.Enabled = true;
+            this.buttonShout.Enabled = true;
 
-			if (e.KeyCode == Keys.Return) {
-				Speak(CommunicationType.Say);
-				e.SuppressKeyPress = true;
-			}
-			if (e.Control && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)) {
-				ScrollChat(e);
-			} else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up ) {
-				if (OnControl != null) {
-					OnControl(e.KeyCode, new EventArgs());
-				}
-				e.SuppressKeyPress = true;
-			}
-		}
+            if (e.KeyCode == Keys.Return) {
+                Speak(CommunicationType.Say);
+                e.SuppressKeyPress = true;
+            }
+            if (e.Control && (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)) {
+                ScrollChat(e);
+            } else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up) {
+                if (OnControl != null) {
+                    OnControl(e.KeyCode, new EventArgs());
+                }
+                e.SuppressKeyPress = true;
+            }
+        }
 
-		private void Simulator_Load(object sender, EventArgs e)
-		{
-			this.textBox1.Focus();
-		}
+        private void Simulator_Load(object sender, EventArgs e)
+        {
+            this.textBox1.Focus();
+        }
 
-		public void Clear()
-		{
-			this.textBox1.Clear();
-			this.textBox2.Clear();
-			this.textBox1.Focus();
-		}
+        public void Clear()
+        {
+            this.textBox1.Clear();
+            this.textBox2.Clear();
+            this.textBox1.Focus();
+        }
 
-		private void buttonSay_Click(object sender, EventArgs e)
-		{
-			Speak(CommunicationType.Say);
-			this.textBox1.Focus();
-		}
+        private void buttonSay_Click(object sender, EventArgs e)
+        {
+            Speak(CommunicationType.Say);
+            this.textBox1.Focus();
+        }
 
-		private void textBox2_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Control && e.KeyCode == Keys.A) {
-				this.textBox2.SelectAll();
-			}
-		}
+        private void textBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A) {
+                this.textBox2.SelectAll();
+            }
+        }
 
-		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.textBox2.Focus();
-			this.textBox2.Copy();
-		}
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Focus();
+            this.textBox2.Copy();
+        }
 
-		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.textBox2.Focus();
-			this.textBox2.SelectAll();
-		}
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Focus();
+            this.textBox2.SelectAll();
+        }
 
-		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.textBox2.Focus();
-			this.textBox2.Clear();
-		}
-
-	}
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Focus();
+            this.textBox2.Clear();
+        }
+    }
 }

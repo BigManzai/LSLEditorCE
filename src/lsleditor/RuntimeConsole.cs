@@ -38,64 +38,63 @@
 // </summary>
 
 using System;
-using System.IO;
-using System.Xml;
-using System.Text;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
-using System.Windows.Forms;
-
 using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+
 using LSLEditor.Helpers;
 
 namespace LSLEditor
 {
 	public partial class RuntimeConsole : UserControl
-	{
-		private LSLEditorForm mainForm;
+    {
+        private LSLEditorForm mainForm;
 
-		public RuntimeConsole(LSLEditorForm mainForm)
-		{
-			InitializeComponent();
-			this.mainForm = mainForm;
-			this.Dock = DockStyle.Fill;
-		}
+        public RuntimeConsole(LSLEditorForm mainForm)
+        {
+            InitializeComponent();
+            this.mainForm = mainForm;
+            this.Dock = DockStyle.Fill;
+        }
 
-		private Thread ResetScriptWatcher;
-		private AutoResetEvent ResetScriptEvent;
-		public SecondLifeHost SecondLifeHost;
+        private Thread ResetScriptWatcher;
+        private AutoResetEvent ResetScriptEvent;
+        public SecondLifeHost SecondLifeHost;
 
-		private string CSharpCode;
-		private EditForm editForm;
+        private string CSharpCode;
+        private EditForm editForm;
 
         private bool GetNewHost()
-		{
-			bool blnResult = false;
+        {
+            bool blnResult = false;
             Assembly assembly = null;
             assembly = CompilerHelper.CompileCSharp(editForm, CSharpCode);
 
             if (assembly != null) {
-				if (SecondLifeHost != null) {
-					SecondLifeHost.Dispose();
-				}
-				SecondLifeHost = null;
+                if (SecondLifeHost != null) {
+                    SecondLifeHost.Dispose();
+                }
+                SecondLifeHost = null;
 
-				SecondLifeHost = new SecondLifeHost(this.mainForm, assembly, editForm.FullPathName, editForm.guid);
-				SecondLifeHost.OnChat += editForm.ChatHandler;
-				SecondLifeHost.OnMessageLinked += editForm.MessageLinkedHandler;
-				SecondLifeHost.OnDie += new EventHandler(host_OnDie);
-				SecondLifeHost.OnReset += new EventHandler(SecondLifeHost_OnReset);
-				SecondLifeHost.OnListenChannelsChanged += new EventHandler(SecondLifeHost_OnListenChannelsChanged);
+                SecondLifeHost = new SecondLifeHost(this.mainForm, assembly, editForm.FullPathName, editForm.guid);
+                SecondLifeHost.OnChat += editForm.ChatHandler;
+                SecondLifeHost.OnMessageLinked += editForm.MessageLinkedHandler;
+                SecondLifeHost.OnDie += new EventHandler(host_OnDie);
+                SecondLifeHost.OnReset += new EventHandler(SecondLifeHost_OnReset);
+                SecondLifeHost.OnListenChannelsChanged += new EventHandler(SecondLifeHost_OnListenChannelsChanged);
 
-				SecondLifeHost.OnVerboseMessage += new SecondLifeHost.SecondLifeHostMessageHandler(host_OnVerboseMessage);
-				SecondLifeHost.OnStateChange += new SecondLifeHost.SecondLifeHostMessageHandler(host_OnStateChange);
+                SecondLifeHost.OnVerboseMessage += new SecondLifeHost.SecondLifeHostMessageHandler(host_OnVerboseMessage);
+                SecondLifeHost.OnStateChange += new SecondLifeHost.SecondLifeHostMessageHandler(host_OnStateChange);
 
-				SecondLifeHost.State("default", true);
+                SecondLifeHost.State("default", true);
 
-				blnResult = true;
-			}
-			return blnResult;
-		}
+                blnResult = true;
+            }
+            return blnResult;
+        }
 
         /// <summary>
         /// Converts this script (when it's LSLI) to expanded lsl and writes it.
@@ -110,8 +109,7 @@ namespace LSLEditor
 
             LSLIPathHelper.DeleteFile(path);
 
-            using (StreamWriter sw = new StreamWriter(path))
-            {
+            using (StreamWriter sw = new StreamWriter(path)) {
                 sw.Write(lsl);
             }
 
@@ -119,85 +117,85 @@ namespace LSLEditor
             return lsl;
         }
 
-		public bool Compile(EditForm editForm)
-		{
-			this.editForm = editForm;
+        public bool Compile(EditForm editForm)
+        {
+            this.editForm = editForm;
 
             ResetScriptEvent = new AutoResetEvent(false);
-			ResetScriptWatcher = new Thread(new ThreadStart(ResetScriptWatch));
-			ResetScriptWatcher.Name = "ResetScriptWatch";
-			ResetScriptWatcher.IsBackground = true;
-			ResetScriptWatcher.Start();
+            ResetScriptWatcher = new Thread(new ThreadStart(ResetScriptWatch));
+            ResetScriptWatcher.Name = "ResetScriptWatch";
+            ResetScriptWatcher.IsBackground = true;
+            ResetScriptWatcher.Start();
 
             string lsl = editForm.SourceCode;
 
             // If not hidden and not readonly
-            if (!editForm.IsHidden && !this.mainForm.IsReadOnly(editForm))
-            {
+            if (!editForm.IsHidden && !this.mainForm.IsReadOnly(editForm)) {
                 if (LSLIPathHelper.IsLSLI(editForm.ScriptName)) // Expand LSLI to LSL
                 {
                     lsl = ConvertLSLI();
                 }
-            } else
-            {
+            } else {
                 this.editForm.StopCompiler();
                 return false;
             }
 
-			CSharpCode = MakeSharp(editForm.ConfLSL, lsl);
+            CSharpCode = MakeSharp(editForm.ConfLSL, lsl);
 
-			return GetNewHost();
-		}
+            return GetNewHost();
+        }
 
-		private void SecondLifeHost_OnReset(object sender, EventArgs e)
-		{
-			this.ResetScriptEvent.Set();
-		}
+        private void SecondLifeHost_OnReset(object sender, EventArgs e)
+        {
+            this.ResetScriptEvent.Set();
+        }
 
-		private void ResetScriptWatch()
-		{
-			while (true) {
-				this.ResetScriptEvent.WaitOne();
+        private void ResetScriptWatch()
+        {
+            while (true) {
+                this.ResetScriptEvent.WaitOne();
 
-				SecondLifeHost.Dispose();
-				GetNewHost();
-			}
-		}
+                SecondLifeHost.Dispose();
+                GetNewHost();
+            }
+        }
 
-		private delegate void AddListenChannelsDelegate(ComboBox comboBox, string[] channels);
-		private void AddListenChannelsToComboxBox(ComboBox comboBox, string[] channels)
-		{
-			if (comboBox.InvokeRequired) {
-				comboBox.Invoke(new AddListenChannelsDelegate(AddListenChannelsToComboxBox),
-					new object[] { comboBox, channels });
-			} else {
-				comboBox.Items.Clear();
-				comboBox.Items.AddRange(channels);
-				comboBox.SelectedIndex = 0;
-			}
-		}
-		private void SecondLifeHost_OnListenChannelsChanged(object sender, EventArgs e)
-		{
-			foreach (Control control in this.panel4.Controls) {
-				GroupboxEvent gbe = control as GroupboxEvent;
-				if (gbe == null) {
-					continue;
-				}
-				foreach (Control control1 in gbe.Controls) {
-					GroupBox gb = control1 as GroupBox;
-					if (gb == null) {
-						continue;
-					}
-					if (gb.Name != "listen_0") {
-						continue;
-					}
-					ComboBox comboBox = gb.Controls[0] as ComboBox;
-					AddListenChannelsToComboxBox(comboBox, SecondLifeHost.GetListenChannels());
-				}
-			}
-		}
+        private delegate void AddListenChannelsDelegate(ComboBox comboBox, string[] channels);
 
-		void host_OnDie(object sender, EventArgs e)
+        private void AddListenChannelsToComboxBox(ComboBox comboBox, string[] channels)
+        {
+            if (comboBox.InvokeRequired) {
+                comboBox.Invoke(new AddListenChannelsDelegate(AddListenChannelsToComboxBox),
+                    new object[] { comboBox, channels });
+            } else {
+                comboBox.Items.Clear();
+                comboBox.Items.AddRange(channels);
+                comboBox.SelectedIndex = 0;
+            }
+        }
+
+        private void SecondLifeHost_OnListenChannelsChanged(object sender, EventArgs e)
+        {
+            foreach (Control control in this.panel4.Controls) {
+                GroupboxEvent gbe = control as GroupboxEvent;
+                if (gbe == null) {
+                    continue;
+                }
+                foreach (Control control1 in gbe.Controls) {
+                    GroupBox gb = control1 as GroupBox;
+                    if (gb == null) {
+                        continue;
+                    }
+                    if (gb.Name != "listen_0") {
+                        continue;
+                    }
+                    ComboBox comboBox = gb.Controls[0] as ComboBox;
+                    AddListenChannelsToComboxBox(comboBox, SecondLifeHost.GetListenChannels());
+                }
+            }
+        }
+
+		private void host_OnDie(object sender, EventArgs e)
 		{
 			if (this.panel1.InvokeRequired) {
 				// using Evenhandler definition as a delegate
@@ -208,214 +206,224 @@ namespace LSLEditor
 		}
 
 		private void host_OnStateChange(object sender, SecondLifeHostEventArgs e)
-		{
-			ShowLifeEvents();
-			SetStateCombobox(e.Message);
-		}
+        {
+            ShowLifeEvents();
+            SetStateCombobox(e.Message);
+        }
 
-		private delegate void SetStateComboboxDelegate(string strName);
-		public void SetStateCombobox(string strName)
-		{
-			if (this.comboBox1.InvokeRequired) {
-				this.comboBox1.Invoke(new SetStateComboboxDelegate(SetStateCombobox), new object[] { strName });
-			} else {
-				for (int intI = 0; intI < this.comboBox1.Items.Count; intI++) {
-					if (this.comboBox1.Items[intI].ToString() == strName) {
-						this.comboBox1.SelectedIndex = intI;
-						break;
-					}
-				}
-			}
-		}
+        private delegate void SetStateComboboxDelegate(string strName);
 
-		private void comboBox1_SelectedIndexChanged(object sender, System.EventArgs e)
-		{
-			if (SecondLifeHost != null) {
-				string strStateName = (string)this.comboBox1.Items[this.comboBox1.SelectedIndex];
-				if (strStateName != "") {
-					if (SecondLifeHost.CurrentStateName != strStateName) {
-						SecondLifeHost.State(strStateName, true);
-					}
-				}
-			}
-		}
+        public void SetStateCombobox(string strName)
+        {
+            if (this.comboBox1.InvokeRequired) {
+                this.comboBox1.Invoke(new SetStateComboboxDelegate(SetStateCombobox), new object[] { strName });
+            } else {
+                for (int intI = 0; intI < this.comboBox1.Items.Count; intI++) {
+                    if (this.comboBox1.Items[intI].ToString() == strName) {
+                        this.comboBox1.SelectedIndex = intI;
+                        break;
+                    }
+                }
+            }
+        }
 
-		private void host_OnVerboseMessage(object sender, SecondLifeHostEventArgs e)
-		{
-			VerboseConsole(e.Message);
-		}
+        private void comboBox1_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            if (SecondLifeHost != null) {
+                string strStateName = (string)this.comboBox1.Items[this.comboBox1.SelectedIndex];
+                if (strStateName != "") {
+                    if (SecondLifeHost.CurrentStateName != strStateName) {
+                        SecondLifeHost.State(strStateName, true);
+                    }
+                }
+            }
+        }
 
-		private string MakeSharp(XmlDocument xml, string strC)
-		{
-			this.comboBox1.Items.Clear();
-			this.comboBox1.Items.Add("");
-			this.comboBox1.SelectedIndex = 0;
+        private void host_OnVerboseMessage(object sender, SecondLifeHostEventArgs e)
+        {
+            VerboseConsole(e.Message);
+        }
 
-			// xml is needed for making events buttons
-			LSL2CSharp translator = new LSL2CSharp(xml);
+        private string MakeSharp(XmlDocument xml, string strC)
+        {
+            this.comboBox1.Items.Clear();
+            this.comboBox1.Items.Add("");
+            this.comboBox1.SelectedIndex = 0;
 
-			strC = translator.Parse(strC);
+            // xml is needed for making events buttons
+            LSL2CSharp translator = new LSL2CSharp(xml);
 
-			foreach (string strState in translator.States) {
-				this.comboBox1.Items.Add(strState);
-			}
-			return strC;
-		}
+            strC = translator.Parse(strC);
 
-		private delegate void ShowLifeEventsDelegate();
-		private void ShowLifeEvents()
-		{
-			if (this.panel4.InvokeRequired) {
-				this.panel4.Invoke(new ShowLifeEventsDelegate(ShowLifeEvents), null);
-			} else {
-				int intX = 8;
-				int intY = 0;
+            foreach (string strState in translator.States) {
+                this.comboBox1.Items.Add(strState);
+            }
+            return strC;
+        }
 
-				this.panel4.Controls.Clear();
-				foreach (string strEventName in SecondLifeHost.GetEvents()) {
-					string strArgs = SecondLifeHost.GetArgumentsFromMethod(strEventName);
-					GroupboxEvent ge = new GroupboxEvent(new Point(intX, intY), strEventName, strArgs, new System.EventHandler(this.buttonEvent_Click));
-					this.panel4.Controls.Add(ge);
-					intY += ge.Height;
-				}
-			}
-		}
+        private delegate void ShowLifeEventsDelegate();
 
-		private delegate void AppendTextDelegate(string strLine);
+        private void ShowLifeEvents()
+        {
+            if (this.panel4.InvokeRequired) {
+                this.panel4.Invoke(new ShowLifeEventsDelegate(ShowLifeEvents), null);
+            } else {
+                int intX = 8;
+                int intY = 0;
 
-		// Verbose
-		public void VerboseConsole(string strLine)
-		{
-			if (!this.textBox2.IsDisposed) {
-				if (this.textBox2.InvokeRequired) {
-					this.textBox2.Invoke(new AppendTextDelegate(VerboseConsole), new object[] { strLine });
-				} else {
-					this.textBox2.AppendText(strLine.Replace("\n", "\r\n") + "\r\n");
-				}
-			}
-		}
+                this.panel4.Controls.Clear();
+                foreach (string strEventName in SecondLifeHost.GetEvents()) {
+                    string strArgs = SecondLifeHost.GetArgumentsFromMethod(strEventName);
+                    GroupboxEvent ge = new GroupboxEvent(new Point(intX, intY), strEventName, strArgs, new System.EventHandler(this.buttonEvent_Click));
+                    this.panel4.Controls.Add(ge);
+                    intY += ge.Height;
+                }
+            }
+        }
 
-		private string GetArgumentValue(string strName)
-		{
-			foreach (Control parent in this.panel4.Controls) {
-				if (parent.Name == "GroupboxTextbox") {
-					foreach (Control c in parent.Controls) {
-						if (c.Name == strName) {
-							return c.Controls[0].Text;
-						}
-					}
-				}
-			}
-			return "";
-		}
+        private delegate void AppendTextDelegate(string strLine);
 
-		private object[] GetArguments(string strName, string strArgs)
-		{
-			object[] objResult = new object[0];
-			if (strArgs != "") {
-				try {
-					string[] args = strArgs.Trim().Split(new char[] { ',' });
-					object[] argobjects = new object[args.Length];
-					for (int intI = 0; intI < argobjects.Length; intI++) {
-						string[] argument = args[intI].Trim().Split(new char[] { ' ' });
-						if (argument.Length == 2) {
-							string[] arArgs;
-							string strArgumentValue = GetArgumentValue(strName + "_" + intI);
-							string strArgumentName = argument[1];
-							string strArgumentType = argument[0];
-							switch (strArgumentType) {
-								case "System.String":
-									argobjects[intI] = strArgumentValue;
-									break;
-								case "System.Int32":
-									argobjects[intI] = int.Parse(strArgumentValue);
-									break;
-								case "LSLEditor.SecondLife+Float":
-									argobjects[intI] = new SecondLife.Float(strArgumentValue);
-									break;
-								case "LSLEditor.SecondLife+integer":
-									argobjects[intI] = new SecondLife.integer(int.Parse(strArgumentValue));
-									break;
-								case "LSLEditor.SecondLife+String":
-									argobjects[intI] = new SecondLife.String(strArgumentValue);
-									break;
-								case "LSLEditor.SecondLife+key":
-									argobjects[intI] = new SecondLife.key(strArgumentValue);
-									break;
-								case "LSLEditor.SecondLife+list":
-									argobjects[intI] = new SecondLife.list(new string[] { strArgumentValue });
-									break;
-								case "LSLEditor.SecondLife+rotation":
-									arArgs = strArgumentValue.Replace("<", "").Replace(">", "").Replace(" ", "").Split(new char[] { ',' });
-									argobjects[intI] = new SecondLife.rotation(double.Parse(arArgs[0]), double.Parse(arArgs[1]), double.Parse(arArgs[2]), double.Parse(arArgs[3]));
-									break;
-								case "LSLEditor.SecondLife+vector":
-									arArgs = strArgumentValue.Replace("<", "").Replace(">", "").Replace(" ", "").Split(new char[] { ',' });
-									argobjects[intI] = new SecondLife.vector(double.Parse(arArgs[0]), double.Parse(arArgs[1]), double.Parse(arArgs[2]));
-									break;
-								default:
-									MessageBox.Show("Compiler->GetArguments->[" + strArgumentType + "][" + strArgumentName + "]");
-									argobjects[intI] = null;
-									break;
-							}
-						} else {
-							MessageBox.Show("Argument must be 'type name' [" + args[intI] + "]");
-							break;
-						}
-					}
-					objResult = argobjects;
-				} catch { }
-			}
-			return objResult;
-		}
+        // Verbose
+        public void VerboseConsole(string strLine)
+        {
+            if (!this.textBox2.IsDisposed) {
+                if (this.textBox2.InvokeRequired) {
+                    this.textBox2.Invoke(new AppendTextDelegate(VerboseConsole), new object[] { strLine });
+                } else {
+                    this.textBox2.AppendText(strLine.Replace("\n", "\r\n") + "\r\n");
+                }
+            }
+        }
 
-		private void buttonEvent_Click(object sender, System.EventArgs e)
-		{
-			Button button = (Button)sender;
-			string strName = button.Text;
-			string strArgs = SecondLifeHost.GetArgumentsFromMethod(strName);
-			object[] args = GetArguments(strName, strArgs);
-			//SecondLifeHost.VerboseEvent(strName, args);
-			SecondLifeHost.ExecuteSecondLife(strName, args);
-		}
+        private string GetArgumentValue(string strName)
+        {
+            foreach (Control parent in this.panel4.Controls) {
+                if (parent.Name == "GroupboxTextbox") {
+                    foreach (Control c in parent.Controls) {
+                        if (c.Name == strName) {
+                            return c.Controls[0].Text;
+                        }
+                    }
+                }
+            }
+            return "";
+        }
 
-		private void Die()
-		{
-			if (this.SecondLifeHost != null) {
-				this.SecondLifeHost.Die();
-			}
-		}
+        private object[] GetArguments(string strName, string strArgs)
+        {
+            object[] objResult = new object[0];
+            if (strArgs != "") {
+                try {
+                    string[] args = strArgs.Trim().Split(new char[] { ',' });
+                    object[] argobjects = new object[args.Length];
+                    for (int intI = 0; intI < argobjects.Length; intI++) {
+                        string[] argument = args[intI].Trim().Split(new char[] { ' ' });
+                        if (argument.Length == 2) {
+                            string[] arArgs;
+                            string strArgumentValue = GetArgumentValue(strName + "_" + intI);
+                            string strArgumentName = argument[1];
+                            string strArgumentType = argument[0];
+                            switch (strArgumentType) {
+                                case "System.String":
+                                    argobjects[intI] = strArgumentValue;
+                                    break;
 
-		// Die
-		private void button1_Click(object sender, EventArgs e)
-		{
-			Die();
-		}
+                                case "System.Int32":
+                                    argobjects[intI] = int.Parse(strArgumentValue);
+                                    break;
 
-		private void textBox2_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Control && e.KeyCode == Keys.A) {
-				this.textBox2.SelectAll();
-			}
-		}
+                                case "LSLEditor.SecondLife+Float":
+                                    argobjects[intI] = new SecondLife.Float(strArgumentValue);
+                                    break;
 
-		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.textBox2.Focus();
-			this.textBox2.SelectAll();
-		}
+                                case "LSLEditor.SecondLife+integer":
+                                    argobjects[intI] = new SecondLife.integer(int.Parse(strArgumentValue));
+                                    break;
 
-		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.textBox2.Focus();
-			this.textBox2.Copy();
-		}
+                                case "LSLEditor.SecondLife+String":
+                                    argobjects[intI] = new SecondLife.String(strArgumentValue);
+                                    break;
 
-		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.textBox2.Focus();
-			this.textBox2.Clear();
-		}
+                                case "LSLEditor.SecondLife+key":
+                                    argobjects[intI] = new SecondLife.key(strArgumentValue);
+                                    break;
 
-	}
+                                case "LSLEditor.SecondLife+list":
+                                    argobjects[intI] = new SecondLife.list(new string[] { strArgumentValue });
+                                    break;
+
+                                case "LSLEditor.SecondLife+rotation":
+                                    arArgs = strArgumentValue.Replace("<", "").Replace(">", "").Replace(" ", "").Split(new char[] { ',' });
+                                    argobjects[intI] = new SecondLife.rotation(double.Parse(arArgs[0]), double.Parse(arArgs[1]), double.Parse(arArgs[2]), double.Parse(arArgs[3]));
+                                    break;
+
+                                case "LSLEditor.SecondLife+vector":
+                                    arArgs = strArgumentValue.Replace("<", "").Replace(">", "").Replace(" ", "").Split(new char[] { ',' });
+                                    argobjects[intI] = new SecondLife.vector(double.Parse(arArgs[0]), double.Parse(arArgs[1]), double.Parse(arArgs[2]));
+                                    break;
+
+                                default:
+                                    MessageBox.Show("Compiler->GetArguments->[" + strArgumentType + "][" + strArgumentName + "]");
+                                    argobjects[intI] = null;
+                                    break;
+                            }
+                        } else {
+                            MessageBox.Show("Argument must be 'type name' [" + args[intI] + "]");
+                            break;
+                        }
+                    }
+                    objResult = argobjects;
+                } catch { }
+            }
+            return objResult;
+        }
+
+        private void buttonEvent_Click(object sender, System.EventArgs e)
+        {
+            Button button = (Button)sender;
+            string strName = button.Text;
+            string strArgs = SecondLifeHost.GetArgumentsFromMethod(strName);
+            object[] args = GetArguments(strName, strArgs);
+            //SecondLifeHost.VerboseEvent(strName, args);
+            SecondLifeHost.ExecuteSecondLife(strName, args);
+        }
+
+        private void Die()
+        {
+            if (this.SecondLifeHost != null) {
+                this.SecondLifeHost.Die();
+            }
+        }
+
+        // Die
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Die();
+        }
+
+        private void textBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.A) {
+                this.textBox2.SelectAll();
+            }
+        }
+
+        private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Focus();
+            this.textBox2.SelectAll();
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Focus();
+            this.textBox2.Copy();
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.textBox2.Focus();
+            this.textBox2.Clear();
+        }
+    }
 }

@@ -38,51 +38,47 @@
 // </summary>
 
 using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor
 {
 	public partial class llDialogForm : Form
-	{
-		private SecondLifeHost host;
-		private int Channel;
-		private string ObjectName;
-		private string OwnerName;
-		private SecondLife.key id;
+    {
+        private SecondLifeHost host;
+        private int Channel;
+        private string ObjectName;
+        private string OwnerName;
+        private SecondLife.key id;
 
-		public llDialogForm(SecondLifeHost host, SecondLife.String strObjectName, SecondLife.key id, SecondLife.String strOwner, SecondLife.String strMessage, SecondLife.list buttons, SecondLife.integer intChannel)
-		{
-			InitializeComponent();
+        public llDialogForm(SecondLifeHost host, SecondLife.String strObjectName, SecondLife.key id, SecondLife.String strOwner, SecondLife.String strMessage, SecondLife.list buttons, SecondLife.integer intChannel)
+        {
+            InitializeComponent();
 
-			this.host = host;
-			this.Channel = intChannel;
-			this.OwnerName = strOwner;
-			this.ObjectName = strObjectName;
-			this.id = id;
+            this.host = host;
+            this.Channel = intChannel;
+            this.OwnerName = strOwner;
+            this.ObjectName = strObjectName;
+            this.id = id;
 
-			for (int intI = 1; intI <= 12; intI++) {
-				Button button = this.Controls["Button" + intI] as Button;
-				button.Visible = false;
-			}
+            for (int intI = 1; intI <= 12; intI++) {
+                Button button = this.Controls["Button" + intI] as Button;
+                button.Visible = false;
+            }
 
-			this.label1.Text = strOwner + "'s '" + strObjectName + "'";
-			this.label2.Text = strMessage.ToString().Replace("&", "&&");
+            this.label1.Text = strOwner + "'s '" + strObjectName + "'";
+            this.label2.Text = strMessage.ToString().Replace("&", "&&");
 
-			for (int intI = 1; intI <= buttons.Count; intI++) {
-				Button button = this.Controls["Button" + intI] as Button;
-				if (button == null)
-					continue;
-				button.Text = buttons[intI - 1].ToString().Replace("&", "&&");
-				button.Visible = true;
-				button.Click += new EventHandler(button_Click);
-			}
-		}
+            for (int intI = 1; intI <= buttons.Count; intI++) {
+                Button button = this.Controls["Button" + intI] as Button;
+                if (button == null)
+                    continue;
+                button.Text = buttons[intI - 1].ToString().Replace("&", "&&");
+                button.Visible = true;
+                button.Click += new EventHandler(button_Click);
+            }
+        }
 
-		void button_Click(object sender, EventArgs e)
+		private void button_Click(object sender, EventArgs e)
 		{
 			Button button = sender as Button;
 			if (button != null) {
@@ -92,8 +88,8 @@ namespace LSLEditor
 		}
 
 		private void button13_Click(object sender, EventArgs e)
-		{
-			this.Close();
-		}
-	}
+        {
+            this.Close();
+        }
+    }
 }
