@@ -38,94 +38,86 @@
 // </summary>
 
 using System;
-using System.Reflection;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Text;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public partial class EnvironmentHelp : UserControl, ICommit
-	{
-		public EnvironmentHelp()
-		{
-			InitializeComponent();
+    {
+        public EnvironmentHelp()
+        {
+            InitializeComponent();
 
-			this.radioButton1.Checked = Properties.Settings.Default.HelpOnline;
-			this.radioButton2.Checked = Properties.Settings.Default.HelpOffline;
+            this.radioButton1.Checked = Properties.Settings.Default.HelpOnline;
+            this.radioButton2.Checked = Properties.Settings.Default.HelpOffline;
 
-			this.radioButton3.Checked = Properties.Settings.Default.WikiSeperateBrowser;
-			this.radioButton4.Checked = !Properties.Settings.Default.WikiSeperateBrowser;
+            this.radioButton3.Checked = Properties.Settings.Default.WikiSeperateBrowser;
+            this.radioButton4.Checked = !Properties.Settings.Default.WikiSeperateBrowser;
 
-			this.checkBox1.Checked = Properties.Settings.Default.HelpNewTab;
+            this.checkBox1.Checked = Properties.Settings.Default.HelpNewTab;
 
-			this.checkBox2.Checked = Properties.Settings.Default.ToolTip;
+            this.checkBox2.Checked = Properties.Settings.Default.ToolTip;
 
-			this.textBox1.Text = Properties.Settings.Default.Help;
+            this.textBox1.Text = Properties.Settings.Default.Help;
 
-			radioButton1_CheckedChanged(null, null);
+            radioButton1_CheckedChanged(null, null);
 
-			radioButton4_CheckedChanged(null, null);
-		}
+            radioButton4_CheckedChanged(null, null);
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.HelpOnline = this.radioButton1.Checked;
-			Properties.Settings.Default.HelpOffline= this.radioButton2.Checked;
-			Properties.Settings.Default.WikiSeperateBrowser = this.radioButton3.Checked;
+        public void Commit()
+        {
+            Properties.Settings.Default.HelpOnline = this.radioButton1.Checked;
+            Properties.Settings.Default.HelpOffline = this.radioButton2.Checked;
+            Properties.Settings.Default.WikiSeperateBrowser = this.radioButton3.Checked;
 
-			Properties.Settings.Default.HelpNewTab = this.checkBox1.Checked;
-			Properties.Settings.Default.ToolTip = this.checkBox2.Checked;
+            Properties.Settings.Default.HelpNewTab = this.checkBox1.Checked;
+            Properties.Settings.Default.ToolTip = this.checkBox2.Checked;
 
-			Properties.Settings.Default.Help = this.textBox1.Text;
-		}
+            Properties.Settings.Default.Help = this.textBox1.Text;
+        }
 
-		private void radioButton2_CheckedChanged(object sender, EventArgs e)
-		{
-			if (this.radioButton2.Checked)
-			{
-				this.textBox1.Enabled = false;
-				string strHelpFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-					Properties.Settings.Default.HelpOfflineFile);
-				if (!File.Exists(strHelpFile))
-				{
-					if (MessageBox.Show("Help file does not exist, would you like to download it?", "Download Helpfile", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
-					{
-						UpdateApplicationForm updater = new UpdateApplicationForm();
-						//updater.Icon = this.Icon; // TODO!!
-						updater.CheckForHelpFile();
-						updater.ShowDialog(this);
-						return;
-					}
-				}
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.radioButton2.Checked) {
+                this.textBox1.Enabled = false;
+                string strHelpFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    Properties.Settings.Default.HelpOfflineFile);
+                if (!File.Exists(strHelpFile)) {
+                    if (MessageBox.Show("Help file does not exist, would you like to download it?", "Download Helpfile", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
+                        UpdateApplicationForm updater = new UpdateApplicationForm();
+                        //updater.Icon = this.Icon; // TODO!!
+                        updater.CheckForHelpFile();
+                        updater.ShowDialog(this);
+                        return;
+                    }
+                }
+            }
+        }
 
-			}
-		}
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.textBox1.Enabled = this.radioButton1.Checked;
+            this.groupBox1.Enabled = this.radioButton1.Checked;
+            this.button1.Enabled = this.radioButton1.Checked;
+            this.button2.Enabled = this.radioButton1.Checked;
+        }
 
-		private void radioButton1_CheckedChanged(object sender, EventArgs e)
-		{
-			this.textBox1.Enabled = this.radioButton1.Checked;
-			this.groupBox1.Enabled = this.radioButton1.Checked;
-			this.button1.Enabled = this.radioButton1.Checked;
-			this.button2.Enabled = this.radioButton1.Checked;
-		}
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.textBox1.Text = Properties.Settings.Default.Help1;
+        }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			this.textBox1.Text = Properties.Settings.Default.Help1;
-		}
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.textBox1.Text = Properties.Settings.Default.Help2;
+        }
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			this.textBox1.Text = Properties.Settings.Default.Help2;
-		}
-
-		private void radioButton4_CheckedChanged(object sender, EventArgs e)
-		{
-			this.checkBox1.Enabled = this.radioButton4.Checked;
-		}
-
-	}
+        private void radioButton4_CheckedChanged(object sender, EventArgs e)
+        {
+            this.checkBox1.Enabled = this.radioButton4.Checked;
+        }
+    }
 }

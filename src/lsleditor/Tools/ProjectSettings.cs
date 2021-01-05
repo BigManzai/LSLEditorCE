@@ -45,45 +45,39 @@ using System.Windows.Forms;
 namespace LSLEditor.Tools
 {
 	public partial class ProjectSettings : UserControl, ICommit
-	{
-		public ProjectSettings()
-		{
-			InitializeComponent();
+    {
+        public ProjectSettings()
+        {
+            InitializeComponent();
 
-			this.textBox1.Text = Properties.Settings.Default.ProjectLocation;
+            this.textBox1.Text = Properties.Settings.Default.ProjectLocation;
 
-			this.checkBox4.Checked = Helpers.FileAssociator.IsAssociated(".sol");
-		}
+            this.checkBox4.Checked = Helpers.FileAssociator.IsAssociated(".sol");
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.ProjectLocation = this.textBox1.Text;
+        public void Commit()
+        {
+            Properties.Settings.Default.ProjectLocation = this.textBox1.Text;
 
-			if (this.checkBox4.Checked)
-			{
-				if (!
-				Helpers.FileAssociator.Associate(".sol", "LSLEditorSolution", "Solution File for LSLEditor", Assembly.GetExecutingAssembly().Location, 0))
-					MessageBox.Show("File association can not be made (needs administrative access)", "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			else
-			{
-				if (Helpers.FileAssociator.IsAssociated(".sol"))
-				{
-					if(!Helpers.FileAssociator.DeAssociate(".sol", "LSLEditorSolution"))
-						MessageBox.Show("File association can not be unmade (needs administrative access)", "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
-		}
+            if (this.checkBox4.Checked) {
+                if (!
+                Helpers.FileAssociator.Associate(".sol", "LSLEditorSolution", "Solution File for LSLEditor", Assembly.GetExecutingAssembly().Location, 0))
+                    MessageBox.Show("File association can not be made (needs administrative access)", "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else {
+                if (Helpers.FileAssociator.IsAssociated(".sol")) {
+                    if (!Helpers.FileAssociator.DeAssociate(".sol", "LSLEditorSolution"))
+                        MessageBox.Show("File association can not be unmade (needs administrative access)", "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			this.folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
-			if (this.folderBrowserDialog1.ShowDialog(this) == DialogResult.OK)
-			{
-				if(Directory.Exists(this.folderBrowserDialog1.SelectedPath))
-					this.textBox1.Text = this.folderBrowserDialog1.SelectedPath;
-			}
-		}
-
-	}
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.folderBrowserDialog1.RootFolder = Environment.SpecialFolder.MyComputer;
+            if (this.folderBrowserDialog1.ShowDialog(this) == DialogResult.OK) {
+                if (Directory.Exists(this.folderBrowserDialog1.SelectedPath))
+                    this.textBox1.Text = this.folderBrowserDialog1.SelectedPath;
+            }
+        }
+    }
 }

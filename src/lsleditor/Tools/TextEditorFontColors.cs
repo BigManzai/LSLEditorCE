@@ -38,84 +38,74 @@
 // </summary>
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public partial class TextEditorFontColors : UserControl, ICommit
-	{
-		private Font fontEditor;
-		private Font fontTooltips;
+    {
+        private Font fontEditor;
+        private Font fontTooltips;
 
-		public TextEditorFontColors()
-		{
-			InitializeComponent();
+        public TextEditorFontColors()
+        {
+            InitializeComponent();
 
-			this.checkBox1.Checked = Properties.Settings.Default.SLColorScheme;
+            this.checkBox1.Checked = Properties.Settings.Default.SLColorScheme;
 
-			fontEditor = Properties.Settings.Default.FontEditor;
-			fontTooltips = Properties.Settings.Default.FontTooltips;
+            fontEditor = Properties.Settings.Default.FontEditor;
+            fontTooltips = Properties.Settings.Default.FontTooltips;
 
-			ShowFonts();
-		}
+            ShowFonts();
+        }
 
-		private void ShowFonts()
-		{
-			this.label3.Text = string.Format("{0} / {1} / {2}",
-				fontEditor.Name,
-				fontEditor.Size,
-				fontEditor.Style);
+        private void ShowFonts()
+        {
+            this.label3.Text = string.Format("{0} / {1} / {2}",
+                fontEditor.Name,
+                fontEditor.Size,
+                fontEditor.Style);
 
-			this.label4.Text = string.Format("{0} / {1} / {2}",
-				fontTooltips.Name,
-				fontTooltips.Size,
-				fontTooltips.Style);
-		}
+            this.label4.Text = string.Format("{0} / {1} / {2}",
+                fontTooltips.Name,
+                fontTooltips.Size,
+                fontTooltips.Style);
+        }
 
-		private void button3_Click(object sender, EventArgs e)
-		{
-			this.fontDialog1.FixedPitchOnly = true;
-			this.fontDialog1.ShowEffects = false;
-			this.fontDialog1.AllowScriptChange = false;
-			this.fontDialog1.Font = Properties.Settings.Default.FontEditor;
-			try
-			{
-				if (this.fontDialog1.ShowDialog(this) == DialogResult.OK)
-				{
-					fontEditor = this.fontDialog1.Font;
-					ShowFonts();
-				}
-			}
-			catch
-			{
-			}
-		}
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.fontDialog1.FixedPitchOnly = true;
+            this.fontDialog1.ShowEffects = false;
+            this.fontDialog1.AllowScriptChange = false;
+            this.fontDialog1.Font = Properties.Settings.Default.FontEditor;
+            try {
+                if (this.fontDialog1.ShowDialog(this) == DialogResult.OK) {
+                    fontEditor = this.fontDialog1.Font;
+                    ShowFonts();
+                }
+            } catch {
+            }
+        }
 
-		private void button4_Click(object sender, EventArgs e)
-		{
-			this.fontDialog1.FixedPitchOnly = false;
-			this.fontDialog1.ShowEffects = false;
-			this.fontDialog1.AllowScriptChange = false;
-			this.fontDialog1.Font = Properties.Settings.Default.FontTooltips;
-			if (this.fontDialog1.ShowDialog(this) == DialogResult.OK)
-			{
-				fontTooltips = this.fontDialog1.Font;
-				ShowFonts();
-			}
-		}
+        private void button4_Click(object sender, EventArgs e)
+        {
+            this.fontDialog1.FixedPitchOnly = false;
+            this.fontDialog1.ShowEffects = false;
+            this.fontDialog1.AllowScriptChange = false;
+            this.fontDialog1.Font = Properties.Settings.Default.FontTooltips;
+            if (this.fontDialog1.ShowDialog(this) == DialogResult.OK) {
+                fontTooltips = this.fontDialog1.Font;
+                ShowFonts();
+            }
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.SLColorScheme = this.checkBox1.Checked;
+        public void Commit()
+        {
+            Properties.Settings.Default.SLColorScheme = this.checkBox1.Checked;
 
-			Properties.Settings.Default.FontEditor = fontEditor;
-			Properties.Settings.Default.FontTooltips = fontTooltips;
-		}
-
-
-	}
+            Properties.Settings.Default.FontEditor = fontEditor;
+            Properties.Settings.Default.FontTooltips = fontTooltips;
+        }
+    }
 }

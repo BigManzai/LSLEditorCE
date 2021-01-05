@@ -38,134 +38,119 @@
 // </summary>
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace LSLEditor.Tools
 {
 	public partial class RuntimeInternal : UserControl, ICommit
-	{
-		public RuntimeInternal()
-		{
-			InitializeComponent();
+    {
+        public RuntimeInternal()
+        {
+            InitializeComponent();
 
-			this.AvatarName.Text = Properties.Settings.Default.AvatarName;
-			this.AvatarKey.Text = Properties.Settings.Default.AvatarKey;
+            this.AvatarName.Text = Properties.Settings.Default.AvatarName;
+            this.AvatarKey.Text = Properties.Settings.Default.AvatarKey;
 
-			this.RegionName.Text = Properties.Settings.Default.RegionName;
-			this.RegionFPS.Text = Properties.Settings.Default.RegionFPS.ToString();
+            this.RegionName.Text = Properties.Settings.Default.RegionName;
+            this.RegionFPS.Text = Properties.Settings.Default.RegionFPS.ToString();
 
-			this.XSecondLifeShard.Text = Properties.Settings.Default.XSecondLifeShard;
+            this.XSecondLifeShard.Text = Properties.Settings.Default.XSecondLifeShard;
 
-			this.textBoxParcelName.Text = Properties.Settings.Default.ParcelName;
-			this.textBoxParcelDescription.Text = Properties.Settings.Default.ParcelDescription;
-			this.textBoxParcelOwner.Text = Properties.Settings.Default.ParcelOwner;
-			this.textBoxParcelGroup.Text = Properties.Settings.Default.ParcelGroup;
-			this.textBoxParcelArea.Text = Properties.Settings.Default.ParcelArea.ToString();
-		}
+            this.textBoxParcelName.Text = Properties.Settings.Default.ParcelName;
+            this.textBoxParcelDescription.Text = Properties.Settings.Default.ParcelDescription;
+            this.textBoxParcelOwner.Text = Properties.Settings.Default.ParcelOwner;
+            this.textBoxParcelGroup.Text = Properties.Settings.Default.ParcelGroup;
+            this.textBoxParcelArea.Text = Properties.Settings.Default.ParcelArea.ToString();
+        }
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-		{
-			SearchForKey();
-		}
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            SearchForKey();
+        }
 
-		private void SearchForKey()
-		{
-			bool Searching = true;
-			bool XmlVersion = false;
-			try
-			{
-				string[] arName = this.AvatarName.Text.Split(' ');
-				string strFirst = arName[0].Trim().ToLower();
-				string strLast = arName[1].Trim().ToLower();
-				string strCachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\SecondLife\cache\name.cache";
+        private void SearchForKey()
+        {
+            bool Searching = true;
+            bool XmlVersion = false;
+            try {
+                string[] arName = this.AvatarName.Text.Split(' ');
+                string strFirst = arName[0].Trim().ToLower();
+                string strLast = arName[1].Trim().ToLower();
+                string strCachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\SecondLife\cache\name.cache";
 
-				StreamReader sr = new StreamReader(strCachePath);
-				while (Searching)
-				{
-					string strLine = sr.ReadLine();
-					if (strLine == null)
-						break;
-					if (strLine.Contains("<llsd>"))
-					{
-						XmlVersion = true;
-						break;
-					}
-					strLine = strLine.ToLower();
-					if (strLine.IndexOf(strFirst) > 0)
-					{
-						if (strLine.IndexOf(strLast) > 0)
-						{
-							string strXoredKey = strLine.Split(new char[] { '\t' })[0].Trim();
-							Guid g1 = new Guid(strXoredKey);
-							Guid g2 = Guid.Empty;
-							byte[] b1 = g1.ToByteArray();
-							byte[] b2 = g2.ToByteArray();
-							for (int intI = 0; intI < b1.Length; intI++)
-								b2[intI] = (byte)(b1[intI] ^ 0x33);
-							g2 = new Guid(b2);
-							this.AvatarKey.Text = g2.ToString();
-							Searching = false;
-						}
-					}
-				}
-				sr.Close();
+                StreamReader sr = new StreamReader(strCachePath);
+                while (Searching) {
+                    string strLine = sr.ReadLine();
+                    if (strLine == null)
+                        break;
+                    if (strLine.Contains("<llsd>")) {
+                        XmlVersion = true;
+                        break;
+                    }
+                    strLine = strLine.ToLower();
+                    if (strLine.IndexOf(strFirst) > 0) {
+                        if (strLine.IndexOf(strLast) > 0) {
+                            string strXoredKey = strLine.Split(new char[] { '\t' })[0].Trim();
+                            Guid g1 = new Guid(strXoredKey);
+                            Guid g2 = Guid.Empty;
+                            byte[] b1 = g1.ToByteArray();
+                            byte[] b2 = g2.ToByteArray();
+                            for (int intI = 0; intI < b1.Length; intI++)
+                                b2[intI] = (byte)(b1[intI] ^ 0x33);
+                            g2 = new Guid(b2);
+                            this.AvatarKey.Text = g2.ToString();
+                            Searching = false;
+                        }
+                    }
+                }
+                sr.Close();
 
-				if (XmlVersion)
-				{
-					XmlDocument xmlDocument = new XmlDocument();
-					xmlDocument.Load(strCachePath);
-					// Who has made this key f*cking xml file??? it s*cks bigtime
-					XmlNode xmlNodeMapFirst = xmlDocument.SelectSingleNode("//map[translate(string[1],'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = '" + strFirst + "']");
-					XmlNode xmlNodeMapLast = xmlDocument.SelectSingleNode("//map[translate(string[2],'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = '" + strLast + "']");
-					if (xmlNodeMapFirst != null && xmlNodeMapLast != null)
-					{
-						if (xmlNodeMapFirst == xmlNodeMapLast)
-						{
-							// previous sibbeling key is the key
-							// Please, please, this meshed up my day, 
-							// USE HIERARCHY PARENT-CHILD NOT SIBLINGS!!
-							this.AvatarKey.Text = xmlNodeMapFirst.PreviousSibling.InnerText;
-							Searching = false;
-						}
-					}
-				}
-			}
-			catch
-			{
-			}
-			if (Searching)
-				this.AvatarKey.Text = "Name not found in Cache";
-		}
+                if (XmlVersion) {
+                    XmlDocument xmlDocument = new XmlDocument();
+                    xmlDocument.Load(strCachePath);
+                    // Who has made this key f*cking xml file??? it s*cks bigtime
+                    XmlNode xmlNodeMapFirst = xmlDocument.SelectSingleNode("//map[translate(string[1],'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = '" + strFirst + "']");
+                    XmlNode xmlNodeMapLast = xmlDocument.SelectSingleNode("//map[translate(string[2],'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = '" + strLast + "']");
+                    if (xmlNodeMapFirst != null && xmlNodeMapLast != null) {
+                        if (xmlNodeMapFirst == xmlNodeMapLast) {
+                            // previous sibbeling key is the key
+                            // Please, please, this meshed up my day,
+                            // USE HIERARCHY PARENT-CHILD NOT SIBLINGS!!
+                            this.AvatarKey.Text = xmlNodeMapFirst.PreviousSibling.InnerText;
+                            Searching = false;
+                        }
+                    }
+                }
+            } catch {
+            }
+            if (Searching)
+                this.AvatarKey.Text = "Name not found in Cache";
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.AvatarName = this.AvatarName.Text;
-			Properties.Settings.Default.AvatarKey = this.AvatarKey.Text;
+        public void Commit()
+        {
+            Properties.Settings.Default.AvatarName = this.AvatarName.Text;
+            Properties.Settings.Default.AvatarKey = this.AvatarKey.Text;
 
-			Properties.Settings.Default.XSecondLifeShard = this.XSecondLifeShard.Text;
+            Properties.Settings.Default.XSecondLifeShard = this.XSecondLifeShard.Text;
 
-			Properties.Settings.Default.RegionName = this.RegionName.Text;
-			double dblA;
-			if(double.TryParse(this.RegionFPS.Text, out dblA))
-				Properties.Settings.Default.RegionFPS = dblA;
+            Properties.Settings.Default.RegionName = this.RegionName.Text;
+            double dblA;
+            if (double.TryParse(this.RegionFPS.Text, out dblA))
+                Properties.Settings.Default.RegionFPS = dblA;
 
-			Properties.Settings.Default.ParcelName = this.textBoxParcelName.Text;
-			Properties.Settings.Default.ParcelDescription = this.textBoxParcelDescription.Text;
-			Properties.Settings.Default.ParcelOwner = this.textBoxParcelOwner.Text;
-			Properties.Settings.Default.ParcelGroup = this.textBoxParcelGroup.Text;
+            Properties.Settings.Default.ParcelName = this.textBoxParcelName.Text;
+            Properties.Settings.Default.ParcelDescription = this.textBoxParcelDescription.Text;
+            Properties.Settings.Default.ParcelOwner = this.textBoxParcelOwner.Text;
+            Properties.Settings.Default.ParcelGroup = this.textBoxParcelGroup.Text;
 
-			int intArea;
-			if(int.TryParse(this.textBoxParcelArea.Text, out intArea))
-				Properties.Settings.Default.ParcelArea = intArea;
-			else
-				Properties.Settings.Default.ParcelArea = 512;
-		}
-
-	}
+            int intArea;
+            if (int.TryParse(this.textBoxParcelArea.Text, out intArea))
+                Properties.Settings.Default.ParcelArea = intArea;
+            else
+                Properties.Settings.Default.ParcelArea = 512;
+        }
+    }
 }

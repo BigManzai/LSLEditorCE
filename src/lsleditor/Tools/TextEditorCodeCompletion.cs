@@ -37,31 +37,28 @@
 // Code for getting/setting the Tool/Options/.../CodeCompletion dialogue options.
 // </summary>
 
-using System.Diagnostics.CodeAnalysis;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public partial class TextEditorCodeCompletion : UserControl, ICommit
-	{
-		public TextEditorCodeCompletion()
-		{
-			InitializeComponent();
+    {
+        public TextEditorCodeCompletion()
+        {
+            InitializeComponent();
 
-			this.checkBox1.Checked = Properties.Settings.Default.CodeCompletion;
-			this.checkBox2.Checked = Properties.Settings.Default.CodeCompletionUserVar;
-			this.checkBox3.Checked = Properties.Settings.Default.CodeCompletionArguments;
-			this.checkBox4.Checked = Properties.Settings.Default.CodeCompletionAnimation;
-		}
+            this.checkBox1.Checked = Properties.Settings.Default.CodeCompletion;
+            this.checkBox2.Checked = Properties.Settings.Default.CodeCompletionUserVar;
+            this.checkBox3.Checked = Properties.Settings.Default.CodeCompletionArguments;
+            this.checkBox4.Checked = Properties.Settings.Default.CodeCompletionAnimation;
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.CodeCompletion = this.checkBox1.Checked;
-			Properties.Settings.Default.CodeCompletionUserVar = this.checkBox2.Checked;
-			Properties.Settings.Default.CodeCompletionArguments = this.checkBox3.Checked;
-			Properties.Settings.Default.CodeCompletionAnimation = this.checkBox4.Checked;
-		}
-
-
-	}
+        public void Commit()
+        {
+            Properties.Settings.Default.CodeCompletion = this.checkBox1.Checked;
+            Properties.Settings.Default.CodeCompletionUserVar = this.checkBox2.Checked;
+            Properties.Settings.Default.CodeCompletionArguments = this.checkBox3.Checked;
+            Properties.Settings.Default.CodeCompletionAnimation = this.checkBox4.Checked;
+        }
+    }
 }

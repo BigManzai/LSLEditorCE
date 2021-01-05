@@ -38,62 +38,57 @@
 // </summary>
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public interface ICommit
-	{
-		void Commit();
-	}
+    {
+        void Commit();
+    }
 
-	public partial class EnvironmentGeneral : UserControl, ICommit
-	{
-		public EnvironmentGeneral()
-		{
-			InitializeComponent();
+    public partial class EnvironmentGeneral : UserControl, ICommit
+    {
+        public EnvironmentGeneral()
+        {
+            InitializeComponent();
 
-			this.radioButton1.Checked = Properties.Settings.Default.TabbedDocument;
-			this.radioButton2.Checked = !Properties.Settings.Default.TabbedDocument;
+            this.radioButton1.Checked = Properties.Settings.Default.TabbedDocument;
+            this.radioButton2.Checked = !Properties.Settings.Default.TabbedDocument;
 
-			this.textBox1.Text = Properties.Settings.Default.RecentFileMax.ToString();
-			this.textBox2.Text = Properties.Settings.Default.RecentProjectMax.ToString();
+            this.textBox1.Text = Properties.Settings.Default.RecentFileMax.ToString();
+            this.textBox2.Text = Properties.Settings.Default.RecentProjectMax.ToString();
 
-			this.checkBox1.Checked = Properties.Settings.Default.CheckForUpdates;
-			this.checkBox2.Checked = Properties.Settings.Default.DeleteOldFiles;
-			this.radioButton3.Checked = Properties.Settings.Default.CheckEveryDay;
-			this.radioButton4.Checked = Properties.Settings.Default.CheckEveryWeek;
+            this.checkBox1.Checked = Properties.Settings.Default.CheckForUpdates;
+            this.checkBox2.Checked = Properties.Settings.Default.DeleteOldFiles;
+            this.radioButton3.Checked = Properties.Settings.Default.CheckEveryDay;
+            this.radioButton4.Checked = Properties.Settings.Default.CheckEveryWeek;
 
-			checkBox1_CheckedChanged(null, null);
-		}
+            checkBox1_CheckedChanged(null, null);
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.TabbedDocument = this.radioButton1.Checked;
+        public void Commit()
+        {
+            Properties.Settings.Default.TabbedDocument = this.radioButton1.Checked;
 
-			int intValue;
+            int intValue;
 
-			if (int.TryParse(this.textBox1.Text, out intValue))
-				Properties.Settings.Default.RecentFileMax = intValue;
-			if (int.TryParse(this.textBox2.Text, out intValue))
-				Properties.Settings.Default.RecentProjectMax = intValue;
+            if (int.TryParse(this.textBox1.Text, out intValue))
+                Properties.Settings.Default.RecentFileMax = intValue;
+            if (int.TryParse(this.textBox2.Text, out intValue))
+                Properties.Settings.Default.RecentProjectMax = intValue;
 
-			Properties.Settings.Default.CheckForUpdates = this.checkBox1.Checked;
-			Properties.Settings.Default.CheckEveryDay = this.radioButton3.Checked;
-			Properties.Settings.Default.CheckEveryWeek = this.radioButton4.Checked;
-			Properties.Settings.Default.DeleteOldFiles = this.checkBox2.Checked;
-		}
+            Properties.Settings.Default.CheckForUpdates = this.checkBox1.Checked;
+            Properties.Settings.Default.CheckEveryDay = this.radioButton3.Checked;
+            Properties.Settings.Default.CheckEveryWeek = this.radioButton4.Checked;
+            Properties.Settings.Default.DeleteOldFiles = this.checkBox2.Checked;
+        }
 
-		private void checkBox1_CheckedChanged(object sender, EventArgs e)
-		{
-			this.radioButton3.Enabled = this.checkBox1.Checked;
-			this.radioButton4.Enabled = this.checkBox1.Checked;
-			this.groupBox4.Enabled = this.checkBox1.Checked;
-		}
-
-	}
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            this.radioButton3.Enabled = this.checkBox1.Checked;
+            this.radioButton4.Enabled = this.checkBox1.Checked;
+            this.groupBox4.Enabled = this.checkBox1.Checked;
+        }
+    }
 }

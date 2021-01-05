@@ -37,31 +37,26 @@
 //
 // </summary>
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public partial class RuntimeExternal : UserControl, ICommit
-	{
-		public RuntimeExternal()
-		{
-			InitializeComponent();
+    {
+        public RuntimeExternal()
+        {
+            InitializeComponent();
 
-			this.ProxyServer.Text = Properties.Settings.Default.ProxyServer;
-			this.ProxyUserid.Text = Properties.Settings.Default.ProxyUserid;
-			this.ProxyPassword.Text = Properties.Settings.Default.ProxyPassword;
-		}
+            this.ProxyServer.Text = Properties.Settings.Default.ProxyServer;
+            this.ProxyUserid.Text = Properties.Settings.Default.ProxyUserid;
+            this.ProxyPassword.Text = Properties.Settings.Default.ProxyPassword;
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.ProxyServer = this.ProxyServer.Text;
-			Properties.Settings.Default.ProxyUserid = this.ProxyUserid.Text;
-			Properties.Settings.Default.ProxyPassword = this.ProxyPassword.Text;
-		}
-	}
+        public void Commit()
+        {
+            Properties.Settings.Default.ProxyServer = this.ProxyServer.Text;
+            Properties.Settings.Default.ProxyUserid = this.ProxyUserid.Text;
+            Properties.Settings.Default.ProxyPassword = this.ProxyPassword.Text;
+        }
+    }
 }

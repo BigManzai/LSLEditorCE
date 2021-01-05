@@ -37,25 +37,22 @@
 //
 // </summary>
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public partial class EnvironmentBrowser : UserControl, ICommit
-	{
-		public EnvironmentBrowser()
-		{
-			InitializeComponent();
+    {
+        public EnvironmentBrowser()
+        {
+            InitializeComponent();
 
-			this.checkBox1.Checked = Properties.Settings.Default.BrowserInWindow;
-		}
+            this.checkBox1.Checked = Properties.Settings.Default.BrowserInWindow;
+        }
 
-		public void Commit()
-		{
-			Properties.Settings.Default.BrowserInWindow = this.checkBox1.Checked;
-		}
-	}
+        public void Commit()
+        {
+            Properties.Settings.Default.BrowserInWindow = this.checkBox1.Checked;
+        }
+    }
 }

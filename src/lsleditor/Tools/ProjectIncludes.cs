@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+using System;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
-    public partial class ProjectIncludes : UserControl, ICommit
+	public partial class ProjectIncludes : UserControl, ICommit
     {
         public ProjectIncludes()
         {
@@ -38,29 +33,25 @@ namespace LSLEditor.Tools
         private bool AddToIncludeDirs(string path)
         {
             // Check if it can find the directory
-            if(Directory.Exists(path))
-            {
+            if (Directory.Exists(path)) {
                 // Put directory seperator after path
                 path = path.LastOrDefault() == '\\' || path.LastOrDefault() == '/' ? path : path + '\\';
-                
+
                 // Check if it's already in the settings
-                if(!Properties.Settings.Default.IncludeDirectories.Contains(path))
-                {
+                if (!Properties.Settings.Default.IncludeDirectories.Contains(path)) {
                     // Add to listbox
                     listBoxIncludeDirs.Items.Add(path);
                     return true;
                 }
-            } else
-            {
-				MessageBox.Show("The given directory was not found. \n\"" + path + "\"", "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } else {
+                MessageBox.Show("The given directory was not found. \n\"" + path + "\"", "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return false;
         }
 
         private bool RemoveFromIncludeDirs()
         {
-            if(listBoxIncludeDirs.SelectedItem != null)
-            {
+            if (listBoxIncludeDirs.SelectedItem != null) {
                 listBoxIncludeDirs.Items.Remove(listBoxIncludeDirs.SelectedItem);
                 return true;
             }
@@ -82,18 +73,15 @@ namespace LSLEditor.Tools
 
         private void buttonAddIncludeDir_Click(object sender, EventArgs e)
         {
-            if(textBoxAddIncludeDir.Text != "")
-            {
+            if (textBoxAddIncludeDir.Text != "") {
                 AddToIncludeDirs(textBoxAddIncludeDir.Text);
             }
         }
 
         private void textBoxAddIncludeDir_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(e.KeyChar == (char)Keys.Enter)
-            {
-                if (textBoxAddIncludeDir.Text != "")
-                {
+            if (e.KeyChar == (char)Keys.Enter) {
+                if (textBoxAddIncludeDir.Text != "") {
                     AddToIncludeDirs(textBoxAddIncludeDir.Text);
                 }
             }
@@ -102,8 +90,7 @@ namespace LSLEditor.Tools
         private void buttonBrowseDirs_Click(object sender, EventArgs e)
         {
             this.folderBrowserDialogSelectIncludeDir.RootFolder = Environment.SpecialFolder.MyComputer;
-            if (this.folderBrowserDialogSelectIncludeDir.ShowDialog(this) == DialogResult.OK)
-            {
+            if (this.folderBrowserDialogSelectIncludeDir.ShowDialog(this) == DialogResult.OK) {
                 AddToIncludeDirs(this.folderBrowserDialogSelectIncludeDir.SelectedPath);
             }
         }
@@ -115,8 +102,7 @@ namespace LSLEditor.Tools
 
         private void listBoxIncludeDirs_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
-            {
+            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back) {
                 RemoveFromIncludeDirs();
             }
         }

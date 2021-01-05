@@ -38,121 +38,116 @@
 // </summary>
 
 using System;
-using System.Reflection;
-using System.ComponentModel;
 using System.Drawing;
-using System.Xml;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace LSLEditor.Tools
 {
 	public partial class ToolsOptions : Form
-	{
-		public delegate void PropertiesChangedHandler();
-		public event PropertiesChangedHandler PropertiesChanged;
+    {
+        public delegate void PropertiesChangedHandler();
 
-		public ToolsOptions()
-		{
-			InitializeComponent();
+        public event PropertiesChangedHandler PropertiesChanged;
 
-			LoadTreeView();
-		}
+        public ToolsOptions()
+        {
+            InitializeComponent();
 
-		private XmlDocument GetXmlFromResource(string strName)
-		{
-			XmlDocument xml = new XmlDocument();
-			Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("LSLEditor." + strName);
+            LoadTreeView();
+        }
 
-			if (resource != null)
-				xml.Load(resource);
-			return xml;
-		}
+        private XmlDocument GetXmlFromResource(string strName)
+        {
+            XmlDocument xml = new XmlDocument();
+            Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("LSLEditor." + strName);
 
-		private void LoadTreeView()
-		{
-			XmlDocument xml = GetXmlFromResource(Properties.Settings.Default.ToolsOptions);
-			RecursiveLoad(this.treeView1.Nodes, xml.SelectSingleNode("/root"));
-		}
+            if (resource != null)
+                xml.Load(resource);
+            return xml;
+        }
 
-		private void RecursiveLoad(TreeNodeCollection nodes, XmlNode xmlParentNode)
-		{
-			foreach (XmlNode xmlNode in xmlParentNode.SelectNodes("./*"))
-			{
-				string strName = xmlNode.Attributes["name"].Value;
-				string strUserControl = xmlNode.Attributes["usercontrol"].Value;
-				TreeNode tn = new TreeNode(strName, 0, 0);
-				tn.Tag = strUserControl;
-				nodes.Add(tn);
-				RecursiveLoad(tn.Nodes, xmlNode);
-			}
-		}
+        private void LoadTreeView()
+        {
+            XmlDocument xml = GetXmlFromResource(Properties.Settings.Default.ToolsOptions);
+            RecursiveLoad(this.treeView1.Nodes, xml.SelectSingleNode("/root"));
+        }
 
-		private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			string strUserControl = "LSLEditor.Tools." + e.Node.Tag.ToString();
-			bool blnFound = false;
-			foreach (Control control in this.panel1.Controls)
-			{
-				control.Visible = (strUserControl == control.ToString());
-				if (control.Visible)
-					blnFound = true;
-			}
-			if (blnFound)
-				return;
-			//create control and add to panel1
-			Control newControl = Assembly.GetExecutingAssembly().CreateInstance(strUserControl) as Control;
-			if (newControl != null)
-			{
-				this.panel1.Controls.Add(newControl);
-			}
-		}
+        private void RecursiveLoad(TreeNodeCollection nodes, XmlNode xmlParentNode)
+        {
+            foreach (XmlNode xmlNode in xmlParentNode.SelectNodes("./*")) {
+                string strName = xmlNode.Attributes["name"].Value;
+                string strUserControl = xmlNode.Attributes["usercontrol"].Value;
+                TreeNode tn = new TreeNode(strName, 0, 0);
+                tn.Tag = strUserControl;
+                nodes.Add(tn);
+                RecursiveLoad(tn.Nodes, xmlNode);
+            }
+        }
 
-		private void button2_Click(object sender, EventArgs e)
-		{
-			this.Close();
-		}
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            string strUserControl = "LSLEditor.Tools." + e.Node.Tag.ToString();
+            bool blnFound = false;
+            foreach (Control control in this.panel1.Controls) {
+                control.Visible = (strUserControl == control.ToString());
+                if (control.Visible)
+                    blnFound = true;
+            }
+            if (blnFound)
+                return;
+            //create control and add to panel1
+            Control newControl = Assembly.GetExecutingAssembly().CreateInstance(strUserControl) as Control;
+            if (newControl != null) {
+                this.panel1.Controls.Add(newControl);
+            }
+        }
 
-		private void button1_Click(object sender, EventArgs e)
-		{
-			// ok
-			foreach (Control control in this.panel1.Controls)
-			{
-				((ICommit)control).Commit();
-			}
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
 
-			// save properties
-			Properties.Settings.Default.Save();
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // ok
+            foreach (Control control in this.panel1.Controls) {
+                ((ICommit)control).Commit();
+            }
 
-			// notify parent
-			if (PropertiesChanged != null)
-				PropertiesChanged();
+            // save properties
+            Properties.Settings.Default.Save();
 
-			this.Close();
-		}
+            // notify parent
+            if (PropertiesChanged != null)
+                PropertiesChanged();
 
-		private void button3_Click(object sender, EventArgs e)
-		{
-			if (MessageBox.Show("Reset all properties?", "Reset properties", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
-			{
-				this.panel1.Controls.Clear();
+            this.Close();
+        }
 
-				Properties.Settings.Default.Reset();
-				Properties.Settings.Default.CallUpgrade = false;
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Reset all properties?", "Reset properties", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) {
+                this.panel1.Controls.Clear();
 
-				if (Properties.Settings.Default.FontEditor == null)
-					Properties.Settings.Default.FontEditor = new Font("Courier New", 9.75F, FontStyle.Regular);
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.CallUpgrade = false;
 
-				if (Properties.Settings.Default.FontTooltips == null)
-					Properties.Settings.Default.FontTooltips = new Font(SystemFonts.MessageBoxFont.Name, 9.75F, FontStyle.Regular);
-			}
-		}
+                if (Properties.Settings.Default.FontEditor == null)
+                    Properties.Settings.Default.FontEditor = new Font("Courier New", 9.75F, FontStyle.Regular);
 
-		private void ToolsOptions_Load(object sender, EventArgs e)
-		{
-			this.treeView1.ExpandAll();
-			this.treeView1.SelectedNode = this.treeView1.Nodes[0];
-			this.treeView1.Focus();
-		}
-	}
+                if (Properties.Settings.Default.FontTooltips == null)
+                    Properties.Settings.Default.FontTooltips = new Font(SystemFonts.MessageBoxFont.Name, 9.75F, FontStyle.Regular);
+            }
+        }
+
+        private void ToolsOptions_Load(object sender, EventArgs e)
+        {
+            this.treeView1.ExpandAll();
+            this.treeView1.SelectedNode = this.treeView1.Nodes[0];
+            this.treeView1.Focus();
+        }
+    }
 }

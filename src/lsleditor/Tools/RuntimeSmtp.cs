@@ -37,73 +37,72 @@
 //
 // </summary>
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace LSLEditor.Tools
 {
 	public partial class RuntimeSmtp : UserControl, ICommit
-	{
-		public RuntimeSmtp()
-		{
-			InitializeComponent();
+    {
+        public RuntimeSmtp()
+        {
+            InitializeComponent();
 
-			this.EmailServer.Text = Properties.Settings.Default.EmailServer;
-			this.EmailAddress.Text = Properties.Settings.Default.EmailAddress;
+            this.EmailServer.Text = Properties.Settings.Default.EmailServer;
+            this.EmailAddress.Text = Properties.Settings.Default.EmailAddress;
 
-			this.SmtpUserid.Text = Properties.Settings.Default.SmtpUserid;
-			this.SmtpPassword.Text = Properties.Settings.Default.SmtpPassword;
+            this.SmtpUserid.Text = Properties.Settings.Default.SmtpUserid;
+            this.SmtpPassword.Text = Properties.Settings.Default.SmtpPassword;
 
-			switch (Properties.Settings.Default.SmtpAuth)
-			{
-				case "PLAIN":
-					this.radioButton1.Checked = true;
-					break;
-				case "LOGIN":
-					this.radioButton2.Checked = true;
-					break;
-				case "CRAM-MD5":
-					this.radioButton3.Checked = true;
-					break;
-				case "DIGEST-MD5":
-					this.radioButton4.Checked = true;
-					break;
-				case "EXTERNAL":
-					this.radioButton5.Checked = true;
-					break;
-				case "ANONYMOUS":
-					this.radioButton6.Checked = true;
-					break;
-				default:
-					break;
-			}
-		}
+            switch (Properties.Settings.Default.SmtpAuth) {
+                case "PLAIN":
+                    this.radioButton1.Checked = true;
+                    break;
 
-		public void Commit()
-		{
-			Properties.Settings.Default.EmailServer = this.EmailServer.Text;
-			Properties.Settings.Default.EmailAddress = this.EmailAddress.Text;
+                case "LOGIN":
+                    this.radioButton2.Checked = true;
+                    break;
 
-			Properties.Settings.Default.SmtpUserid = this.SmtpUserid.Text;
-			Properties.Settings.Default.SmtpPassword = this.SmtpPassword.Text;
+                case "CRAM-MD5":
+                    this.radioButton3.Checked = true;
+                    break;
 
-			if (this.radioButton1.Checked)
-				Properties.Settings.Default.SmtpAuth = "PLAIN";
-			if (this.radioButton2.Checked)
-				Properties.Settings.Default.SmtpAuth = "LOGIN";
-			if (this.radioButton3.Checked)
-				Properties.Settings.Default.SmtpAuth = "CRAM-MD5";
-			if (this.radioButton4.Checked)
-				Properties.Settings.Default.SmtpAuth = "DIGEST-MD5";
-			if (this.radioButton5.Checked)
-				Properties.Settings.Default.SmtpAuth = "EXTERNAL";
-			if (this.radioButton6.Checked)
-				Properties.Settings.Default.SmtpAuth = "ANONYMOUS";
+                case "DIGEST-MD5":
+                    this.radioButton4.Checked = true;
+                    break;
 
-		}
-	}
+                case "EXTERNAL":
+                    this.radioButton5.Checked = true;
+                    break;
+
+                case "ANONYMOUS":
+                    this.radioButton6.Checked = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public void Commit()
+        {
+            Properties.Settings.Default.EmailServer = this.EmailServer.Text;
+            Properties.Settings.Default.EmailAddress = this.EmailAddress.Text;
+
+            Properties.Settings.Default.SmtpUserid = this.SmtpUserid.Text;
+            Properties.Settings.Default.SmtpPassword = this.SmtpPassword.Text;
+
+            if (this.radioButton1.Checked)
+                Properties.Settings.Default.SmtpAuth = "PLAIN";
+            if (this.radioButton2.Checked)
+                Properties.Settings.Default.SmtpAuth = "LOGIN";
+            if (this.radioButton3.Checked)
+                Properties.Settings.Default.SmtpAuth = "CRAM-MD5";
+            if (this.radioButton4.Checked)
+                Properties.Settings.Default.SmtpAuth = "DIGEST-MD5";
+            if (this.radioButton5.Checked)
+                Properties.Settings.Default.SmtpAuth = "EXTERNAL";
+            if (this.radioButton6.Checked)
+                Properties.Settings.Default.SmtpAuth = "ANONYMOUS";
+        }
+    }
 }
