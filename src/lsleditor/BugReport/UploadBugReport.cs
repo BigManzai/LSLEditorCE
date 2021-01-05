@@ -38,25 +38,23 @@
 // </summary>
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using System.Drawing;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace LSLEditor.BugReport
 {
-	class UploadBugReport
+	internal class UploadBugReport
 	{
 		public struct FileToUpload
 		{
 			public string FileName;
 			public string Body;
 			public string Path;
+
 			public FileToUpload(string FileName, string Body)
 			{
 				this.FileName = FileName;
@@ -68,6 +66,7 @@ namespace LSLEditor.BugReport
 		public class UploadCompleteEventArgs : EventArgs
 		{
 			public int TotalBytes;
+
 			public UploadCompleteEventArgs(int intTotal)
 			{
 				this.TotalBytes = intTotal;
@@ -77,6 +76,7 @@ namespace LSLEditor.BugReport
 		public bool blnRunning;
 
 		public delegate void UploadCompleteHandler(object sender, UploadCompleteEventArgs e);
+
 		public event UploadCompleteHandler OnComplete;
 
 		private Thread thread;
@@ -99,8 +99,7 @@ namespace LSLEditor.BugReport
 		public void Stop()
 		{
 			this.blnRunning = false;
-			if (thread != null)
-			{
+			if (thread != null) {
 				thread.Join(1000);
 				thread = null;
 			}
@@ -109,13 +108,11 @@ namespace LSLEditor.BugReport
 		private void Worker()
 		{
 			int intTotal = 0;
-			try
-			{
+			try {
 				org.lsleditor.www.Service1 webservice = new org.lsleditor.www.Service1();
 
 				string Handle = webservice.Open();
-				if (Handle == null)
-				{
+				if (Handle == null) {
 					MessageBox.Show("Can't get an upload handle", "Oops...");
 					this.blnRunning = false;
 					return;
@@ -128,22 +125,16 @@ namespace LSLEditor.BugReport
 				// Properties.Settings.Default.Save();
 
 				int intNumber = 0;
-				foreach (FileToUpload file in this.list)
-				{
+				foreach (FileToUpload file in this.list) {
 					string strFileName = string.Format("{0}-{1}", intNumber, file.FileName);
-					if (file.Path == null)
-					{
+					if (file.Path == null) {
 						intTotal += Upload(Handle, strFileName, Encoding.ASCII.GetBytes(file.Body));
-					}
-					else
-					{
+					} else {
 						intTotal += Upload(Handle, strFileName, file.Path);
 					}
 					intNumber++;
 				}
-			}
-			catch
-			{
+			} catch {
 				intTotal = -1;
 			}
 			if (this.blnRunning)
@@ -156,27 +147,22 @@ namespace LSLEditor.BugReport
 
 		private void SetMaximum(int intMaximum)
 		{
-			if (this.progressbar.InvokeRequired)
-			{
+			if (this.progressbar.InvokeRequired) {
 				this.progressbar.Invoke(new SetValueDelegate(SetMaximum), new object[] { intMaximum });
-			}
-			else
-			{
+			} else {
 				this.progressbar.Maximum = intMaximum;
 			}
 		}
 
 		private void SetValue(int intValue)
 		{
-			if (this.progressbar.InvokeRequired)
-			{
+			if (this.progressbar.InvokeRequired) {
 				this.progressbar.Invoke(new SetValueDelegate(SetValue), new object[] { intValue });
-			}
-			else
-			{
+			} else {
 				this.progressbar.Value = intValue;
 			}
 		}
+
 		private int Upload(string Handle, string FileName, byte[] buffer)
 		{
 			org.lsleditor.www.Service1 webservice = new org.lsleditor.www.Service1();
@@ -187,16 +173,14 @@ namespace LSLEditor.BugReport
 			int intOffset = 0;
 			int intTotal = 0;
 			byte[] smallbuffer = new byte[1024];
-			while (this.blnRunning)
-			{
+			while (this.blnRunning) {
 				int intLength = Math.Min(smallbuffer.Length, buffer.Length - intOffset);
 				if (intLength <= 0)
 					break;
 				Array.Copy(buffer, intOffset, smallbuffer, 0, intLength);
 				intOffset += intLength;
 				string strError = webservice.Write(Handle, FileName, smallbuffer, intLength);
-				if (strError != null)
-				{
+				if (strError != null) {
 					MessageBox.Show("Error:" + strError, "Oops...", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					break;
 				}
